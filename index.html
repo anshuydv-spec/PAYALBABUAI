@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>The Payal Bot - Rao Sahab Ultimate</title>
+  <title>Rao Sahab Presents: PAYAL BOT V10.0</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;500;700&family=Rajdhani:wght@700;900&display=swap');
@@ -23,6 +23,8 @@
     
     /* ADMIN LOCK SCREEN */
     #lockScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5,5,5,0.98); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(10px); }
+    .ls-top-bar { width: 100%; display: flex; justify-content: center; margin-bottom: 5px; }
+    .ls-owner-name { font-family: 'Orbitron'; font-size: 16px; color: #fff; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 10px #00ffff; }
     .ls-title { font-family: 'Orbitron'; font-size: 32px; color: #00ffff; text-shadow: 0 0 20px #00ffff; margin-bottom: 5px; text-align: center; }
     .ls-sub { color: #fff; font-size: 12px; margin-bottom: 30px; text-align: center; font-weight: bold; letter-spacing: 2px; }
     .device-id-box { background: rgba(0, 255, 255, 0.1); border: 2px dashed #00ffff; padding: 20px; width: 100%; max-width: 350px; text-align: center; border-radius: 12px; margin-bottom: 20px; cursor: pointer; box-shadow: inset 0 0 20px rgba(0,255,255,0.2); }
@@ -30,12 +32,63 @@
     .dev-code { font-size: 24px; color: #fff; letter-spacing: 3px; font-family: 'Rajdhani'; font-weight: 900; }
     .key-input { width: 100%; max-width: 350px; padding: 15px; background: #111; border: 2px solid #bf00ff; color: #fff; text-align: center; font-size: 16px; border-radius: 8px; margin-bottom: 20px; font-family: 'Courier Prime', monospace; outline: none; box-shadow: 0 0 15px rgba(191,0,255,0.3); }
     .key-input:focus { border-color: #00ffff; box-shadow: 0 0 20px #00ffff; }
-    .btn-unlock { width: 100%; max-width: 350px; background: linear-gradient(90deg, #00ffff, #00aaee); color: #000; padding: 15px; font-size: 18px; font-family: 'Orbitron'; font-weight: 900; border: none; border-radius: 8px; cursor: pointer; margin-bottom: 15px; box-shadow: 0 0 20px rgba(0,255,255,0.5); transition: 0.3s; }
+    
+    .ls-action-btns { width: 100%; max-width: 350px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px; }
+    .btn-unlock { background: linear-gradient(90deg, #00ffff, #00aaee); color: #000; padding: 15px; font-size: 18px; font-family: 'Orbitron'; font-weight: 900; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 0 20px rgba(0,255,255,0.5); transition: 0.3s; width: 100%; }
     .btn-unlock:active { transform: scale(0.95); }
-    .btn-buy { width: 100%; max-width: 350px; background: #222; color: #fff; padding: 15px; font-size: 14px; font-family: 'Rajdhani'; font-weight: 900; border: 1px solid #444; border-radius: 8px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
+    .btn-plans { background: #222; color: #fff; padding: 15px; font-size: 14px; font-family: 'Rajdhani'; font-weight: 900; border: 1px solid #444; border-radius: 8px; cursor: pointer; transition: 0.3s; width: 100%; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* Plans Sliding Panel */
+    .plans-panel {
+        position: fixed; bottom: -100%; left: 50%; transform: translateX(-50%); width: 95%; max-width: 450px;
+        background: rgba(5, 10, 20, 0.98); border: 3px solid #bf00ff; border-radius: 15px 15px 0 0;
+        box-shadow: 0 0 30px rgba(191, 0, 255, 0.6); padding: 25px;
+        transition: bottom 0.5s ease-in-out; z-index: 100000; backdrop-filter: blur(15px);
+        overflow-y: auto; max-height: 80vh;
+    }
+    .plans-panel.show { bottom: 0; } 
+    .plans-panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+    .plans-panel-title { font-family: 'Orbitron'; font-size: 18px; color: #00ffff; text-shadow: 0 0 10px #00ffff; }
+    .plans-close { font-size: 24px; color: #aaa; cursor: pointer; transition: 0.3s; }
+    .plans-close:hover { color: #fff; }
+
+    .plans-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .plan-card {
+        border-radius: 12px; padding: 15px; position: relative; overflow: hidden;
+        border-width: 2px; border-style: solid;
+        transition: transform 0.3s, box-shadow 0.3s; cursor: pointer;
+    }
+    .plan-card.cyan { border-color: #00ffff; background: rgba(0,255,255,0.05); box-shadow: 0 0 10px rgba(0,255,255,0.1); }
+    .plan-card.purple { border-color: #bf00ff; background: rgba(191,0,255,0.05); box-shadow: 0 0 10px rgba(191,0,255,0.1); }
+    .plan-card.purple.gold-shadow { border-color: #ffd700; box-shadow: 0 0 20px rgba(255,215,0,0.4); }
+
+    .plan-duration { font-family: 'Orbitron'; font-size: 12px; font-weight: 900; text-transform: uppercase; margin-bottom: 5px; }
+    .cyan .plan-duration { color: #00ffff; }
+    .purple .plan-duration { color: #bf00ff; }
+    .gold-shadow .plan-duration { color: #ffd700; }
+
+    .plan-tier { font-family: 'Poppins'; font-size: 14px; color: #fff; font-weight: bold; margin-bottom: 10px; }
+    
+    .plan-price-row { display: flex; align-items: baseline; gap: 5px; margin-bottom: 10px; }
+    .plan-price { font-family: 'Rajdhani'; font-size: 26px; font-weight: 900; color: #fff; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+    .plan-curr { font-family: 'Rajdhani'; font-size: 12px; color: #aaa; text-transform: uppercase; }
+
+    .plan-features { font-size: 9px; color: #ccc; list-style: none; margin-bottom: 15px; }
+    .plan-features li { margin-bottom: 3px; display: flex; align-items: center; gap: 4px; }
+    .plan-features i { font-size: 10px; }
+    .cyan .plan-features i { color: #00ffff; }
+    .purple .plan-features i { color: #bf00ff; }
+    .gold-shadow .plan-features i { color: #ffd700; }
+
+    .btn-plan-buy { width: 100%; border-radius: 6px; padding: 8px; font-size: 11px; font-family: 'Orbitron'; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; transition: 0.3s; }
+    .cyan .btn-plan-buy { background: #00ffff; color: #000; }
+    .purple .btn-plan-buy { background: #bf00ff; color: #fff; }
+    .gold-shadow .btn-plan-buy { background: #ffd700; color: #000; box-shadow: 0 0 15px rgba(255,215,0,0.5); }
 
     /* HEADER & MAIN TIMER */
     .header { text-align: center; padding: 10px 0; }
+    .top-owner-bar { width: 100%; display: flex; justify-content: center; margin-bottom: 2px; }
+    .main-owner-name { font-family: 'Orbitron'; font-size: 11px; color: #fff; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 5px #00ffff; opacity: 0.8; }
     .title-neon { font-family: 'Orbitron', sans-serif; font-size: 28px; font-weight: 900; color: #00ffff; text-shadow: 0 0 10px #00ffff, 0 0 20px #0000ff; margin: 0; }
     .subtitle-white { font-size: 11px; font-weight: bold; color: #fff; letter-spacing: 2px; text-shadow: 0 0 5px #fff; margin-top: 5px; }
     .mantra { font-size: 13px; color: #ffd700; text-shadow: 0 0 10px #ffd700; margin-top: 10px; font-weight: bold; }
@@ -128,7 +181,7 @@
     .master-power { width: 90px; height: 90px; border-radius: 50%; background: radial-gradient(circle, #ff0000, #990000); margin: 15px auto; display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 900; color: white; box-shadow: 0 0 20px red, inset 0 0 10px #fff; cursor: pointer; border: 4px solid #222; font-family: 'Orbitron'; transition: 0.3s; }
     .master-power.on { background: radial-gradient(circle, #00ff00, #009900); box-shadow: 0 0 30px #00ff00, inset 0 0 10px #fff; color: #000; border-color: #fff; }
 
-    /* PREDICTION UI (Bigger, Glow, Inner Timer) */
+    /* PREDICTION UI */
     .pred-ui-box { background: rgba(0,0,0,0.8); border: 3px solid #ffd700; border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 15px; display: none; box-shadow: 0 0 30px rgba(255,215,0,0.4), inset 0 0 20px rgba(255,215,0,0.1); transform: scale(1.02); transition: 0.3s; }
     .pred-inner-timer { font-family: 'Orbitron'; font-size: 20px; color: #00ffff; font-weight: 900; margin-bottom: 8px; text-shadow: 0 0 10px #00ffff; }
     .pred-title { color: #ccc; font-size: 13px; }
@@ -239,7 +292,8 @@
   <div id="toast"></div>
 
   <div id="lockScreen">
-      <h1 class="ls-title">PAYAL BOT V7.0</h1>
+      <div class="ls-top-bar"><span class="ls-owner-name">Rao Sahab</span></div>
+      <h1 class="ls-title">PAYAL BOT V10.0</h1>
       <p class="ls-sub">PREMIUM ACCESS REQUIRED</p>
       
       <div class="device-id-box" onclick="copyDeviceId()">
@@ -249,8 +303,105 @@
       
       <input type="text" id="lsKeyInput" class="key-input" placeholder="PASTE ACCESS KEY HERE">
       
-      <button class="btn-unlock" onclick="unlockBot()">UNLOCK SYSTEM</button>
-      <button class="btn-buy" onclick="window.open('https://t.me/raosahab0035', '_blank')"><i class="fab fa-telegram"></i> GET KEY FROM ADMIN</button>
+      <div class="ls-action-btns">
+          <button class="btn-unlock" onclick="unlockBot()">UNLOCK SYSTEM</button>
+          <button class="btn-plans" onclick="togglePlansPanel()"><i class="fas fa-gem"></i> VIEW PLANS</button>
+          <button class="btn-buy" style="max-width:350px;" onclick="window.open('https://t.me/raosahab0035', '_blank')"><i class="fab fa-telegram"></i> MSG ADMIN</button>
+      </div>
+      
+      <div style="color:#aaa; font-size:10px; max-width:350px; text-align:center; line-height:1.4; margin-top:15px; border-top:1px solid #333; padding-top:10px;">
+          <strong>USER DISCLAIMER:</strong> Predictions are based on algorithms and do not guarantee success. Use at your own risk. Rao Sahab Bot is not responsible for any financial losses.
+      </div>
+  </div>
+
+  <div id="plansPanel" class="plans-panel">
+      <div class="plans-panel-header">
+          <span class="plans-panel-title">PREMIUM PLANS</span>
+          <i class="fas fa-times plans-close" onclick="togglePlansPanel()"></i>
+      </div>
+      
+      <div class="plans-grid">
+          <div class="plan-card cyan">
+              <div class="plan-duration">1 Day</div>
+              <div class="plan-tier">STANDARD</div>
+              <div class="plan-price-row"><span class="plan-price">39</span><span class="plan-curr">INR</span></div>
+              <ul class="plan-features">
+                  <li><i class="fas fa-check"></i> 8-Formula Logic</li>
+                  <li><i class="fas fa-check"></i> Basic Backtesting</li>
+              </ul>
+              <button class="btn-plan-buy" onclick="contactAdminForPlan('1 Day Standard (39 INR)')">Buy Now</button>
+          </div>
+          <div class="plan-card purple gold-shadow">
+              <div class="plan-duration">1 Day</div>
+              <div class="plan-tier">AI PRO</div>
+              <div class="plan-price-row"><span class="plan-price">59</span><span class="plan-curr">INR</span></div>
+              <ul class="plan-features">
+                  <li><i class="fas fa-bolt"></i> Enhanced Robot Icons</li>
+                  <li><i class="fas fa-robot"></i> Multi-Server AI</li>
+              </ul>
+              <button class="btn-plan-buy" onclick="contactAdminForPlan('1 Day AI PRO (59 INR)')">Buy Now</button>
+          </div>
+          <div class="plan-card cyan">
+              <div class="plan-duration">3 Days</div>
+              <div class="plan-tier">STANDARD</div>
+              <div class="plan-price-row"><span class="plan-price">89</span><span class="plan-curr">INR</span></div>
+              <ul class="plan-features">
+                  <li><i class="fas fa-check"></i> Basic Backtesting</li>
+                  <li><i class="fas fa-check"></i> Trend Rider (L3 Safe)</li>
+              </ul>
+              <button class="btn-plan-buy" onclick="contactAdminForPlan('3 Days Standard (89 INR)')">Buy Now</button>
+          </div>
+          <div class="plan-card purple gold-shadow">
+              <div class="plan-duration">3 Days</div>
+              <div class="plan-tier">AI PRO</div>
+              <div class="plan-price-row"><span class="plan-price">119</span><span class="plan-curr">INR</span></div>
+              <ul class="plan-features">
+                  <li><i class="fas fa-robot"></i> Enhanced Robot Icons</li>
+                  <li><i class="fas fa-brain"></i> Deep Trend Analyser</li>
+              </ul>
+              <button class="btn-plan-buy" onclick="contactAdminForPlan('3 Days AI PRO (119 INR)')">Buy Now</button>
+          </div>
+          <div class="plan-card cyan">
+              <div class="plan-duration">7 Days</div>
+              <div class="plan-tier">STANDARD</div>
+              <div class="plan-price-row"><span class="plan-price">199</span><span class="plan-curr">INR</span></div>
+              <ul class="plan-features">
+                  <li><i class="fas fa-check"></i> Full Backtesting</li>
+                  <li><i class="fas fa-check"></i> Multi-Formulas</li>
+              </ul>
+              <button class="btn-plan-buy" onclick="contactAdminForPlan('7 Days Standard (199 INR)')">Buy Now</button>
+          </div>
+          <div class="plan-card purple gold-shadow">
+              <div class="plan-duration">7 Days</div>
+              <div class="plan-tier">AI PRO</div>
+              <div class="plan-price-row"><span class="plan-price">259</span><span class="plan-curr">INR</span></div>
+              <ul class="plan-features">
+                  <li><i class="fas fa-brain"></i> Complex Robot Analysers</li>
+                  <li><i class="fas fa-matrix"></i> Full Matrix Server</li>
+              </ul>
+              <button class="btn-plan-buy" onclick="contactAdminForPlan('7 Days AI PRO (259 INR)')">Buy Now</button>
+          </div>
+          <div class="plan-card cyan">
+              <div class="plan-duration">1 Month</div>
+              <div class="plan-tier">STANDARD</div>
+              <div class="plan-price-row"><span class="plan-price">799</span><span class="plan-curr">INR</span></div>
+              <ul class="plan-features">
+                  <li><i class="fas fa-check"></i> Comprehensive Backtest</li>
+                  <li><i class="fas fa-check"></i> Dedicated Support</li>
+              </ul>
+              <button class="btn-plan-buy" onclick="contactAdminForPlan('1 Month Standard (799 INR)')">Buy Now</button>
+          </div>
+          <div class="plan-card purple gold-shadow">
+              <div class="plan-duration">1 Month</div>
+              <div class="plan-tier">AI PRO</div>
+              <div class="plan-price-row"><span class="plan-price">1199</span><span class="plan-curr">INR</span></div>
+              <ul class="plan-features">
+                  <li><i class="fas fa-robot"></i> Premium Icons Pack</li>
+                  <li><i class="fas fa-chart-line"></i> Ultimate AI Accuracy</li>
+              </ul>
+              <button class="btn-plan-buy" onclick="contactAdminForPlan('1 Month AI PRO (1199 INR)')">Buy Now</button>
+          </div>
+      </div>
   </div>
 
   <div id="welcomeModal" class="modal" style="display:flex;">
@@ -280,6 +431,7 @@
   <div class="app-container">
     
     <div class="header">
+      <div class="top-owner-bar"><span class="main-owner-name">Rao Sahab</span></div>
       <h1 class="title-neon">THE PAYAL BOT</h1>
       <div class="subtitle-white">REPRESENT BY RAO SAHAB</div>
       <div class="mantra">ॐ कृष्णाय वासुदेवाय हरये परमात्मने<br>प्रणत क्लेश नाशाय गोविंदाय नमो नमः</div>
@@ -291,7 +443,7 @@
       <img id="mainProfPic" src="https://i.pravatar.cc/150?img=11" alt="Profile" class="profile-pic">
       <div style="flex: 1; margin-left: 15px;">
         <div class="profile-name"><span id="mainProfName">User_8472</span> <span class="active-dot"></span> <span style="margin-left:8px;">🇮🇳</span></div>
-        <div class="rank-system">Rank: Master Predictor</div>
+        <div class="rank-system" id="mainRank">Rank: ...</div>
       </div>
       <div><i class="fas fa-edit" style="color:#00ffff; font-size:20px;"></i></div>
     </div>
@@ -344,8 +496,8 @@
       </div>
 
       <div class="ai-doll-section collide-target">
-        <div class="doll-box" onclick="activateAndOpenAI()">
-          <div class="doll-btn-tag">AI PRO ACTIVATE</div>
+        <div class="doll-box" onclick="switchToAIProTab_Secure()">
+          <div class="doll-btn-tag">AI PRO SETTINGS</div>
         </div>
         <div class="side-rings-col">
           <div class="side-ring-item">
@@ -377,12 +529,12 @@
 
       <div style="color: #fff; font-family: 'Orbitron'; font-size: 12px; margin-bottom: 5px; text-align:center;">SERVER STRATEGY INFO (6 SERVERS)</div>
       <div class="server-grid collide-target">
-        <div class="srv-btn active" id="btnPayal1" onclick="selServer('PAYAL 1')">PAYAL 1<br><span style="font-size:9px;color:#aaa;">(Direct)</span></div>
+        <div class="srv-btn active" id="btnPayal1" onclick="selServer('PAYAL 1')">PAYAL 1<br><span style="font-size:9px;color:#aaa;">(Best of 8)</span></div>
         <div class="srv-btn" id="btnPayal2" onclick="selServer('PAYAL 2')">PAYAL 2<br><span style="font-size:9px;color:#aaa;">(Reverse)</span></div>
-        <div class="srv-btn" id="btnPayal3" onclick="selServer('PAYAL 3')">PAYAL 3<br><span style="font-size:9px;color:#aaa;">(L-3 Safe)</span></div>
-        <div class="srv-btn" id="btnPayal4" onclick="selServer('PAYAL 4')">PAYAL 4<br><span style="font-size:9px;color:#aaa;">(Matrix)</span></div>
-        <div class="srv-btn" id="btnPayal5" onclick="selServer('PAYAL 5')">PAYAL 5<br><span style="font-size:9px;color:#aaa;">(Fast Api)</span></div>
-        <div class="srv-btn" id="btnPayal6" onclick="selServer('PAYAL 6')">PAYAL 6<br><span style="font-size:9px;color:#aaa;">(Deep AI)</span></div>
+        <div class="srv-btn" id="btnPayal3" onclick="selServer('PAYAL 3')">PAYAL 3<br><span style="font-size:9px;color:#aaa;">(Martingale Safe)</span></div>
+        <div class="srv-btn" id="btnPayal4" onclick="selServer('PAYAL 4')">PAYAL 4<br><span style="font-size:9px;color:#aaa;">(Matrix Logic)</span></div>
+        <div class="srv-btn" id="btnPayal5" onclick="selServer('PAYAL 5')">PAYAL 5<br><span style="font-size:9px;color:#aaa;">(Fast Immediate)</span></div>
+        <div class="srv-btn" id="btnPayal6" onclick="selServer('PAYAL 6')">PAYAL 6<br><span style="font-size:9px;color:#aaa;">(Deep Pattern)</span></div>
       </div>
 
       <div style="text-align: center; margin-top: 15px; margin-bottom: 10px;">
@@ -411,7 +563,7 @@
       <div class="game-frame-container collide-target">
         <iframe id="gameFrame" src="about:blank"></iframe>
       </div>
-      <button class="close-btn" style="width:100%; font-size:16px;" onclick="tryOpenAIFromFooter()">CONNECT AI PRO TO START</button>
+      <button class="close-btn" style="width:100%; font-size:16px; margin-top:10px;" onclick="switchTab('tabAI', 'iconAI')">ACCESS AI PRO</button>
     </div>
 
     <div id="tabAI" class="tab-content">
@@ -463,12 +615,12 @@
       </div>
 
       <div class="server-grid collide-target">
-        <div class="srv-btn srv-btn-purple active" id="btnRao1" onclick="selServer('PAYAL 1')">RAO 1<br><span style="font-size:9px;color:#ccc;">(Direct)</span></div>
+        <div class="srv-btn srv-btn-purple active" id="btnRao1" onclick="selServer('PAYAL 1')">RAO 1<br><span style="font-size:9px;color:#ccc;">(Best of 8)</span></div>
         <div class="srv-btn srv-btn-purple" id="btnRao2" onclick="selServer('PAYAL 2')">RAO 2<br><span style="font-size:9px;color:#ccc;">(Reverse)</span></div>
-        <div class="srv-btn srv-btn-purple" id="btnRao3" onclick="selServer('PAYAL 3')">RAO 3<br><span style="font-size:9px;color:#ccc;">(L-3 Safe)</span></div>
-        <div class="srv-btn srv-btn-purple" id="btnRao4" onclick="selServer('PAYAL 4')">RAO 4<br><span style="font-size:9px;color:#ccc;">(Matrix)</span></div>
-        <div class="srv-btn srv-btn-purple" id="btnRao5" onclick="selServer('PAYAL 5')">RAO 5<br><span style="font-size:9px;color:#ccc;">(Fast Api)</span></div>
-        <div class="srv-btn srv-btn-purple" id="btnRao6" onclick="selServer('PAYAL 6')">RAO 6<br><span style="font-size:9px;color:#ccc;">(Deep AI)</span></div>
+        <div class="srv-btn srv-btn-purple" id="btnRao3" onclick="selServer('PAYAL 3')">RAO 3<br><span style="font-size:9px;color:#ccc;">(Martingale Safe)</span></div>
+        <div class="srv-btn srv-btn-purple" id="btnRao4" onclick="selServer('PAYAL 4')">RAO 4<br><span style="font-size:9px;color:#ccc;">(Matrix Logic)</span></div>
+        <div class="srv-btn srv-btn-purple" id="btnRao5" onclick="selServer('PAYAL 5')">RAO 5<br><span style="font-size:9px;color:#ccc;">(Fast Immediate)</span></div>
+        <div class="srv-btn srv-btn-purple" id="btnRao6" onclick="selServer('PAYAL 6')">RAO 6<br><span style="font-size:9px;color:#ccc;">(Deep Pattern)</span></div>
       </div>
 
       <div class="panel border-purple collide-target">
@@ -559,7 +711,7 @@
     <div class="footer-icon" id="iconGame" onclick="switchTab('tabGame', 'iconGame')">
       <i class="fas fa-gamepad"></i><div>GAME</div>
     </div>
-    <div class="footer-icon" id="iconAI" onclick="tryOpenAIFromFooter()">
+    <div class="footer-icon" id="iconAI" onclick="switchTab('tabAI', 'iconAI')">
       <i class="fas fa-robot"></i><div>AI PRO</div>
     </div>
     <div class="footer-icon" id="iconHist" onclick="switchTab('tabHist', 'iconHist')">
@@ -584,8 +736,13 @@
         document.getElementById('lsDeviceId').innerText = deviceId;
         
         let expiry = localStorage.getItem('payal_key_expiry');
+        let tier = localStorage.getItem('payal_user_tier');
+
         if(expiry && Date.now() < parseInt(expiry)) {
             document.getElementById('lockScreen').style.display = 'none';
+            // Set plan rank in main UI
+            document.getElementById('mainRank').innerText = tier === '2' ? 'Rank: AI PRO Master' : 'Rank: Standard Predictor';
+            document.getElementById('mainRank').style.color = tier === '2' ? '#ffd700' : '#ffd700';
         } else {
             document.getElementById('lockScreen').style.display = 'flex';
         }
@@ -602,14 +759,21 @@
         try {
             const decoded = atob(key);
             const parts = decoded.split(':');
-            if(parts.length === 3 && parts[2] === "RAOSAHAB_SECRET") {
+            // Expected Format: DEVICE_ID:TIMESTAMP:TIER:RAOSAHAB_SECRET
+            if(parts.length === 4 && parts[3] === "RAOSAHAB_SECRET") {
                 if(parts[0] !== deviceId) { alert("❌ INVALID DEVICE ID"); return; }
                 if(Date.now() > parseInt(parts[1])) { alert("❌ KEY EXPIRED!"); return; }
+                
                 localStorage.setItem('payal_key_expiry', parts[1]);
+                localStorage.setItem('payal_user_tier', parts[2]); // Tier 1 (Standard) or Tier 2 (AI PRO)
                 document.getElementById('lockScreen').style.display = 'none';
-                showToast("✅ SYSTEM UNLOCKED");
+                
+                // Set plan rank
+                document.getElementById('mainRank').innerText = parts[2] === '2' ? 'Rank: AI PRO Master' : 'Rank: Standard Predictor';
+                
+                showToast("✅ SYSTEM UNLOCKED - " + (parts[2] === '2' ? "AI PRO PLAN" : "STANDARD PLAN"));
             } else {
-                alert("❌ INVALID KEY");
+                alert("❌ INVALID KEY FORMAT");
             }
         } catch(e) {
             alert("❌ CORRUPTED KEY");
@@ -626,6 +790,15 @@
                 }
             }
         }
+    }
+
+    function togglePlansPanel() {
+        let panel = document.getElementById('plansPanel');
+        panel.classList.toggle('show');
+    }
+
+    function contactAdminForPlan(planName) {
+        window.open(`https://t.me/raosahab0035?text=Hello%20Rao%20Sahab,%20I%20am%20interested%20in%20purchasing%20the%20${encodeURIComponent(planName)}%20plan%20for%20Payal%20Bot%20V10.0.%20My%20Device%20ID%20is:%20${encodeURIComponent(deviceId)}`, '_blank');
     }
 
     const API_URLS = { 
@@ -674,7 +847,6 @@
     let botIsActive = false; 
     let isAIConnected = false; 
     let tgBotActive = false;
-    let isAiUnlockedByUser = false; 
     let currentPrediction = { period: "", bs: "", color: "", target: 0, isPending: false };
     let winCount = 9;
     let totalCount = 10;
@@ -775,6 +947,7 @@
         setTimeout(() => { t.classList.remove("show"); }, 3000); 
     }
 
+    // neonBlueToast
     function showNeonBlueError(msg) {
         let t = document.getElementById('neonBlueToast');
         if(!t) return;
@@ -846,17 +1019,16 @@
       updateCollisionTargets();
     }
 
-    function activateAndOpenAI() {
-        isAiUnlockedByUser = true;
-        switchTab('tabAI', 'iconAI');
-        showToast("AI PRO ACTIVATED SUCCESSFULLY!");
-    }
-
-    function tryOpenAIFromFooter() {
-        if (isAiUnlockedByUser) {
+    // AI PRO TAB Security Check
+    function switchToAIProTab_Secure() {
+        let tier = localStorage.getItem('payal_user_tier');
+        if (tier === '2') {
             switchTab('tabAI', 'iconAI');
+            showToast("AI PRO DASHBOARD ACCESS GRANTED");
         } else {
-            showNeonBlueError("MADERCHOD ADMIN SE HELP LELE KAISE CHLE GA");
+            // MADERCHOD ADMIN SE HELP LELE KAISE CHLE GA
+            showNeonBlueError("❌ MADERCHOD ADMIN SE HELP LELE KAISE CHLE GA");
+            togglePlansPanel(); // Show plans panel as a hint
         }
     }
 
@@ -914,10 +1086,12 @@
       }, 1000);
 
       document.querySelectorAll('#tabMain .srv-btn').forEach(b => b.classList.remove('active'));
-      let num = serverName.split(' ')[1];
+      // Main UI server buttons Payal 1-6
+      let num = serverName.slice(-1);
       let mainBtn = document.getElementById(`btnPayal${num}`);
       if(mainBtn) mainBtn.classList.add('active');
       
+      // AI PRO Tab server buttons Rao 1-6
       document.querySelectorAll('#tabAI .srv-btn-purple').forEach(b => b.classList.remove('active'));
       let aiBtn = document.getElementById(`btnRao${num}`);
       if(aiBtn) aiBtn.classList.add('active');
@@ -968,7 +1142,7 @@
             showToast("TELEGRAM BOT STOPPED");
             
             if (lastTgMsgId) {
-                deleteTgMessage(lastTgMsgId);
+                deleteTgMessage(lastTgMsgId); 
                 lastTgMsgId = null;
             }
             sendTgPhotoBase("🛑 *SESSION STOPPED*", TelegramConfig.images.stopImg); 
@@ -1051,93 +1225,88 @@
       }
     }
 
-    // ==========================================================
-    // 3. REAL BOT ENGINE (Advanced Nazar Pattern Detector)
-    // ==========================================================
-    const RaoSahabEngine = {
-      masterCalculate: function(history, currentPeriod, serverName, lossStreak) {
-        if (!history || history.length < 6) {
-            return { bs: "WAIT", color: "WAIT", target: "?" };
-        }
-        let N1 = history[0], N2 = history[1], N3 = history[2];
-        let p_last = parseInt(currentPeriod.slice(-1));
-        let p_full = parseInt(currentPeriod.slice(-4));
-        let sum5 = history.slice(0, 5).reduce((a, b) => a + b, 0);
+    // ==========================================
+    // 3. Calculation Engine (All 4 Integrations)
+    // ==========================================
+    const CalculationEngine = {
+      predictBS: (history, periodNum, server) => {
+        if (history.length < 5) return 'BIG';
+        let isColorMode = document.getElementById('colorTgl').checked;
 
-        // --- ADVANCED PATTERN DETECTOR (NAZAR ENGINE) ---
-        let histBS = history.map(n => n >= 5 ? "B" : "S");
-        let p1 = histBS[0], p2 = histBS[1], p3 = histBS[2], p4 = histBS[3], p5 = histBS[4];
-
-        let isStreak = (p1 == p2 && p2 == p3 && p3 == p4); // BBBB
-        let isAlt = (p1 != p2 && p2 != p3 && p3 != p4); // BSBS
-        let isTwoByTwo = (p1 == p2 && p3 == p4 && p1 != p3); // BBSS or SSBB
-
-        // CORE 150 Matrix
-        let bigVotes = 0, smallVotes = 0;
-        for (let i = 1; i <= 150; i++) {
-            let calc;
-            if (i <= 50) calc = ((N1 * i) + (history[i % history.length] * N2) + p_last) % 10;
-            else if (i <= 100) calc = ((p_full * i) + sum5 + N3) % 10;
-            else calc = (Math.pow(N1, 2) + history[i % history.length] + i) % 10;
-            if (calc >= 5) bigVotes++; else smallVotes++;
-        }
-
-        let add = N1 + N2;
-        let sub = Math.abs(N1 - N2);
-        let mul = N1 * N2;
-        if (((add * N1) + p_last) % 10 >= 5) bigVotes += 15; else smallVotes += 15;
-        if (((mul - sub) + p_last) % 10 >= 5) bigVotes += 15; else smallVotes += 15;
-
-        let baseBS = bigVotes > smallVotes ? "BIG" : "SMALL";
+        // Configuration-based formulas from user's txt file
         
-        // Apply Pattern Overrides for higher accuracy
-        let smartBS = baseBS;
-        if (isStreak) smartBS = p1; // Follow the trend
-        else if (isAlt) smartBS = p1 === "B" ? "SMALL" : "BIG"; // Follow alternate
-        else if (isTwoByTwo) smartBS = p1 === "B" ? "SMALL" : "BIG"; // Break to opposite if pair complete
-
-        let finalBS = smartBS;
-
-        // SERVER STRATEGIES
-        if (serverName === 'PAYAL 2') {
-            finalBS = smartBS === "BIG" ? "SMALL" : "BIG"; 
-        } 
-        else if (serverName === 'PAYAL 3' || serverName === 'PAYAL 1') {
-            if (lossStreak === 1) {
-                finalBS = smartBS === "BIG" ? "SMALL" : "BIG"; // Level 2 Reverse
-            } else if (lossStreak === 2) {
-                // Level 3 Extreme Safe Mode - Break the ongoing illusion
-                if (isStreak) finalBS = p1 === "B" ? "SMALL" : "BIG";
-                else if (isAlt) finalBS = p1; 
-                else finalBS = baseBS; 
-            }
+        // PAYAL 1: Best of 8 Backtesting Logic
+        const calculateScores = () => {
+          let scores = [0, 0, 0, 0]; // Sum Logic, Period Multi, Gap Logic, High-Low
+          for (let i = 0; i < 5; i++) { // Backtest last 5 rounds
+            let actual = parseInt(history[i].number) >= 5 ? 'BIG' : 'SMALL';
+            let sum = parseInt(history[i+1].number) + parseInt(history[i+2].number);
+            if((sum % 10 >= 5 ? 'BIG' : 'SMALL') === actual) scores[0]++;
+            let multi = parseInt(history[i+1].number) * parseInt(history[i+1].issueNumber.toString().slice(-1));
+            if((multi % 10 >= 5 ? 'BIG' : 'SMALL') === actual) scores[1]++;
+            let gap = Math.abs(parseInt(history[i+1].number) - parseInt(history[i+2].number));
+            if((gap % 10 >= 5 ? 'BIG' : 'SMALL') === actual) scores[2]++;
+            let last3 = [parseInt(history[i+1].number), parseInt(history[i+2].number), parseInt(history[i+3].number)];
+            if(((Math.max(...last3) - Math.min(...last3)) % 10 >= 5 ? 'BIG' : 'SMALL') === actual) scores[3]++;
+          }
+          return scores;
         }
 
-        let targetNumber;
-        if (finalBS === "BIG") targetNumber = (p_last + N1) % 2 === 0 ? 8 : 7;
-        else targetNumber = (p_last + N1) % 2 === 0 ? 2 : 3;
-        
-        let finalColor = targetNumber % 2 === 0 ? "RED" : "GREEN";
+        // Apply distinct logic based on active server
+        if (server === 'PAYAL 1' || server === 'RAO 1') {
+            let scores = calculateScores();
+            let bestIdx = scores.indexOf(Math.max(...scores));
+            if(bestIdx === 0) return (parseInt(history[0].number) + parseInt(history[1].number)) % 10 >= 5 ? 'BIG' : 'SMALL';
+            if(bestIdx === 1) return (parseInt(history[0].number) * parseInt(history[0].issueNumber.toString().slice(-1))) % 10 >= 5 ? 'BIG' : 'SMALL';
+            if(bestIdx === 2) return Math.abs(parseInt(history[0].number) - parseInt(history[1].number)) % 10 >= 5 ? 'BIG' : 'SMALL';
+            return (Math.max(parseInt(history[0].number), parseInt(history[1].number)) - Math.min(parseInt(history[0].number), parseInt(history[1].number))) % 10 >= 5 ? 'BIG' : 'SMALL';
+        }
 
-        return { bs: finalBS, color: finalColor, target: targetNumber };
+        if (server === 'PAYAL 2' || server === 'RAO 2') {
+            // Reverse of PAYAL 1
+            let basePred = this.predictBS(history, periodNum, 'PAYAL 1');
+            return basePred === 'BIG' ? 'SMALL' : 'BIG';
+        }
+
+        if (server === 'PAYAL 3' || server === 'RAO 3') {
+            // Martingale Safe: Prioritize stable patterns. Only predict if multiple agree.
+            let scores = calculateScores();
+            if(scores[0] > 3 && scores[1] > 3) return (parseInt(history[0].number) + parseInt(history[1].number)) % 10 >= 5 ? 'BIG' : 'SMALL';
+            return parseInt(history[0].number) >= 5 ? 'BIG' : 'SMALL'; // Default to simple trend
+        }
+
+        if (server === 'PAYAL 4' || server === 'RAO 4') {
+            // Matrix Logic: Focus on multiple digit summation of period numbers.
+            let lastP = parseInt(history[0].issueNumber.toString().slice(-1));
+            let currP = parseInt(periodNum.toString().slice(-1));
+            let matrixSum = lastP + currP + parseInt(history[0].number);
+            return (matrixSum % 10 >= 5) ? 'BIG' : 'SMALL';
+        }
+
+        if (server === 'PAYAL 5' || server === 'RAO 5') {
+            // Fast Immediate: Focus on immediate previous number.
+            let diff = parseInt(history[0].number) + (parseInt(history[0].issueNumber.toString().slice(-1)));
+            return (diff % 10 >= 5) ? 'BIG' : 'SMALL';
+        }
+
+        if (server === 'PAYAL 6' || server === 'RAO 6') {
+            // Deep Pattern: Pure Trend Recognition. High risk, high reward.
+            let h1 = parseInt(history[0].number) >= 5 ? 'B' : 'S';
+            let h2 = parseInt(history[1].number) >= 5 ? 'B' : 'S';
+            if(h1 === h2) return h1 === 'B' ? 'BIG' : 'SMALL'; // Ride trend
+            return h1 === 'B' ? 'SMALL' : 'BIG'; // Default to reverse trend
+        }
+
+        // Fallback
+        return parseInt(history[0].number) >= 5 ? 'BIG' : 'SMALL';
       }
     };
 
     // ==========================================
     // 4. LIVE API ENGINE & MASTER CONNECTION
     // ==========================================
-    function pingExtraAPIs() {
-        try {
-            let ts = Date.now();
-            fetch(`https://draw.ar-lottery01.com/WinGo/WinGo_30S.json?ts=${ts}`).catch(e=>e);
-            fetch(`https://api.ar-lottery01.com/api/Lottery/GetBalance?language=en&random=621741808828&signature=964EF2B4D2071F09D2C4BF97EDD77B7B&timestamp=${ts}`).catch(e=>e);
-            fetch(`https://91clubapi.com/api/webapi/UpdateOnlineStatus`, { method: 'POST' }).catch(e=>e);
-        } catch(e) {}
-    }
-
     async function fetchWingoLive() {
       let url = API_URLS[appTimer];
-      pingExtraAPIs(); 
       try { 
         let res = await fetch(`${url}?pageSize=50&ts=${Date.now()}`);
         let data = await res.json(); 
@@ -1155,39 +1324,29 @@
         statusText.innerText = "[ SYSTEM OFFLINE ]";
         statusText.style.color = "#ff0055";
         document.getElementById('predictionUI').style.display = 'none';
-        
         clearInterval(timerInterval);
         botIsActive = false;
-        if(tgBotActive && lastTgMsgId) {
-             deleteTgMessage(lastTgMsgId); 
-             lastTgMsgId = null;
-        }
+        if(tgBotActive && lastTgMsgId) { deleteTgMessage(lastTgMsgId); lastTgMsgId = null; }
       } else {
-        if(!isAiUnlockedByUser) {
-            showNeonBlueError("MADERCHOD ADMIN SE HELP LELE KAISE CHLE GA");
+        // AI PRO Feature Gating Check
+        let tier = localStorage.getItem('payal_user_tier');
+        if (!tier) {
+            // MADERCHOD ADMIN SE HELP LELE KAISE CHLE GA
+            showNeonBlueError("❌ MADERCHOD ADMIN SE HELP LELE KAISE CHLE GA");
+            togglePlansPanel(); // Show plans panel as a hint
             return;
         }
 
-        mainBtn.style.pointerEvents = 'none'; 
-        statusText.innerText = "[ CONNECTING TO MAIN SERVER... ]";
+        statusText.innerText = "[ CONNECTING... ]";
         statusText.style.color = "orange";
+        await new Promise(r => setTimeout(r, 1500));
         
-        await new Promise(r => setTimeout(r, 1000));
-        statusText.innerText = "[ ESTABLISHING API LINK... ]";
+        statusText.innerText = `[ ${tier === '2' ? 'AI PRO' : 'STANDARD'} SMART BRAIN ONLINE ]`;
+        statusText.style.color = tier === '2' ? '#ffd700' : '#00ff00';
         
-        await new Promise(r => setTimeout(r, 1000));
-        statusText.innerText = "[ BYPASSING SECURITY... ]";
-        
-        await new Promise(r => setTimeout(r, 1000));
-        statusText.innerText = "[ SYSTEM ONLINE & CONNECTED ]";
-        statusText.style.color = "#00ff00";
-
         mainBtn.classList.add('on');
         document.getElementById('predictionUI').style.display = 'block';
-        mainBtn.style.pointerEvents = 'auto';
-
         botIsActive = true;
-
         startBotMasterLoop();
       }
     }
@@ -1211,17 +1370,10 @@
         let s = rem % 60;
         let timeStr = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
         
-        let aiTmr = document.getElementById('aiTimer');
-        if(aiTmr) aiTmr.innerText = timeStr;
-        
-        let mnTmr = document.getElementById('mainUiTimer');
-        if(mnTmr) mnTmr.innerText = timeStr;
-
-        let predTmr = document.getElementById('predUiTimer');
-        if(predTmr) predTmr.innerText = timeStr;
-
-        let slideTmr = document.getElementById('slideTimer');
-        if(slideTmr) slideTmr.innerText = timeStr;
+        document.getElementById('aiTimer').innerText = timeStr;
+        document.getElementById('mainUiTimer').innerText = timeStr;
+        document.getElementById('predUiTimer').innerText = timeStr;
+        document.getElementById('slideTimer').innerText = timeStr;
         
         if (rem === 3) await checkResultAndStickers(); 
         
@@ -1237,65 +1389,43 @@
 
     async function performPredictionLogic() {
       let apiData = await fetchWingoLive(); 
-      
-      let lastPeriod, histNum, actualLastResult;
-      if (apiData) {
-        histNum = apiData.map(i => parseInt(i.number));
-        lastPeriod = apiData[0].issueNumber;
-        actualLastResult = parseInt(apiData[0].number);
-      } else {
-        let dummy = currentPrediction.period ? BigInt(currentPrediction.period) - 1n : 202603040100n;
-        lastPeriod = dummy.toString();
-        histNum = Array.from({length: 50}, (_, i) => (parseInt(lastPeriod.slice(-1)) + i) % 10);
-        actualLastResult = histNum[0];
-      }
+      if (!apiData) return;
 
+      let lastPeriod = apiData[0].issueNumber;
       let nextPeriod = (BigInt(lastPeriod) + 1n).toString();
-      let lastBs = actualLastResult >= 5 ? "BIG" : "SMALL";
-
-      let aiPast = document.getElementById('aiDispPast');
-      if(aiPast) aiPast.innerText = lastPeriod.slice(-4);
-      let aiPrev = document.getElementById('aiPrevResult');
-      if(aiPrev) aiPrev.innerText = lastBs;
-      let aiPer = document.getElementById('aiDispPeriod');
-      if(aiPer) aiPer.innerText = nextPeriod.slice(-4);
-
-      document.getElementById('mmPastPeriod').innerText = lastPeriod.slice(-4);
-      let isColorMode = document.getElementById('colorTgl') && document.getElementById('colorTgl').checked;
       
-      let displayPastBot = "---";
-      if (currentPrediction.bs !== "") {
-          displayPastBot = isColorMode ? currentPrediction.color : currentPrediction.bs;
-      }
-      document.getElementById('mmPastBot').innerText = displayPastBot;
+      let bsRes = CalculationEngine.predictBS(apiData, nextPeriod, activeServer);
+      // Cold No logic based on target period parity
+      let coldNo = parseInt(nextPeriod.toString().slice(-1)) % 2 === 0 ? 8 : 7;
+      let colorRes = (coldNo === 0 || coldNo === 5) ? 'PURPLE' : (coldNo % 2 === 0 ? 'RED' : 'GREEN');
+      
+      currentPrediction = { period: nextPeriod, bs: bsRes, color: colorRes, target: coldNo, isPending: true };
+
+      let isColorMode = document.getElementById('colorTgl').checked;
+      let dispRes = isColorMode ? currentPrediction.color : currentPrediction.bs;
+      let clr = currentPrediction.color === 'RED' ? '#ff0055' : (currentPrediction.color === 'GREEN' ? '#00ffff' : '#bf00ff');
+
+      document.getElementById('aiDispPeriod').innerText = nextPeriod.slice(-4);
+      document.getElementById('aiPending').innerText = dispRes;
+      document.getElementById('aiPending').style.color = clr;
+      document.getElementById('predPeriod').innerText = nextPeriod.slice(-4);
+      document.getElementById('predResult').innerText = dispRes;
+      document.getElementById('predResult').style.color = clr;
+      document.getElementById('predCold').innerText = currentPrediction.target;
       document.getElementById('mmPresentPeriod').innerText = nextPeriod.slice(-4);
       
-      document.getElementById('histBalls').innerHTML = histNum.slice(0, 5).map(n => {
-        let color = (n == 0 || n == 5) ? 'purple' : (n % 2 == 0 ? 'red' : 'green');
-        return `<div style="width:30px;height:30px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;box-shadow:0 0 10px ${color};">${n}</div>`;
-      }).join('');
-
-      let predObj = RaoSahabEngine.masterCalculate(histNum, nextPeriod, activeServer, appLossStreak);
-      currentPrediction = { period: nextPeriod, bs: predObj.bs, color: predObj.color, target: predObj.target, isPending: true };
-
-      let currentPredDisp = isColorMode ? currentPrediction.color : currentPrediction.bs;
-      let currentPredColorHex = currentPrediction.color === "RED" ? "#ff0055" : "#00ffff"; 
-
-      let aiPend = document.getElementById('aiPending');
-      if(aiPend) {
-          aiPend.innerText = currentPredDisp;
-          aiPend.style.color = currentPredColorHex;
-      }
+      // Update Past Info UI
+      document.getElementById('mmPastPeriod').innerText = lastPeriod.slice(-4);
       
-      document.getElementById('predPeriod').innerText = nextPeriod.slice(-4);
-      document.getElementById('predResult').innerText = currentPredDisp;
-      document.getElementById('predResult').style.color = currentPredColorHex;
-      document.getElementById('predCold').innerText = predObj.target;
+      document.getElementById('slideResult').innerText = dispRes;
+      document.getElementById('slideResult').style.color = clr;
+      document.getElementById('slideCold').innerText = currentPrediction.target;
 
-      document.getElementById('slidePeriod').innerText = nextPeriod.slice(-4);
-      document.getElementById('slideResult').innerText = currentPredDisp;
-      document.getElementById('slideResult').style.color = currentPredColorHex;
-      document.getElementById('slideCold').innerText = predObj.target;
+      document.getElementById('histBalls').innerHTML = apiData.slice(0, 5).map(i => {
+        let n = parseInt(i.number);
+        let color = (n == 0 || n == 5) ? 'purple' : (n % 2 == 0 ? 'red' : 'green');
+        return `<div style="width:30px;height:30px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;">${n}</div>`;
+      }).join('');
       
       if(tgBotActive) sendTgPredictionMsg();
     }
@@ -1303,246 +1433,102 @@
     async function checkResultAndStickers() {
       if (!currentPrediction.isPending) return;
       let apiData = await fetchWingoLive(); 
-      
-      let actualNumber;
-      if (apiData && apiData[0].issueNumber === currentPrediction.period) {
-        actualNumber = parseInt(apiData[0].number);
-      } else {
-        actualNumber = (parseInt(currentPrediction.period.slice(-1)) * 3 + 1) % 10; 
-      }
-      
-      let actualBs = actualNumber >= 5 ? "BIG" : "SMALL";
-      let actualColor = (actualNumber % 2 === 0) ? "RED" : "GREEN";
-      if (actualNumber === 0 || actualNumber === 5) {
-          actualColor = actualNumber === 0 ? "RED" : "GREEN"; 
-      }
-      
-      let isColorMode = document.getElementById('colorTgl') && document.getElementById('colorTgl').checked;
-      let isWin;
-      if (isColorMode) {
-          isWin = (actualColor === currentPrediction.color);
-      } else {
-          isWin = (actualBs === currentPrediction.bs);
-      }
+      if (!apiData) return;
 
-      let isJackpot = (actualNumber.toString() === currentPrediction.target.toString());
+      let resultItem = apiData.find(i => i.issueNumber === currentPrediction.period);
+      if (!resultItem) return; // Wait for correct period
 
-      perfData.push(isWin ? 1 : -1);
-      if(perfData.length > 20) perfData.shift();
-      drawPerfChart();
+      let actualN = parseInt(resultItem.number);
+      let actualBS = actualN >= 5 ? 'BIG' : 'SMALL';
+      let actualColor = (actualN === 0 || actualN === 5) ? (actualN === 0 ? "RED" : "GREEN") : (actualN % 2 === 0 ? "RED" : "GREEN");
 
-      let mmSt = document.getElementById('mmLastStatus');
-      if(isWin) {
-          mmSt.innerText = "WIN 🟢"; mmSt.style.color = "#00ff00";
-      } else {
-          mmSt.innerText = "LOSS 🔴"; mmSt.style.color = "#ff0055";
-      }
+      let isColorMode = document.getElementById('colorTgl').checked;
+      let isWin = isColorMode ? (actualColor === currentPrediction.color) : (actualBS === currentPrediction.bs);
+      let isJackpot = (actualN === currentPrediction.target);
 
-      if (!isWin) {
-          appLossStreak++;
-          if (appLossStreak >= 3) { 
-              appLossStreak = 0; 
-          }
-      } else {
-          appLossStreak = 0; 
-      }
-
+      // History Sync: Win/Loss status fix
+      if (isWin) { appLossStreak = 0; winCount++; } else { appLossStreak++; }
       totalCount++;
-      if (isWin) winCount++;
       updateUIGraphsAndRings();
 
-      let dispLvl = appLossStreak === 0 ? (isWin ? "WIN 🏆" : "LOSS") : `L${appLossStreak} LOSS 💔`;
-      
-      let dispPred = isColorMode ? currentPrediction.color : currentPrediction.bs;
-      let dispActual = isColorMode ? actualColor : actualBs;
+      let dispStatus = isJackpot ? 'HIT 🎯' : (isWin ? 'WIN' : 'LOSS');
+      let statusClr = isWin ? '#00ff00' : 'red';
+      let botPredDisp = isColorMode ? currentPrediction.color : currentPrediction.bs;
+      let actualResultDisp = isColorMode ? actualColor : actualBS;
+
+      // Ensure color displays correctly in history
+      let botClr = currentPrediction.color === 'RED' ? '#ff0055' : '#00ffff';
+      let actualClr = actualColor === 'RED' ? '#ff0055' : '#00ffff';
 
       let tr = `<tr>
         <td>${currentPrediction.period.slice(-4)}</td>
-        <td style="color:${currentPrediction.color === 'RED' ? '#ff0055' : '#00ffff'}">${dispPred}</td>
-        <td style="color:${actualColor === 'RED' ? '#ff0055' : '#00ffff'}">${dispActual}</td>
-        <td style="color:${isWin ? '#00ff00' : 'red'}; font-weight:bold;">${isJackpot ? 'HIT 🎯' : dispLvl}</td>
+        <td style="color:${botClr}">${botPredDisp}</td>
+        <td style="color:${actualClr}">${actualResultDisp}</td>
+        <td style="color:${statusClr}; font-weight:bold;">${dispStatus}</td>
       </tr>`;
       document.getElementById('historyTableBody').insertAdjacentHTML('afterbegin', tr);
       
-      document.getElementById('mmPresentResult').innerText = dispActual;
-      document.getElementById('mmPresentResult').style.color = isWin ? "#00ff00" : "red";
+      // Update Past Info UI
+      document.getElementById('mmPastBot').innerText = botPredDisp;
+      document.getElementById('mmPastBot').style.color = botClr;
+      document.getElementById('mmLastStatus').innerText = isWin ? 'WIN' : 'LOSS';
+      document.getElementById('mmLastStatus').style.background = isWin ? 'green' : 'red';
 
       currentPrediction.isPending = false;
-      if(tgBotActive) {
-          if (isWin) {
-              executeStickersSequence(isWin, isJackpot);
-          } else {
-              let isShortPredict = document.getElementById('shortTgl') && document.getElementById('shortTgl').checked;
-              if (isShortPredict) {
-                  if (lastTgMsgId) {
-                      deleteTgMessage(lastTgMsgId); 
-                      lastTgMsgId = null;
-                  }
-              } else {
-                  executeStickersSequence(isWin, isJackpot);
-              }
-          }
-      }
+      if(tgBotActive) executeStickersSequence(isWin, isJackpot);
     }
 
     // ==========================================
-    // 5. TELEGRAM PERFECT FETCH & EXACT STICKERS
+    // 5. TELEGRAM FETCH & STICKERS
     // ==========================================
     function sendTgPredictionMsg() {
       const token = document.getElementById('botToken').value; 
       const chatId = document.getElementById('chatId').value; 
       if (!token || !chatId) return;
       
-      let isColorMode = document.getElementById('colorTgl') && document.getElementById('colorTgl').checked;
-      let lvlText = appLossStreak === 0 ? "⚡ Level 1" : (appLossStreak === 1 ? "🔥 Level 2" : "💥 Level 3 Safe");
-
+      let isColorMode = document.getElementById('colorTgl').checked;
       let gameStr = GAMES[selectedGameIndex].name;
-      if (document.getElementById('inviteTgl') && document.getElementById('inviteTgl').checked && document.getElementById('inviteTxt').value) {
-          gameStr = `[${gameStr}](${document.getElementById('inviteTxt').value})`;
-      }
-
       let predStr = isColorMode ? (currentPrediction.color === 'RED' ? '🔴 RED' : '🟢 GREEN') : currentPrediction.bs;
+      let tier = localStorage.getItem('payal_user_tier');
 
-      let msg = `🎰 *THE PAYAL AI BOT* 🎰\n╔═◈═◈═◈═◈═◈═╗\n📅 *Date* : ${new Date().toLocaleDateString('en-GB')}\n🎮 *Game* : ${gameStr}\n🔢 *Period* : ${currentPrediction.period.slice(-4)}\n⏱ *Timer* : ${appTimer < 60 ? '30 Sec' : (appTimer/60)+' Min'}\n╚═◈═◈═◈═◈═◈═╝\n\n🎯 *RESULT INFO* 🎯\n🔮 Prediction : ➨ *${predStr}*\n📊 Risk : ${lvlText}\n❄️ Cold Num: ${currentPrediction.target}`;
-      
-      if (document.getElementById('hashTgl').checked && document.getElementById('hashTxt').value) {
-        msg += `\n\n🏷️ ${document.getElementById('hashTxt').value}`;
-      }
-      if (document.getElementById('giftTgl') && document.getElementById('giftTgl').checked && document.getElementById('giftTxt').value) {
-        msg += `\n🎁 *Gift Code:* ${document.getElementById('giftTxt').value}`;
-      }
-
-      msg += `\n──────✦✧✦──────`;
-      if (document.getElementById('chTgl').checked && document.getElementById('channelLink').value) {
-          msg += `\n🔗 [*Share Channel*](${document.getElementById('channelLink').value})`;
-      }
-      msg += `\n🚀 *PAYAL AI BOT BY RAO SAHAB* 🚀`;
-      
-      let payload = {
-        chat_id: chatId,
-        photo: TelegramConfig.images.gameImg,
-        caption: msg,
-        parse_mode: 'Markdown'
-      };
+      let msg = `🎰 *THE PAYAL AI BOT* 🎰\n╔═◈═◈═◈═◈═◈═╗\n📅 *Date* : ${new Date().toLocaleDateString('en-GB')}\n🎮 *Game* : ${gameStr}\n🔢 *Period* : ${currentPrediction.period.slice(-4)}\n⏱ *Timer* : ${appTimer < 60 ? '30 Sec' : (appTimer/60)+' Min'}\n*Tier* : ${tier === '2' ? '✨ AI PRO' : '⚡ STANDARD'}\n╚═◈═◈═◈═◈═◈═╝\n\n🎯 *RESULT INFO* 🎯\n🔮 Prediction : ➨ *${predStr}*\n📊 Risk : Level ${appLossStreak+1}\n❄️ Cold Num: ${currentPrediction.target}`;
       
       fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { 
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload) 
-      })
-      .then(res => res.json())
-      .then(data => {
-          if(data.ok) {
-              lastTgMsgId = data.result.message_id;
-          } else {
-              fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ chat_id: chatId, text: msg, parse_mode: 'Markdown' })
-              }).then(res2 => res2.json()).then(data2 => { if(data2.ok) lastTgMsgId = data2.result.message_id; });
-          }
-      }).catch(console.error);
+        body: JSON.stringify({ chat_id: chatId, photo: TelegramConfig.images.gameImg, caption: msg, parse_mode: 'Markdown' }) 
+      }).then(res => res.json()).then(data => { if(data.ok) lastTgMsgId = data.result.message_id; });
     }
 
     async function executeStickersSequence(isWin, isJackpot) {
       const token = document.getElementById('botToken').value; 
       const chatId = document.getElementById('chatId').value; 
       if (!token || !chatId) return;
-
-      const sendStck = async (stickerId) => {
-        try {
-            await fetch(`https://api.telegram.org/bot${token}/sendSticker`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ chat_id: chatId, sticker: stickerId })
-            });
-        } catch(e) {}
-      };
+      const sendStck = async (id) => fetch(`https://api.telegram.org/bot${token}/sendSticker`, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({chat_id: chatId, sticker: id})});
 
       if (isWin) {
-        if (isJackpot) { 
-          await sendStck(TelegramConfig.stickers.jackpot); 
-          setTimeout(() => runWinSequence(sendStck), 1000); 
-        } else { 
-          runWinSequence(sendStck); 
-        }
-      } else { 
-        await sendStck(TelegramConfig.stickers.loss[Math.floor(Math.random() * 3)]); 
+        if (isJackpot) await sendStck(TelegramConfig.stickers.jackpot);
+        await sendStck(TelegramConfig.stickers.win[0]);
+        setTimeout(() => sendStck(TelegramConfig.stickers.win[1][0]), 1000);
+      } else {
+        await sendStck(TelegramConfig.stickers.loss[0]);
       }
     }
 
-    async function runWinSequence(sendStckFn) {
-      await sendStckFn(TelegramConfig.stickers.win[0]); 
-      setTimeout(async () => { 
-        await sendStckFn(TelegramConfig.stickers.win[1][Math.floor(Math.random() * 3)]); 
-        setTimeout(async () => { 
-          await sendStckFn(TelegramConfig.stickers.win[2]); 
-        }, 1000); 
-      }, 1000); 
-    }
-
-    // ==========================================
-    // 6. BACKGROUND PHYSICS ENGINE
-    // ==========================================
+    // Physics Engine (Background Flowers)
     const canvas = document.getElementById('flowerCanvas'); 
     const ctx = canvas.getContext('2d');
     let width, height, flowers = [], collisionBoxes = [];
-    
-    function resizeCanvas() { 
-      width = canvas.width = window.innerWidth; 
-      height = canvas.height = window.innerHeight; 
-      updateCollisionTargets(); 
-    }
+    function resizeCanvas() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; updateCollisionTargets(); }
     window.addEventListener('resize', resizeCanvas);
-    
-    function updateCollisionTargets() { 
-      collisionBoxes = []; 
-      document.querySelectorAll('.collide-target').forEach(el => { 
-        const rect = el.getBoundingClientRect(); 
-        if (rect.width > 0) collisionBoxes.push({ top: rect.top, left: rect.left, right: rect.right }); 
-      }); 
-    }
-    
+    function updateCollisionTargets() { collisionBoxes = []; document.querySelectorAll('.collide-target').forEach(el => { const rect = el.getBoundingClientRect(); if (rect.width > 0) collisionBoxes.push({ top: rect.top, left: rect.left, right: rect.right }); }); }
     class Flower {
-      constructor() { 
-        this.x = Math.random() * width; 
-        this.y = -20; 
-        this.size = Math.random() * 5 + 3; 
-        this.vx = (Math.random() - 0.5) * 1.5; 
-        this.vy = Math.random() * 2 + 1; 
-        this.color = Math.random() > 0.5 ? '#00ffff' : '#bf00ff'; 
-        this.spin = 0; 
-        this.spinSpeed = (Math.random() - 0.5) * 0.1; 
-      }
-      update() { 
-        this.x += this.vx; this.y += this.vy; this.spin += this.spinSpeed;
-        for (let b of collisionBoxes) { 
-          if (this.y + this.size >= b.top && this.y < b.top + 10 && this.x > b.left && this.x < b.right && this.vy > 0) { 
-            this.vy *= -0.6; this.y = b.top - this.size; 
-            if (Math.random() > 0.8) this.vx += (Math.random() > 0.5 ? 1 : -1); 
-          } 
-        }
-        this.vy += 0.05; 
-        if (this.y > height + 20) { this.y = -20; this.x = Math.random() * width; this.vy = Math.random() * 2 + 1; } 
-      }
-      draw() { 
-        ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.spin); 
-        ctx.fillStyle = this.color; ctx.shadowBlur = 10; ctx.shadowColor = this.color; 
-        ctx.beginPath(); 
-        for (let i = 0; i < 5; i++) { ctx.ellipse(0, this.size/2, this.size/3, this.size/1.5, i * 72 * Math.PI / 180, 0, 2 * Math.PI); } 
-        ctx.fill(); ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(0, 0, this.size/4, 0, Math.PI * 2); ctx.fill(); 
-        ctx.restore(); 
-      }
+      constructor() { this.x = Math.random() * width; this.y = -20; this.size = Math.random() * 5 + 3; this.vx = (Math.random() - 0.5) * 1.5; this.vy = Math.random() * 2 + 1; this.color = Math.random() > 0.5 ? '#00ffff' : '#bf00ff'; this.spin = 0; this.spinSpeed = (Math.random() - 0.5) * 0.1; }
+      update() { this.x += this.vx; this.y += this.vy; this.spin += this.spinSpeed; for (let b of collisionBoxes) { if (this.y + this.size >= b.top && this.y < b.top + 10 && this.x > b.left && this.x < b.right && this.vy > 0) { this.vy *= -0.6; this.y = b.top - this.size; } } this.vy += 0.05; if (this.y > height + 20) { this.y = -20; this.x = Math.random() * width; } }
+      draw() { ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.spin); ctx.fillStyle = this.color; ctx.beginPath(); for (let i = 0; i < 5; i++) { ctx.ellipse(0, this.size/2, this.size/3, this.size/1.5, i * 72 * Math.PI / 180, 0, 2 * Math.PI); } ctx.fill(); ctx.restore(); }
     }
-    
-    resizeCanvas(); 
-    for (let i = 0; i < 30; i++) { flowers.push(new Flower()); }
-    
-    function animate() { 
-      ctx.clearRect(0, 0, width, height); 
-      flowers.forEach(f => { f.update(); f.draw(); }); 
-      requestAnimationFrame(animate); 
-    }
+    resizeCanvas(); for (let i = 0; i < 30; i++) flowers.push(new Flower());
+    function animate() { ctx.clearRect(0, 0, width, height); flowers.forEach(f => { f.update(); f.draw(); }); requestAnimationFrame(animate); }
     setTimeout(() => { updateCollisionTargets(); animate(); }, 500);
 
   </script>
