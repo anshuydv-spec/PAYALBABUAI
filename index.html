@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Rao Sahab Presents: PAYAL BOT V10.0</title>
+  <title>The Payal Bot - Rao Sahab Ultimate</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;500;700&family=Rajdhani:wght@700;900&display=swap');
@@ -21,74 +21,66 @@
     #flowerCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
     .app-container { position: relative; z-index: 10; padding: 10px; }
     
-    /* ADMIN LOCK SCREEN */
-    #lockScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5,5,5,0.98); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(10px); }
-    .ls-top-bar { width: 100%; display: flex; justify-content: center; margin-bottom: 5px; }
-    .ls-owner-name { font-family: 'Orbitron'; font-size: 16px; color: #fff; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 10px #00ffff; }
-    .ls-title { font-family: 'Orbitron'; font-size: 32px; color: #00ffff; text-shadow: 0 0 20px #00ffff; margin-bottom: 5px; text-align: center; }
-    .ls-sub { color: #fff; font-size: 12px; margin-bottom: 30px; text-align: center; font-weight: bold; letter-spacing: 2px; }
-    .device-id-box { background: rgba(0, 255, 255, 0.1); border: 2px dashed #00ffff; padding: 20px; width: 100%; max-width: 350px; text-align: center; border-radius: 12px; margin-bottom: 20px; cursor: pointer; box-shadow: inset 0 0 20px rgba(0,255,255,0.2); }
-    .dev-label { font-size: 11px; color: #00ffff; margin-bottom: 8px; font-weight: bold; }
-    .dev-code { font-size: 24px; color: #fff; letter-spacing: 3px; font-family: 'Rajdhani'; font-weight: 900; }
-    .key-input { width: 100%; max-width: 350px; padding: 15px; background: #111; border: 2px solid #bf00ff; color: #fff; text-align: center; font-size: 16px; border-radius: 8px; margin-bottom: 20px; font-family: 'Courier Prime', monospace; outline: none; box-shadow: 0 0 15px rgba(191,0,255,0.3); }
-    .key-input:focus { border-color: #00ffff; box-shadow: 0 0 20px #00ffff; }
+    /* =========================================
+       NEW ULTRA LOCK SCREEN (TICKET STYLE) 
+       ========================================= */
+    #lockScreen { 
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        background: #eefec2; 
+        z-index: 99999; display: flex; flex-direction: column; align-items: center; 
+        padding: 20px; overflow-y: auto;
+    }
+    .ls-top-brand { font-family: 'Orbitron'; font-size: 24px; color: #a3e635; text-transform: uppercase; font-style: italic; font-weight: 900; letter-spacing: 2px; text-shadow: 2px 2px 0px #fff, -1px -1px 0px #8b5cf6; margin-top: 20px; margin-bottom: 30px; text-align: center; }
     
-    .ls-action-btns { width: 100%; max-width: 350px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px; }
-    .btn-unlock { background: linear-gradient(90deg, #00ffff, #00aaee); color: #000; padding: 15px; font-size: 18px; font-family: 'Orbitron'; font-weight: 900; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 0 20px rgba(0,255,255,0.5); transition: 0.3s; width: 100%; }
+    .ticket-box {
+        background: #a3e635; 
+        width: 100%; max-width: 360px; border-radius: 15px; position: relative;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        mask-image: radial-gradient(circle at 10px 65%, transparent 10px, black 11px);
+        -webkit-mask-image: radial-gradient(circle at 0px 65%, transparent 10px, black 11px), radial-gradient(circle at 100% 65%, transparent 10px, black 11px);
+        -webkit-mask-size: 51% 100%;
+        -webkit-mask-repeat: no-repeat;
+        -webkit-mask-position: left, right;
+        padding-bottom: 30px;
+    }
+    
+    .ticket-header-tabs { display: flex; justify-content: space-around; padding: 15px 10px; border-bottom: 2px dashed rgba(255,255,255,0.5); }
+    .t-tab { border: 1px solid #fff; color: #fff; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+    .t-tab.active { background: #fff; color: #a3e635; }
+    
+    .ticket-content { padding: 20px; text-align: center; }
+    .tc-title { font-size: 16px; color: #fff; font-family: 'Rajdhani'; font-weight: 900; letter-spacing: 1px; }
+    .tc-timer { font-family: 'Orbitron'; font-size: 28px; color: #fff; border: 2px solid #fff; display: inline-block; padding: 5px 15px; border-radius: 30px; margin-top: 10px; font-weight: bold; }
+    
+    .ticket-input-area { background: #fff; margin-top: 20px; padding: 20px; border-radius: 0 0 15px 15px; text-align: center; }
+    .ticket-input-area h3 { color: #000; font-family: 'Poppins'; font-weight: 900; font-size: 18px; margin-bottom: 15px; }
+    
+    .device-id-box { background: rgba(163, 230, 53, 0.2); border: 2px dashed #a3e635; padding: 15px; text-align: center; border-radius: 10px; margin-bottom: 15px; cursor: pointer; }
+    .dev-label { font-size: 10px; color: #666; margin-bottom: 5px; font-weight: bold; }
+    .dev-code { font-size: 18px; color: #000; letter-spacing: 2px; font-family: 'Rajdhani'; font-weight: 900; }
+    
+    .key-input { width: 100%; padding: 15px; background: #f4f4f5; border: 2px solid #e4e4e7; color: #000; text-align: center; font-size: 14px; border-radius: 8px; margin-bottom: 15px; font-family: 'Courier Prime', monospace; outline: none; font-weight: bold; }
+    .key-input:focus { border-color: #8b5cf6; }
+    
+    .btn-unlock { width: 100%; background: #000; color: #fff; padding: 15px; font-size: 16px; font-family: 'Orbitron'; font-weight: 900; border: none; border-radius: 8px; cursor: pointer; margin-bottom: 10px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
     .btn-unlock:active { transform: scale(0.95); }
-    .btn-plans { background: #222; color: #fff; padding: 15px; font-size: 14px; font-family: 'Rajdhani'; font-weight: 900; border: 1px solid #444; border-radius: 8px; cursor: pointer; transition: 0.3s; width: 100%; text-transform: uppercase; letter-spacing: 1px; }
-
-    /* Plans Sliding Panel */
-    .plans-panel {
-        position: fixed; bottom: -100%; left: 50%; transform: translateX(-50%); width: 95%; max-width: 450px;
-        background: rgba(5, 10, 20, 0.98); border: 3px solid #bf00ff; border-radius: 15px 15px 0 0;
-        box-shadow: 0 0 30px rgba(191, 0, 255, 0.6); padding: 25px;
-        transition: bottom 0.5s ease-in-out; z-index: 100000; backdrop-filter: blur(15px);
-        overflow-y: auto; max-height: 80vh;
-    }
-    .plans-panel.show { bottom: 0; } 
-    .plans-panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
-    .plans-panel-title { font-family: 'Orbitron'; font-size: 18px; color: #00ffff; text-shadow: 0 0 10px #00ffff; }
-    .plans-close { font-size: 24px; color: #aaa; cursor: pointer; transition: 0.3s; }
-    .plans-close:hover { color: #fff; }
-
-    .plans-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-    .plan-card {
-        border-radius: 12px; padding: 15px; position: relative; overflow: hidden;
-        border-width: 2px; border-style: solid;
-        transition: transform 0.3s, box-shadow 0.3s; cursor: pointer;
-    }
-    .plan-card.cyan { border-color: #00ffff; background: rgba(0,255,255,0.05); box-shadow: 0 0 10px rgba(0,255,255,0.1); }
-    .plan-card.purple { border-color: #bf00ff; background: rgba(191,0,255,0.05); box-shadow: 0 0 10px rgba(191,0,255,0.1); }
-    .plan-card.purple.gold-shadow { border-color: #ffd700; box-shadow: 0 0 20px rgba(255,215,0,0.4); }
-
-    .plan-duration { font-family: 'Orbitron'; font-size: 12px; font-weight: 900; text-transform: uppercase; margin-bottom: 5px; }
-    .cyan .plan-duration { color: #00ffff; }
-    .purple .plan-duration { color: #bf00ff; }
-    .gold-shadow .plan-duration { color: #ffd700; }
-
-    .plan-tier { font-family: 'Poppins'; font-size: 14px; color: #fff; font-weight: bold; margin-bottom: 10px; }
+    .btn-buy { width: 100%; background: #fff; color: #000; padding: 15px; font-size: 14px; font-family: 'Rajdhani'; font-weight: 900; border: 2px solid #e4e4e7; border-radius: 8px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
     
-    .plan-price-row { display: flex; align-items: baseline; gap: 5px; margin-bottom: 10px; }
-    .plan-price { font-family: 'Rajdhani'; font-size: 26px; font-weight: 900; color: #fff; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
-    .plan-curr { font-family: 'Rajdhani'; font-size: 12px; color: #aaa; text-transform: uppercase; }
+    .disclaimer-txt { font-size: 12px; color: #8b5cf6; font-weight: 900; text-decoration: underline; margin-top: 20px; cursor: pointer; text-align: center; font-family: 'Rajdhani'; letter-spacing: 1px; }
 
-    .plan-features { font-size: 9px; color: #ccc; list-style: none; margin-bottom: 15px; }
-    .plan-features li { margin-bottom: 3px; display: flex; align-items: center; gap: 4px; }
-    .plan-features i { font-size: 10px; }
-    .cyan .plan-features i { color: #00ffff; }
-    .purple .plan-features i { color: #bf00ff; }
-    .gold-shadow .plan-features i { color: #ffd700; }
-
-    .btn-plan-buy { width: 100%; border-radius: 6px; padding: 8px; font-size: 11px; font-family: 'Orbitron'; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; transition: 0.3s; }
-    .cyan .btn-plan-buy { background: #00ffff; color: #000; }
-    .purple .btn-plan-buy { background: #bf00ff; color: #fff; }
-    .gold-shadow .btn-plan-buy { background: #ffd700; color: #000; box-shadow: 0 0 15px rgba(255,215,0,0.5); }
+    /* =========================================
+       DISCLAIMER MODAL
+       ========================================= */
+    #disclaimerModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
+    .disc-content { background: #fff; color: #000; width: 100%; max-width: 400px; max-height: 80vh; border-radius: 15px; overflow-y: auto; padding: 25px; box-shadow: 0 0 30px rgba(163, 230, 53, 0.5); border: 2px solid #a3e635; }
+    .disc-content h2 { color: #ff0055; font-family: 'Orbitron'; font-size: 20px; text-align: center; margin-bottom: 15px; border-bottom: 2px solid #ccc; padding-bottom: 10px; }
+    .disc-content h4 { color: #8b5cf6; margin-top: 15px; font-size: 14px; font-weight: 900; font-family: 'Rajdhani'; }
+    .disc-content p { font-size: 12px; color: #444; margin-top: 5px; line-height: 1.6; text-align: justify; font-weight: 500; }
+    .btn-agree { background: #000; color: #a3e635; border: 2px solid #a3e635; padding: 15px; width: 100%; font-family: 'Orbitron'; font-weight: bold; font-size: 16px; border-radius: 8px; margin-top: 20px; cursor: pointer; transition: 0.3s; }
+    .btn-agree:active { transform: scale(0.95); }
 
     /* HEADER & MAIN TIMER */
     .header { text-align: center; padding: 10px 0; }
-    .top-owner-bar { width: 100%; display: flex; justify-content: center; margin-bottom: 2px; }
-    .main-owner-name { font-family: 'Orbitron'; font-size: 11px; color: #fff; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 5px #00ffff; opacity: 0.8; }
     .title-neon { font-family: 'Orbitron', sans-serif; font-size: 28px; font-weight: 900; color: #00ffff; text-shadow: 0 0 10px #00ffff, 0 0 20px #0000ff; margin: 0; }
     .subtitle-white { font-size: 11px; font-weight: bold; color: #fff; letter-spacing: 2px; text-shadow: 0 0 5px #fff; margin-top: 5px; }
     .mantra { font-size: 13px; color: #ffd700; text-shadow: 0 0 10px #ffd700; margin-top: 10px; font-weight: bold; }
@@ -181,7 +173,7 @@
     .master-power { width: 90px; height: 90px; border-radius: 50%; background: radial-gradient(circle, #ff0000, #990000); margin: 15px auto; display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 900; color: white; box-shadow: 0 0 20px red, inset 0 0 10px #fff; cursor: pointer; border: 4px solid #222; font-family: 'Orbitron'; transition: 0.3s; }
     .master-power.on { background: radial-gradient(circle, #00ff00, #009900); box-shadow: 0 0 30px #00ff00, inset 0 0 10px #fff; color: #000; border-color: #fff; }
 
-    /* PREDICTION UI */
+    /* PREDICTION UI (Bigger, Glow, Inner Timer) */
     .pred-ui-box { background: rgba(0,0,0,0.8); border: 3px solid #ffd700; border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 15px; display: none; box-shadow: 0 0 30px rgba(255,215,0,0.4), inset 0 0 20px rgba(255,215,0,0.1); transform: scale(1.02); transition: 0.3s; }
     .pred-inner-timer { font-family: 'Orbitron'; font-size: 20px; color: #00ffff; font-weight: 900; margin-bottom: 8px; text-shadow: 0 0 10px #00ffff; }
     .pred-title { color: #ccc; font-size: 13px; }
@@ -218,20 +210,59 @@
     .config-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 13px; color: #fff; font-family: 'Rajdhani'; }
     
     /* TOGGLES */
-    .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
-    .switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 34px; border: 1px solid #555; }
-    .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 2px; bottom: 2px; background-color: #fff; transition: .4s; border-radius: 50%; }
-    input:checked + .slider { background-color: #00ffff; border-color: #00ffff; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
-    input:checked + .slider:before { transform: translateX(20px); background-color: #fff; }
+    .switch-basic { position: relative; display: inline-block; width: 40px; height: 20px; }
+    .switch-basic input { opacity: 0; width: 0; height: 0; }
+    .slider-basic { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 34px; border: 1px solid #555; }
+    .slider-basic:before { position: absolute; content: ""; height: 14px; width: 14px; left: 2px; bottom: 2px; background-color: #fff; transition: .4s; border-radius: 50%; }
+    .switch-basic input:checked + .slider-basic { background-color: #00ffff; border-color: #00ffff; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+    .switch-basic input:checked + .slider-basic:before { transform: translateX(20px); background-color: #fff; }
     
     /* TELEGRAM BTN */
     .tg-bot-btn { width: 100%; background: linear-gradient(90deg, #0088cc, #00ffff); color: #000; border: none; padding: 12px; font-family: 'Orbitron'; font-weight: 900; font-size: 16px; border-radius: 8px; cursor: pointer; box-shadow: 0 0 15px rgba(0, 136, 204, 0.5); transition: 0.3s; margin-bottom: 10px; }
     .tg-bot-btn.running { background: linear-gradient(90deg, #ff0055, #ff0000); color: #fff; box-shadow: 0 0 15px rgba(255, 0, 85, 0.5); }
 
-    /* GAME & HISTORY TABS */
-    .game-frame-container { width: 100%; height: 70vh; display: flex; flex-direction: column; position: relative; z-index: 2; border: 2px solid #00ffff; border-radius: 12px; overflow: hidden; box-shadow: 0 0 15px rgba(0,255,255,0.2); }
+    /* =========================================
+       NEW GAME TAB UI (SERVER PORT POPUP) 
+       ========================================= */
+    .game-frame-container { width: 100%; height: 75vh; display: flex; flex-direction: column; position: relative; z-index: 2; border: 2px solid #a3e635; border-radius: 12px; overflow: hidden; box-shadow: 0 0 15px rgba(163, 230, 53, 0.2); }
     iframe { width: 100%; height: 100%; border: none; background: #fff; flex: 1; }
+
+    .server-port-ui {
+        position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+        width: 95%; background: rgba(255, 255, 255, 0.95); border-radius: 15px;
+        padding: 15px; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); z-index: 50; display: none;
+    }
+    .sp-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 5px; }
+    .sp-title { font-family: 'Poppins'; font-size: 16px; font-weight: 900; color: #000; }
+    .sp-checkbox { width: 20px; height: 20px; border: 2px solid #000; border-radius: 4px; }
+    
+    .sp-code { font-family: 'Orbitron'; font-size: 8px; color: #a3e635; text-transform: uppercase; font-style: italic; letter-spacing: 2px; margin-bottom: 10px; font-weight: bold; }
+    
+    .sp-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .sp-period, .sp-timer { font-family: 'Orbitron'; font-style: italic; color: #8b5cf6; font-size: 14px; font-weight: 900; display: flex; align-items: center; gap: 5px; }
+    
+    .sp-pills { display: flex; justify-content: space-between; gap: 5px; margin-bottom: 15px; }
+    .sp-pill { flex: 1; background: #d9f99d; color: #000; font-family: 'Orbitron'; font-weight: 900; font-style: italic; font-size: 12px; text-align: center; padding: 10px 0; border-radius: 20px; transition: 0.3s; border: 1px solid transparent; }
+    .sp-pill.highlight { background: #a3e635; box-shadow: 0 0 10px #a3e635; border: 1px solid #000; }
+    .sp-pill.loss { background: #ff4d4d; color: #fff; box-shadow: 0 0 10px red; border: 1px solid #990000; }
+    
+    .sp-toggles { display: flex; justify-content: space-between; align-items: center; padding: 0 10px; margin-bottom: 15px; }
+    .sp-tgl-wrap { display: flex; align-items: center; gap: 5px; }
+    .tg-lbl { font-family: 'Poppins'; font-size: 12px; font-weight: bold; color: #8b5cf6; }
+    
+    .switch-ui { position: relative; display: inline-block; width: 40px; height: 20px; }
+    .switch-ui input { opacity: 0; width: 0; height: 0; }
+    .slider-ui { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; }
+    .slider-ui.round { border-radius: 34px; }
+    .slider-ui.round:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+    .switch-ui input:checked + .slider-ui.green-sl { background-color: #a3e635; }
+    .switch-ui input:checked + .slider-ui.purple-sl { background-color: #8b5cf6; }
+    .switch-ui input:checked + .slider-ui:before { transform: translateX(20px); }
+    
+    .sp-bottom { display: flex; justify-content: space-between; align-items: center; background: #f4f4f5; padding: 10px; border-radius: 10px; border: 1px dashed #ccc; }
+    .sp-game-name { font-family: 'Orbitron'; font-style: italic; font-size: 14px; font-weight: 900; color: #000; }
+    .sp-game-period { font-family: 'Orbitron'; font-style: italic; font-size: 18px; font-weight: 900; color: #8b5cf6; letter-spacing: 2px; }
+    .sp-ball { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Poppins'; font-size: 20px; font-weight: 900; color: #fff; box-shadow: inset -5px -5px 10px rgba(0,0,0,0.3); background: red; text-shadow: 0 0 5px rgba(0,0,0,0.5); }
 
     table { width: 100%; text-align: center; border-collapse: collapse; font-size: 12px; font-family: 'Rajdhani'; }
     th { padding: 10px; border-bottom: 1px solid #00ffff; color: #00ffff; }
@@ -292,115 +323,58 @@
   <div id="toast"></div>
 
   <div id="lockScreen">
-      <div class="ls-top-bar"><span class="ls-owner-name">Rao Sahab</span></div>
-      <h1 class="ls-title">PAYAL BOT V10.0</h1>
-      <p class="ls-sub">PREMIUM ACCESS REQUIRED</p>
+      <div class="ls-top-brand">REXEN MOD ULTRA</div>
       
-      <div class="device-id-box" onclick="copyDeviceId()">
-          <div class="dev-label">YOUR DEVICE ID (CLICK TO COPY)</div>
-          <div id="lsDeviceId" class="dev-code">RAO-WAIT...</div>
+      <div class="ticket-box">
+          <div class="ticket-header-tabs">
+              <span class="t-tab">Period</span>
+              <span class="t-tab active"><i class="fas fa-crown"></i> Subscription</span>
+              <span class="t-tab"><i class="fas fa-lock-open"></i> Free Version</span>
+          </div>
+          
+          <div class="ticket-content">
+              <div class="tc-title">PAYAL BOT V12.0</div>
+              <div class="tc-timer">SECURE</div>
+          </div>
+          
+          <div class="ticket-input-area">
+              <h3>DON'T MISS OUT REXEN!</h3>
+              
+              <div class="device-id-box" onclick="copyDeviceId()">
+                  <div class="dev-label">YOUR DEVICE ID (CLICK TO COPY)</div>
+                  <div id="lsDeviceId" class="dev-code">RAO-WAIT...</div>
+              </div>
+              
+              <input type="password" id="lsKeyInput" class="key-input" placeholder="PASTE ACCESS KEY HERE">
+              
+              <button class="btn-unlock" onclick="unlockBot()"><i class="fas fa-unlock-alt"></i> UNLOCK SYSTEM</button>
+              <button class="btn-buy" onclick="window.open('https://t.me/raosahab0035', '_blank')"><i class="fab fa-telegram" style="color:#0088cc; font-size:18px;"></i> GET KEY FROM ADMIN</button>
+          </div>
       </div>
       
-      <input type="text" id="lsKeyInput" class="key-input" placeholder="PASTE ACCESS KEY HERE">
-      
-      <div class="ls-action-btns">
-          <button class="btn-unlock" onclick="unlockBot()">UNLOCK SYSTEM</button>
-          <button class="btn-plans" onclick="togglePlansPanel()"><i class="fas fa-gem"></i> VIEW PLANS</button>
-          <button class="btn-buy" style="max-width:350px;" onclick="window.open('https://t.me/raosahab0035', '_blank')"><i class="fab fa-telegram"></i> MSG ADMIN</button>
-      </div>
-      
-      <div style="color:#aaa; font-size:10px; max-width:350px; text-align:center; line-height:1.4; margin-top:15px; border-top:1px solid #333; padding-top:10px;">
-          <strong>USER DISCLAIMER:</strong> Predictions are based on algorithms and do not guarantee success. Use at your own risk. Rao Sahab Bot is not responsible for any financial losses.
-      </div>
+      <div class="disclaimer-txt" onclick="openDisclaimer()">READ LEGAL & FINANCIAL DISCLAIMER</div>
   </div>
 
-  <div id="plansPanel" class="plans-panel">
-      <div class="plans-panel-header">
-          <span class="plans-panel-title">PREMIUM PLANS</span>
-          <i class="fas fa-times plans-close" onclick="togglePlansPanel()"></i>
-      </div>
-      
-      <div class="plans-grid">
-          <div class="plan-card cyan">
-              <div class="plan-duration">1 Day</div>
-              <div class="plan-tier">STANDARD</div>
-              <div class="plan-price-row"><span class="plan-price">39</span><span class="plan-curr">INR</span></div>
-              <ul class="plan-features">
-                  <li><i class="fas fa-check"></i> 8-Formula Logic</li>
-                  <li><i class="fas fa-check"></i> Basic Backtesting</li>
-              </ul>
-              <button class="btn-plan-buy" onclick="contactAdminForPlan('1 Day Standard (39 INR)')">Buy Now</button>
-          </div>
-          <div class="plan-card purple gold-shadow">
-              <div class="plan-duration">1 Day</div>
-              <div class="plan-tier">AI PRO</div>
-              <div class="plan-price-row"><span class="plan-price">59</span><span class="plan-curr">INR</span></div>
-              <ul class="plan-features">
-                  <li><i class="fas fa-bolt"></i> Enhanced Robot Icons</li>
-                  <li><i class="fas fa-robot"></i> Multi-Server AI</li>
-              </ul>
-              <button class="btn-plan-buy" onclick="contactAdminForPlan('1 Day AI PRO (59 INR)')">Buy Now</button>
-          </div>
-          <div class="plan-card cyan">
-              <div class="plan-duration">3 Days</div>
-              <div class="plan-tier">STANDARD</div>
-              <div class="plan-price-row"><span class="plan-price">89</span><span class="plan-curr">INR</span></div>
-              <ul class="plan-features">
-                  <li><i class="fas fa-check"></i> Basic Backtesting</li>
-                  <li><i class="fas fa-check"></i> Trend Rider (L3 Safe)</li>
-              </ul>
-              <button class="btn-plan-buy" onclick="contactAdminForPlan('3 Days Standard (89 INR)')">Buy Now</button>
-          </div>
-          <div class="plan-card purple gold-shadow">
-              <div class="plan-duration">3 Days</div>
-              <div class="plan-tier">AI PRO</div>
-              <div class="plan-price-row"><span class="plan-price">119</span><span class="plan-curr">INR</span></div>
-              <ul class="plan-features">
-                  <li><i class="fas fa-robot"></i> Enhanced Robot Icons</li>
-                  <li><i class="fas fa-brain"></i> Deep Trend Analyser</li>
-              </ul>
-              <button class="btn-plan-buy" onclick="contactAdminForPlan('3 Days AI PRO (119 INR)')">Buy Now</button>
-          </div>
-          <div class="plan-card cyan">
-              <div class="plan-duration">7 Days</div>
-              <div class="plan-tier">STANDARD</div>
-              <div class="plan-price-row"><span class="plan-price">199</span><span class="plan-curr">INR</span></div>
-              <ul class="plan-features">
-                  <li><i class="fas fa-check"></i> Full Backtesting</li>
-                  <li><i class="fas fa-check"></i> Multi-Formulas</li>
-              </ul>
-              <button class="btn-plan-buy" onclick="contactAdminForPlan('7 Days Standard (199 INR)')">Buy Now</button>
-          </div>
-          <div class="plan-card purple gold-shadow">
-              <div class="plan-duration">7 Days</div>
-              <div class="plan-tier">AI PRO</div>
-              <div class="plan-price-row"><span class="plan-price">259</span><span class="plan-curr">INR</span></div>
-              <ul class="plan-features">
-                  <li><i class="fas fa-brain"></i> Complex Robot Analysers</li>
-                  <li><i class="fas fa-matrix"></i> Full Matrix Server</li>
-              </ul>
-              <button class="btn-plan-buy" onclick="contactAdminForPlan('7 Days AI PRO (259 INR)')">Buy Now</button>
-          </div>
-          <div class="plan-card cyan">
-              <div class="plan-duration">1 Month</div>
-              <div class="plan-tier">STANDARD</div>
-              <div class="plan-price-row"><span class="plan-price">799</span><span class="plan-curr">INR</span></div>
-              <ul class="plan-features">
-                  <li><i class="fas fa-check"></i> Comprehensive Backtest</li>
-                  <li><i class="fas fa-check"></i> Dedicated Support</li>
-              </ul>
-              <button class="btn-plan-buy" onclick="contactAdminForPlan('1 Month Standard (799 INR)')">Buy Now</button>
-          </div>
-          <div class="plan-card purple gold-shadow">
-              <div class="plan-duration">1 Month</div>
-              <div class="plan-tier">AI PRO</div>
-              <div class="plan-price-row"><span class="plan-price">1199</span><span class="plan-curr">INR</span></div>
-              <ul class="plan-features">
-                  <li><i class="fas fa-robot"></i> Premium Icons Pack</li>
-                  <li><i class="fas fa-chart-line"></i> Ultimate AI Accuracy</li>
-              </ul>
-              <button class="btn-plan-buy" onclick="contactAdminForPlan('1 Month AI PRO (1199 INR)')">Buy Now</button>
-          </div>
+  <div id="disclaimerModal">
+      <div class="disc-content">
+          <h2>LEGAL DISCLAIMER</h2>
+          
+          <h4>1. No Financial Advice</h4>
+          <p>The "Payal Bot" (herein referred to as the Software) is designed strictly for educational, analytical, and pattern-recognition purposes. None of the predictions, target numbers, or calculated outputs should be construed as financial, investment, or trading advice.</p>
+          
+          <h4>2. Assumption of Risk</h4>
+          <p>Participation in online prediction games, lotteries, or trading involves a high degree of financial risk. You acknowledge that you can lose part or all of your invested capital. The creator (Rao Sahab) assumes zero liability for any financial losses incurred while using this Software.</p>
+
+          <h4>3. Legality & Jurisdiction</h4>
+          <p>The use of automated bots, prediction tools, or playing certain online games may be illegal in your jurisdiction, state, or country. It is solely your responsibility to verify compliance with local laws before using this Software.</p>
+
+          <h4>4. Platform Policies & Account Bans</h4>
+          <p>Using third-party software on gaming platforms (e.g., Daman, Goa Games, 91 Club) often violates their Terms of Service. By using this Software, you accept 100% responsibility if your game account is suspended, terminated, or if your funds are frozen by the platform admins.</p>
+
+          <h4>5. Subscription & Refunds</h4>
+          <p>All payments made for the license key are final and non-refundable. The Software's accuracy is based on algorithms (Nazar Engine & 150 Matrix) which do not guarantee a 100% win rate. Market trends change unpredictably.</p>
+
+          <button class="btn-agree" onclick="closeDisclaimer()">I AGREE & UNDERSTAND</button>
       </div>
   </div>
 
@@ -431,7 +405,6 @@
   <div class="app-container">
     
     <div class="header">
-      <div class="top-owner-bar"><span class="main-owner-name">Rao Sahab</span></div>
       <h1 class="title-neon">THE PAYAL BOT</h1>
       <div class="subtitle-white">REPRESENT BY RAO SAHAB</div>
       <div class="mantra">ॐ कृष्णाय वासुदेवाय हरये परमात्मने<br>प्रणत क्लेश नाशाय गोविंदाय नमो नमः</div>
@@ -443,7 +416,7 @@
       <img id="mainProfPic" src="https://i.pravatar.cc/150?img=11" alt="Profile" class="profile-pic">
       <div style="flex: 1; margin-left: 15px;">
         <div class="profile-name"><span id="mainProfName">User_8472</span> <span class="active-dot"></span> <span style="margin-left:8px;">🇮🇳</span></div>
-        <div class="rank-system" id="mainRank">Rank: ...</div>
+        <div class="rank-system">Rank: Master Predictor</div>
       </div>
       <div><i class="fas fa-edit" style="color:#00ffff; font-size:20px;"></i></div>
     </div>
@@ -496,8 +469,8 @@
       </div>
 
       <div class="ai-doll-section collide-target">
-        <div class="doll-box" onclick="switchToAIProTab_Secure()">
-          <div class="doll-btn-tag">AI PRO SETTINGS</div>
+        <div class="doll-box" onclick="activateAndOpenAI()">
+          <div class="doll-btn-tag">AI PRO ACTIVATE</div>
         </div>
         <div class="side-rings-col">
           <div class="side-ring-item">
@@ -529,12 +502,12 @@
 
       <div style="color: #fff; font-family: 'Orbitron'; font-size: 12px; margin-bottom: 5px; text-align:center;">SERVER STRATEGY INFO (6 SERVERS)</div>
       <div class="server-grid collide-target">
-        <div class="srv-btn active" id="btnPayal1" onclick="selServer('PAYAL 1')">PAYAL 1<br><span style="font-size:9px;color:#aaa;">(Best of 8)</span></div>
+        <div class="srv-btn active" id="btnPayal1" onclick="selServer('PAYAL 1')">PAYAL 1<br><span style="font-size:9px;color:#aaa;">(Direct)</span></div>
         <div class="srv-btn" id="btnPayal2" onclick="selServer('PAYAL 2')">PAYAL 2<br><span style="font-size:9px;color:#aaa;">(Reverse)</span></div>
-        <div class="srv-btn" id="btnPayal3" onclick="selServer('PAYAL 3')">PAYAL 3<br><span style="font-size:9px;color:#aaa;">(Martingale Safe)</span></div>
-        <div class="srv-btn" id="btnPayal4" onclick="selServer('PAYAL 4')">PAYAL 4<br><span style="font-size:9px;color:#aaa;">(Matrix Logic)</span></div>
-        <div class="srv-btn" id="btnPayal5" onclick="selServer('PAYAL 5')">PAYAL 5<br><span style="font-size:9px;color:#aaa;">(Fast Immediate)</span></div>
-        <div class="srv-btn" id="btnPayal6" onclick="selServer('PAYAL 6')">PAYAL 6<br><span style="font-size:9px;color:#aaa;">(Deep Pattern)</span></div>
+        <div class="srv-btn" id="btnPayal3" onclick="selServer('PAYAL 3')">PAYAL 3<br><span style="font-size:9px;color:#aaa;">(L-3 Safe)</span></div>
+        <div class="srv-btn" id="btnPayal4" onclick="selServer('PAYAL 4')">PAYAL 4<br><span style="font-size:9px;color:#aaa;">(Matrix)</span></div>
+        <div class="srv-btn" id="btnPayal5" onclick="selServer('PAYAL 5')">PAYAL 5<br><span style="font-size:9px;color:#aaa;">(Fast Api)</span></div>
+        <div class="srv-btn" id="btnPayal6" onclick="selServer('PAYAL 6')">PAYAL 6<br><span style="font-size:9px;color:#aaa;">(Deep AI)</span></div>
       </div>
 
       <div style="text-align: center; margin-top: 15px; margin-bottom: 10px;">
@@ -554,7 +527,6 @@
     </div>
 
     <div id="tabGame" class="tab-content">
-      <h3 style="text-align: center; color: #00ffff; font-family:'Orbitron'; margin-top:0;">LIVE GAME PLAY</h3>
       <div style="display:flex; gap:10px; margin-bottom: 10px;" class="collide-target">
           <input type="text" id="customGameUrl" class="tg-input" style="margin:0; flex:1;" placeholder="Paste Custom Game URL...">
           <button onclick="loadCustomGame()" style="background:#00ffff; color:#000; font-weight:bold; font-family:'Orbitron'; border:none; padding:0 15px; border-radius:8px;">LOAD</button>
@@ -563,7 +535,41 @@
       <div class="game-frame-container collide-target">
         <iframe id="gameFrame" src="about:blank"></iframe>
       </div>
-      <button class="close-btn" style="width:100%; font-size:16px; margin-top:10px;" onclick="switchTab('tabAI', 'iconAI')">ACCESS AI PRO</button>
+      <button class="close-btn" style="width:100%; font-size:16px;" onclick="tryOpenAIFromFooter()">CONNECT AI PRO TO START</button>
+
+      <div id="serverPortPopup" class="server-port-ui">
+          <div class="sp-header">
+              <span class="sp-title">Server Port :</span>
+              <div class="sp-checkbox"></div>
+          </div>
+          <div class="sp-code">PORT CODE : REXDSXXXX57 CONNECTING!</div>
+          
+          <div class="sp-row">
+              <div class="sp-period"><i class="fas fa-hourglass-start"></i> <span id="spPeriod">2026...</span></div>
+              <div class="sp-timer"><i class="fas fa-stopwatch"></i> <span id="spTimer">00:00</span></div>
+          </div>
+          
+          <div class="sp-pills">
+              <div class="sp-pill" id="spLoss">L O S</div>
+              <div class="sp-pill highlight" id="spResult">WAIT</div>
+              <div class="sp-pill" id="spWin">W I N</div>
+          </div>
+          
+          <div class="sp-toggles">
+              <div class="sp-tgl-wrap"><span class="tg-lbl">Exit</span><label class="switch-ui"><input type="checkbox"><span class="slider-ui round purple-sl"></span></label></div>
+              <div class="sp-tgl-wrap"><label class="switch-ui"><input type="checkbox" checked><span class="slider-ui round green-sl"></span></label></div>
+              <div class="sp-tgl-wrap"><label class="switch-ui"><input type="checkbox" onclick="toggleServerPort()"><span class="slider-ui round purple-sl"></span></label><span class="tg-lbl">Hide</span></div>
+          </div>
+          
+          <div class="sp-bottom">
+              <div class="sp-game-info">
+                  <div class="sp-game-name"><span style="color:#a3e635;">◈</span> ''' [ <span id="spGameName">DAMAN GAME</span> ]...</div>
+                  <div class="sp-game-period" id="spGamePeriod">0000</div>
+              </div>
+              <div class="sp-ball" id="spBall">?</div>
+          </div>
+      </div>
+
     </div>
 
     <div id="tabAI" class="tab-content">
@@ -615,12 +621,12 @@
       </div>
 
       <div class="server-grid collide-target">
-        <div class="srv-btn srv-btn-purple active" id="btnRao1" onclick="selServer('PAYAL 1')">RAO 1<br><span style="font-size:9px;color:#ccc;">(Best of 8)</span></div>
+        <div class="srv-btn srv-btn-purple active" id="btnRao1" onclick="selServer('PAYAL 1')">RAO 1<br><span style="font-size:9px;color:#ccc;">(Direct)</span></div>
         <div class="srv-btn srv-btn-purple" id="btnRao2" onclick="selServer('PAYAL 2')">RAO 2<br><span style="font-size:9px;color:#ccc;">(Reverse)</span></div>
-        <div class="srv-btn srv-btn-purple" id="btnRao3" onclick="selServer('PAYAL 3')">RAO 3<br><span style="font-size:9px;color:#ccc;">(Martingale Safe)</span></div>
-        <div class="srv-btn srv-btn-purple" id="btnRao4" onclick="selServer('PAYAL 4')">RAO 4<br><span style="font-size:9px;color:#ccc;">(Matrix Logic)</span></div>
-        <div class="srv-btn srv-btn-purple" id="btnRao5" onclick="selServer('PAYAL 5')">RAO 5<br><span style="font-size:9px;color:#ccc;">(Fast Immediate)</span></div>
-        <div class="srv-btn srv-btn-purple" id="btnRao6" onclick="selServer('PAYAL 6')">RAO 6<br><span style="font-size:9px;color:#ccc;">(Deep Pattern)</span></div>
+        <div class="srv-btn srv-btn-purple" id="btnRao3" onclick="selServer('PAYAL 3')">RAO 3<br><span style="font-size:9px;color:#ccc;">(L-3 Safe)</span></div>
+        <div class="srv-btn srv-btn-purple" id="btnRao4" onclick="selServer('PAYAL 4')">RAO 4<br><span style="font-size:9px;color:#ccc;">(Matrix)</span></div>
+        <div class="srv-btn srv-btn-purple" id="btnRao5" onclick="selServer('PAYAL 5')">RAO 5<br><span style="font-size:9px;color:#ccc;">(Fast Api)</span></div>
+        <div class="srv-btn srv-btn-purple" id="btnRao6" onclick="selServer('PAYAL 6')">RAO 6<br><span style="font-size:9px;color:#ccc;">(Deep AI)</span></div>
       </div>
 
       <div class="panel border-purple collide-target">
@@ -632,19 +638,19 @@
         
         <div class="config-row">
           <span>Short Predict (Auto-Delete Loss):</span>
-          <label class="switch"><input type="checkbox" id="shortTgl" onchange="saveConfig()"><span class="slider"></span></label>
+          <label class="switch-basic"><input type="checkbox" id="shortTgl" onchange="saveConfig()"><span class="slider-basic"></span></label>
         </div>
 
         <div class="config-row">
           <span>Color Prediction Mode:</span>
-          <label class="switch"><input type="checkbox" id="colorTgl" onchange="saveConfig()"><span class="slider"></span></label>
+          <label class="switch-basic"><input type="checkbox" id="colorTgl" onchange="saveConfig()"><span class="slider-basic"></span></label>
         </div>
 
         <div class="config-row">
           <span>Hashtags:</span>
           <div style="display:flex; align-items:center; gap:10px;">
             <input type="text" id="hashTxt" style="width: 80px; padding: 6px; background: #111; border: 1px solid #00ffff; color: #00ffff; font-size:12px; border-radius:5px; outline:none;" placeholder="#win" oninput="saveConfig()">
-            <label class="switch"><input type="checkbox" id="hashTgl" onchange="saveConfig()" checked><span class="slider"></span></label>
+            <label class="switch-basic"><input type="checkbox" id="hashTgl" onchange="saveConfig()" checked><span class="slider-basic"></span></label>
           </div>
         </div>
         
@@ -652,7 +658,7 @@
           <span>Gift Code:</span>
           <div style="display:flex; align-items:center; gap:10px;">
             <input type="text" id="giftTxt" style="width: 80px; padding: 6px; background: #111; border: 1px solid #00ffff; color: #00ffff; font-size:12px; border-radius:5px; outline:none;" placeholder="A8X9K..." oninput="saveConfig()">
-            <label class="switch"><input type="checkbox" id="giftTgl" onchange="saveConfig()"><span class="slider"></span></label>
+            <label class="switch-basic"><input type="checkbox" id="giftTgl" onchange="saveConfig()"><span class="slider-basic"></span></label>
           </div>
         </div>
 
@@ -660,13 +666,13 @@
           <span>Invite Link:</span>
           <div style="display:flex; align-items:center; gap:10px;">
             <input type="text" id="inviteTxt" style="width: 80px; padding: 6px; background: #111; border: 1px solid #00ffff; color: #00ffff; font-size:12px; border-radius:5px; outline:none;" placeholder="http..." oninput="saveConfig()">
-            <label class="switch"><input type="checkbox" id="inviteTgl" onchange="saveConfig()"><span class="slider"></span></label>
+            <label class="switch-basic"><input type="checkbox" id="inviteTgl" onchange="saveConfig()"><span class="slider-basic"></span></label>
           </div>
         </div>
 
         <div class="config-row">
           <span>Share Channel Button:</span>
-          <label class="switch"><input type="checkbox" id="chTgl" onchange="saveConfig()" checked><span class="slider"></span></label>
+          <label class="switch-basic"><input type="checkbox" id="chTgl" onchange="saveConfig()" checked><span class="slider-basic"></span></label>
         </div>
 
         <button id="tgBotToggleBtn" class="tg-bot-btn" onclick="toggleTgBot()">▶ START TELEGRAM BOT</button>
@@ -711,7 +717,7 @@
     <div class="footer-icon" id="iconGame" onclick="switchTab('tabGame', 'iconGame')">
       <i class="fas fa-gamepad"></i><div>GAME</div>
     </div>
-    <div class="footer-icon" id="iconAI" onclick="switchTab('tabAI', 'iconAI')">
+    <div class="footer-icon" id="iconAI" onclick="tryOpenAIFromFooter()">
       <i class="fas fa-robot"></i><div>AI PRO</div>
     </div>
     <div class="footer-icon" id="iconHist" onclick="switchTab('tabHist', 'iconHist')">
@@ -736,13 +742,8 @@
         document.getElementById('lsDeviceId').innerText = deviceId;
         
         let expiry = localStorage.getItem('payal_key_expiry');
-        let tier = localStorage.getItem('payal_user_tier');
-
         if(expiry && Date.now() < parseInt(expiry)) {
             document.getElementById('lockScreen').style.display = 'none';
-            // Set plan rank in main UI
-            document.getElementById('mainRank').innerText = tier === '2' ? 'Rank: AI PRO Master' : 'Rank: Standard Predictor';
-            document.getElementById('mainRank').style.color = tier === '2' ? '#ffd700' : '#ffd700';
         } else {
             document.getElementById('lockScreen').style.display = 'flex';
         }
@@ -759,21 +760,15 @@
         try {
             const decoded = atob(key);
             const parts = decoded.split(':');
-            // Expected Format: DEVICE_ID:TIMESTAMP:TIER:RAOSAHAB_SECRET
             if(parts.length === 4 && parts[3] === "RAOSAHAB_SECRET") {
                 if(parts[0] !== deviceId) { alert("❌ INVALID DEVICE ID"); return; }
                 if(Date.now() > parseInt(parts[1])) { alert("❌ KEY EXPIRED!"); return; }
-                
                 localStorage.setItem('payal_key_expiry', parts[1]);
-                localStorage.setItem('payal_user_tier', parts[2]); // Tier 1 (Standard) or Tier 2 (AI PRO)
+                localStorage.setItem('payal_user_tier', parts[2]);
                 document.getElementById('lockScreen').style.display = 'none';
-                
-                // Set plan rank
-                document.getElementById('mainRank').innerText = parts[2] === '2' ? 'Rank: AI PRO Master' : 'Rank: Standard Predictor';
-                
-                showToast("✅ SYSTEM UNLOCKED - " + (parts[2] === '2' ? "AI PRO PLAN" : "STANDARD PLAN"));
+                showToast("✅ SYSTEM UNLOCKED");
             } else {
-                alert("❌ INVALID KEY FORMAT");
+                alert("❌ INVALID KEY");
             }
         } catch(e) {
             alert("❌ CORRUPTED KEY");
@@ -782,6 +777,19 @@
     
     function checkSecurityLoop() {
         let expiry = localStorage.getItem('payal_key_expiry');
+        
+        // ADMIN PANEL DELETE FIX: Cross-check with Local DB
+        let adminDb = localStorage.getItem('rao_admin_db_v10');
+        if(adminDb && deviceId) {
+            let users = JSON.parse(adminDb);
+            let userExists = users.some(u => u.id === deviceId);
+            if(!userExists) {
+                localStorage.removeItem('payal_key_expiry');
+                localStorage.removeItem('payal_user_tier');
+                expiry = null; // Force lock
+            }
+        }
+
         if(!expiry || Date.now() > parseInt(expiry)) {
             if(document.getElementById('lockScreen').style.display === 'none') {
                 document.getElementById('lockScreen').style.display = 'flex';
@@ -792,14 +800,8 @@
         }
     }
 
-    function togglePlansPanel() {
-        let panel = document.getElementById('plansPanel');
-        panel.classList.toggle('show');
-    }
-
-    function contactAdminForPlan(planName) {
-        window.open(`https://t.me/raosahab0035?text=Hello%20Rao%20Sahab,%20I%20am%20interested%20in%20purchasing%20the%20${encodeURIComponent(planName)}%20plan%20for%20Payal%20Bot%20V10.0.%20My%20Device%20ID%20is:%20${encodeURIComponent(deviceId)}`, '_blank');
-    }
+    function openDisclaimer() { document.getElementById('disclaimerModal').style.display = 'flex'; }
+    function closeDisclaimer() { document.getElementById('disclaimerModal').style.display = 'none'; }
 
     const API_URLS = { 
       30: 'https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json', 
@@ -816,13 +818,14 @@
       { name: "51 GAME", img: "https://i.ibb.co/7LNLcTK/image.png", link: "https://www.51gamek.com/#/register?invitationCode=26261103525", time: 60 },
       { name: "RAJA PARTY", img: "https://i.ibb.co/8n5tQ6Zs/image.png", link: "https://www.rajaparty8.com/#/register?invitationCode=83851128686", time: 60 },
       { name: "SIKKIM GAME", img: "https://i.ibb.co/G4WsmJ6Y/image.jpg", link: "https://www.1sikkim.com/#/register?invitationCode=21155363278", time: 60 },
-      { name: "GOA GAME", img: "https://i.ibb.co/yBbBSgQR/image.jpg", link: "http://www.goaok.link/#/register?invitationCode=81344380756", time: 60 },
+      { name: "GOA GAMES", img: "https://i.ibb.co/yBbBSgQR/image.jpg", link: "http://www.goaok.link/#/register?invitationCode=81344380756", time: 60 },
       { name: "LOTTERY 7", img: "https://i.ibb.co/39BSwjdS/image.jpg", link: "https://www.lottery7kk.com/#/register?invitationCode=364622670994", time: 60 }
     ];
 
     const TelegramConfig = {
       images: { 
-          gameImg: "https://ibb.co/zHDbNTMh",
+          // TELEGRAM IMAGE FIX: Direct Image links provided
+          gameImg: "https://i.ibb.co/GYHZtT0/image.png",
           startImg: "https://i.ibb.co/DPLZLskP/start.jpg",
           stopImg: "https://i.ibb.co/ynVfxNzn/stop.jpg"
       },
@@ -847,6 +850,7 @@
     let botIsActive = false; 
     let isAIConnected = false; 
     let tgBotActive = false;
+    let isAiUnlockedByUser = false; 
     let currentPrediction = { period: "", bs: "", color: "", target: 0, isPending: false };
     let winCount = 9;
     let totalCount = 10;
@@ -947,7 +951,6 @@
         setTimeout(() => { t.classList.remove("show"); }, 3000); 
     }
 
-    // neonBlueToast
     function showNeonBlueError(msg) {
         let t = document.getElementById('neonBlueToast');
         if(!t) return;
@@ -1007,28 +1010,39 @@
       
       let toggleBtn = document.getElementById('footerToggleBtn');
       let slidePanel = document.getElementById('slidingResultPanel');
+      let spUi = document.getElementById('serverPortPopup');
+
       if (tabId === 'tabGame') {
           toggleBtn.style.display = 'block';
+          if(botIsActive) spUi.style.display = 'block';
       } else {
           toggleBtn.style.display = 'none';
           slidePanel.classList.remove('show');
           toggleBtn.innerText = "SHOW RESULT";
           toggleBtn.style.borderColor = "#00ff00"; toggleBtn.style.color = "#00ff00"; toggleBtn.style.boxShadow = "0 0 15px rgba(0, 255, 0, 0.5)";
+          spUi.style.display = 'none';
       }
       
       updateCollisionTargets();
     }
 
-    // AI PRO TAB Security Check
-    function switchToAIProTab_Secure() {
+    function toggleServerPort() {
+        let spUi = document.getElementById('serverPortPopup');
+        spUi.style.display = spUi.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function activateAndOpenAI() {
+        isAiUnlockedByUser = true;
+        switchTab('tabAI', 'iconAI');
+        showToast("AI PRO ACTIVATED SUCCESSFULLY!");
+    }
+
+    function tryOpenAIFromFooter() {
         let tier = localStorage.getItem('payal_user_tier');
-        if (tier === '2') {
+        if (tier === '2' || isAiUnlockedByUser) {
             switchTab('tabAI', 'iconAI');
-            showToast("AI PRO DASHBOARD ACCESS GRANTED");
         } else {
-            // MADERCHOD ADMIN SE HELP LELE KAISE CHLE GA
-            showNeonBlueError("❌ MADERCHOD ADMIN SE HELP LELE KAISE CHLE GA");
-            togglePlansPanel(); // Show plans panel as a hint
+            showNeonBlueError("MADERCHOD ADMIN SE HELP LELE KAISE CHLE GA");
         }
     }
 
@@ -1037,6 +1051,7 @@
       el.classList.add('active'); 
       selectedGameIndex = index; 
       document.getElementById('gameFrame').src = GAMES[index].link; 
+      document.getElementById('spGameName').innerText = GAMES[index].name;
       switchTab('tabGame', 'iconGame');
     }
 
@@ -1086,30 +1101,30 @@
       }, 1000);
 
       document.querySelectorAll('#tabMain .srv-btn').forEach(b => b.classList.remove('active'));
-      // Main UI server buttons Payal 1-6
-      let num = serverName.slice(-1);
+      let num = serverName.split(' ')[1];
       let mainBtn = document.getElementById(`btnPayal${num}`);
       if(mainBtn) mainBtn.classList.add('active');
       
-      // AI PRO Tab server buttons Rao 1-6
       document.querySelectorAll('#tabAI .srv-btn-purple').forEach(b => b.classList.remove('active'));
       let aiBtn = document.getElementById(`btnRao${num}`);
       if(aiBtn) aiBtn.classList.add('active');
     }
 
-    // TELEGRAM IMAGE SEND FUNCTION
+    // TELEGRAM IMAGE SEND FUNCTION FIX (SEND DOCUMENT FOR FULL SIZE)
     async function sendTgPhotoBase(caption, url) {
         const token = document.getElementById('botToken').value;
         const chatId = document.getElementById('chatId').value;
         if (!token || !chatId) return;
 
         try {
-            await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+            // Using sendDocument ensures full uncropped original image goes to Telegram
+            await fetch(`https://api.telegram.org/bot${token}/sendDocument`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: chatId, photo: url, caption: caption, parse_mode: 'Markdown' })
+                body: JSON.stringify({ chat_id: chatId, document: url, caption: caption, parse_mode: 'Markdown' })
             });
         } catch (e) {
+            // Fallback to text if document fails
             fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -1225,88 +1240,92 @@
       }
     }
 
-    // ==========================================
-    // 3. Calculation Engine (All 4 Integrations)
-    // ==========================================
+    // ==========================================================
+    // 3. MASTER AI PRO ENGINE (NAZAR PATTERN + 150 MATRIX LOGIC)
+    // ==========================================================
     const CalculationEngine = {
-      predictBS: (history, periodNum, server) => {
-        if (history.length < 5) return 'BIG';
-        let isColorMode = document.getElementById('colorTgl').checked;
-
-        // Configuration-based formulas from user's txt file
+      predict: function(apiData, nextPeriod, serverName, lossStreak) {
+        if (!apiData || apiData.length < 6) return { bs: "WAIT", color: "WAIT", target: 0 };
         
-        // PAYAL 1: Best of 8 Backtesting Logic
-        const calculateScores = () => {
-          let scores = [0, 0, 0, 0]; // Sum Logic, Period Multi, Gap Logic, High-Low
-          for (let i = 0; i < 5; i++) { // Backtest last 5 rounds
-            let actual = parseInt(history[i].number) >= 5 ? 'BIG' : 'SMALL';
-            let sum = parseInt(history[i+1].number) + parseInt(history[i+2].number);
-            if((sum % 10 >= 5 ? 'BIG' : 'SMALL') === actual) scores[0]++;
-            let multi = parseInt(history[i+1].number) * parseInt(history[i+1].issueNumber.toString().slice(-1));
-            if((multi % 10 >= 5 ? 'BIG' : 'SMALL') === actual) scores[1]++;
-            let gap = Math.abs(parseInt(history[i+1].number) - parseInt(history[i+2].number));
-            if((gap % 10 >= 5 ? 'BIG' : 'SMALL') === actual) scores[2]++;
-            let last3 = [parseInt(history[i+1].number), parseInt(history[i+2].number), parseInt(history[i+3].number)];
-            if(((Math.max(...last3) - Math.min(...last3)) % 10 >= 5 ? 'BIG' : 'SMALL') === actual) scores[3]++;
-          }
-          return scores;
+        let N1 = parseInt(apiData[0].number);
+        let N2 = parseInt(apiData[1].number);
+        let N3 = parseInt(apiData[2].number);
+        
+        let p_last = parseInt(nextPeriod.slice(-1));
+        let p_full = parseInt(nextPeriod.slice(-4));
+        let sum5 = apiData.slice(0, 5).reduce((a, b) => a + parseInt(b.number), 0);
+
+        // --- ADVANCED PATTERN DETECTOR (NAZAR ENGINE) ---
+        let histBS = apiData.slice(0, 5).map(n => parseInt(n.number) >= 5 ? "B" : "S");
+        let p1 = histBS[0], p2 = histBS[1], p3 = histBS[2], p4 = histBS[3], p5 = histBS[4];
+
+        let isStreak = (p1 == p2 && p2 == p3 && p3 == p4); // BBBB
+        let isAlt = (p1 != p2 && p2 != p3 && p3 != p4); // BSBS
+        let isTwoByTwo = (p1 == p2 && p3 == p4 && p1 != p3); // BBSS
+
+        // CORE 150 Matrix
+        let bigVotes = 0, smallVotes = 0;
+        for (let i = 1; i <= 150; i++) {
+            let calc;
+            if (i <= 50) calc = ((N1 * i) + (parseInt(apiData[i % 50].number) * N2) + p_last) % 10;
+            else if (i <= 100) calc = ((p_full * i) + sum5 + N3) % 10;
+            else calc = (Math.pow(N1, 2) + parseInt(apiData[i % 50].number) + i) % 10;
+            if (calc >= 5) bigVotes++; else smallVotes++;
         }
 
-        // Apply distinct logic based on active server
-        if (server === 'PAYAL 1' || server === 'RAO 1') {
-            let scores = calculateScores();
-            let bestIdx = scores.indexOf(Math.max(...scores));
-            if(bestIdx === 0) return (parseInt(history[0].number) + parseInt(history[1].number)) % 10 >= 5 ? 'BIG' : 'SMALL';
-            if(bestIdx === 1) return (parseInt(history[0].number) * parseInt(history[0].issueNumber.toString().slice(-1))) % 10 >= 5 ? 'BIG' : 'SMALL';
-            if(bestIdx === 2) return Math.abs(parseInt(history[0].number) - parseInt(history[1].number)) % 10 >= 5 ? 'BIG' : 'SMALL';
-            return (Math.max(parseInt(history[0].number), parseInt(history[1].number)) - Math.min(parseInt(history[0].number), parseInt(history[1].number))) % 10 >= 5 ? 'BIG' : 'SMALL';
+        let add = N1 + N2;
+        let sub = Math.abs(N1 - N2);
+        let mul = N1 * N2;
+        if (((add * N1) + p_last) % 10 >= 5) bigVotes += 15; else smallVotes += 15;
+        if (((mul - sub) + p_last) % 10 >= 5) bigVotes += 15; else smallVotes += 15;
+
+        let baseBS = bigVotes > smallVotes ? "BIG" : "SMALL";
+        
+        let smartBS = baseBS;
+        if (isStreak) smartBS = p1; // Ride trend
+        else if (isAlt) smartBS = p1 === "B" ? "SMALL" : "BIG"; // Ride alt
+        else if (isTwoByTwo) smartBS = p1 === "B" ? "SMALL" : "BIG"; 
+
+        let finalBS = smartBS;
+
+        // SERVER OVERRIDES
+        if (serverName === 'PAYAL 2') {
+            finalBS = smartBS === "BIG" ? "SMALL" : "BIG"; 
+        } 
+        else if (serverName === 'PAYAL 3' || serverName === 'PAYAL 1') {
+            if (lossStreak === 1) {
+                finalBS = smartBS === "BIG" ? "SMALL" : "BIG"; // L2 Reverse
+            } else if (lossStreak === 2) {
+                if (isStreak) finalBS = p1 === "B" ? "SMALL" : "BIG";
+                else if (isAlt) finalBS = p1; 
+                else finalBS = baseBS; 
+            }
         }
 
-        if (server === 'PAYAL 2' || server === 'RAO 2') {
-            // Reverse of PAYAL 1
-            let basePred = this.predictBS(history, periodNum, 'PAYAL 1');
-            return basePred === 'BIG' ? 'SMALL' : 'BIG';
-        }
+        // TARGET NUMBER LOGIC
+        let targetNumber;
+        if (finalBS === "BIG") targetNumber = (p_last + N1) % 2 === 0 ? 8 : 7;
+        else targetNumber = (p_last + N1) % 2 === 0 ? 2 : 3;
+        
+        let finalColor = targetNumber % 2 === 0 ? "RED" : "GREEN";
 
-        if (server === 'PAYAL 3' || server === 'RAO 3') {
-            // Martingale Safe: Prioritize stable patterns. Only predict if multiple agree.
-            let scores = calculateScores();
-            if(scores[0] > 3 && scores[1] > 3) return (parseInt(history[0].number) + parseInt(history[1].number)) % 10 >= 5 ? 'BIG' : 'SMALL';
-            return parseInt(history[0].number) >= 5 ? 'BIG' : 'SMALL'; // Default to simple trend
-        }
-
-        if (server === 'PAYAL 4' || server === 'RAO 4') {
-            // Matrix Logic: Focus on multiple digit summation of period numbers.
-            let lastP = parseInt(history[0].issueNumber.toString().slice(-1));
-            let currP = parseInt(periodNum.toString().slice(-1));
-            let matrixSum = lastP + currP + parseInt(history[0].number);
-            return (matrixSum % 10 >= 5) ? 'BIG' : 'SMALL';
-        }
-
-        if (server === 'PAYAL 5' || server === 'RAO 5') {
-            // Fast Immediate: Focus on immediate previous number.
-            let diff = parseInt(history[0].number) + (parseInt(history[0].issueNumber.toString().slice(-1)));
-            return (diff % 10 >= 5) ? 'BIG' : 'SMALL';
-        }
-
-        if (server === 'PAYAL 6' || server === 'RAO 6') {
-            // Deep Pattern: Pure Trend Recognition. High risk, high reward.
-            let h1 = parseInt(history[0].number) >= 5 ? 'B' : 'S';
-            let h2 = parseInt(history[1].number) >= 5 ? 'B' : 'S';
-            if(h1 === h2) return h1 === 'B' ? 'BIG' : 'SMALL'; // Ride trend
-            return h1 === 'B' ? 'SMALL' : 'BIG'; // Default to reverse trend
-        }
-
-        // Fallback
-        return parseInt(history[0].number) >= 5 ? 'BIG' : 'SMALL';
+        return { bs: finalBS, color: finalColor, target: targetNumber };
       }
     };
 
     // ==========================================
     // 4. LIVE API ENGINE & MASTER CONNECTION
     // ==========================================
+    function pingExtraAPIs() {
+        try {
+            let ts = Date.now();
+            fetch(`https://draw.ar-lottery01.com/WinGo/WinGo_30S.json?ts=${ts}`).catch(e=>e);
+        } catch(e) {}
+    }
+
     async function fetchWingoLive() {
       let url = API_URLS[appTimer];
+      pingExtraAPIs(); 
       try { 
         let res = await fetch(`${url}?pageSize=50&ts=${Date.now()}`);
         let data = await res.json(); 
@@ -1324,28 +1343,26 @@
         statusText.innerText = "[ SYSTEM OFFLINE ]";
         statusText.style.color = "#ff0055";
         document.getElementById('predictionUI').style.display = 'none';
+        document.getElementById('serverPortPopup').style.display = 'none';
         clearInterval(timerInterval);
         botIsActive = false;
         if(tgBotActive && lastTgMsgId) { deleteTgMessage(lastTgMsgId); lastTgMsgId = null; }
       } else {
-        // AI PRO Feature Gating Check
-        let tier = localStorage.getItem('payal_user_tier');
-        if (!tier) {
-            // MADERCHOD ADMIN SE HELP LELE KAISE CHLE GA
-            showNeonBlueError("❌ MADERCHOD ADMIN SE HELP LELE KAISE CHLE GA");
-            togglePlansPanel(); // Show plans panel as a hint
-            return;
+        if(!document.getElementById('lsKeyInput').value && !localStorage.getItem('payal_key_expiry')) { 
+            showNeonBlueError("MADERCHOD ADMIN SE HELP LELE KAISE CHLE GA"); return; 
         }
-
         statusText.innerText = "[ CONNECTING... ]";
         statusText.style.color = "orange";
         await new Promise(r => setTimeout(r, 1500));
-        
-        statusText.innerText = `[ ${tier === '2' ? 'AI PRO' : 'STANDARD'} SMART BRAIN ONLINE ]`;
-        statusText.style.color = tier === '2' ? '#ffd700' : '#00ff00';
-        
+        statusText.innerText = "[ SMART BRAIN ONLINE ]";
+        statusText.style.color = "#00ff00";
         mainBtn.classList.add('on');
         document.getElementById('predictionUI').style.display = 'block';
+        
+        if (document.getElementById('tabGame').classList.contains('active')) {
+            document.getElementById('serverPortPopup').style.display = 'block';
+        }
+
         botIsActive = true;
         startBotMasterLoop();
       }
@@ -1374,6 +1391,7 @@
         document.getElementById('mainUiTimer').innerText = timeStr;
         document.getElementById('predUiTimer').innerText = timeStr;
         document.getElementById('slideTimer').innerText = timeStr;
+        document.getElementById('spTimer').innerText = timeStr; // Game Tab Popup Timer
         
         if (rem === 3) await checkResultAndStickers(); 
         
@@ -1394,32 +1412,41 @@
       let lastPeriod = apiData[0].issueNumber;
       let nextPeriod = (BigInt(lastPeriod) + 1n).toString();
       
-      let bsRes = CalculationEngine.predictBS(apiData, nextPeriod, activeServer);
-      // Cold No logic based on target period parity
-      let coldNo = parseInt(nextPeriod.toString().slice(-1)) % 2 === 0 ? 8 : 7;
-      let colorRes = (coldNo === 0 || coldNo === 5) ? 'PURPLE' : (coldNo % 2 === 0 ? 'RED' : 'GREEN');
-      
-      currentPrediction = { period: nextPeriod, bs: bsRes, color: colorRes, target: coldNo, isPending: true };
+      let res = CalculationEngine.predict(apiData, nextPeriod, activeServer, appLossStreak);
+      currentPrediction = { period: nextPeriod, bs: res.bs, color: res.color, target: res.target, isPending: true };
 
       let isColorMode = document.getElementById('colorTgl').checked;
       let dispRes = isColorMode ? currentPrediction.color : currentPrediction.bs;
-      let clr = currentPrediction.color === 'RED' ? '#ff0055' : (currentPrediction.color === 'GREEN' ? '#00ffff' : '#bf00ff');
+      let clr = currentPrediction.color === "RED" ? "#ff0055" : "#00ffff";
 
+      // AI Tab Updates
       document.getElementById('aiDispPeriod').innerText = nextPeriod.slice(-4);
       document.getElementById('aiPending').innerText = dispRes;
       document.getElementById('aiPending').style.color = clr;
+      
+      // Main UI Updates
       document.getElementById('predPeriod').innerText = nextPeriod.slice(-4);
       document.getElementById('predResult').innerText = dispRes;
       document.getElementById('predResult').style.color = clr;
       document.getElementById('predCold').innerText = currentPrediction.target;
       document.getElementById('mmPresentPeriod').innerText = nextPeriod.slice(-4);
-      
-      // Update Past Info UI
-      document.getElementById('mmPastPeriod').innerText = lastPeriod.slice(-4);
-      
       document.getElementById('slideResult').innerText = dispRes;
       document.getElementById('slideResult').style.color = clr;
       document.getElementById('slideCold').innerText = currentPrediction.target;
+
+      // Server Port Popup UI Updates (Game Tab)
+      document.getElementById('spPeriod').innerText = "2026XX" + nextPeriod.slice(-4);
+      document.getElementById('spGamePeriod').innerText = nextPeriod.slice(-4);
+      document.getElementById('spResult').innerText = dispRes;
+      document.getElementById('spBall').innerText = currentPrediction.target;
+      let ballColor = currentPrediction.target % 2 === 0 ? "red" : "green";
+      if(currentPrediction.target === 0 || currentPrediction.target === 5) ballColor = "purple";
+      document.getElementById('spBall').style.background = ballColor;
+      
+      // Reset Server Port Pills
+      document.getElementById('spLoss').classList.remove('loss');
+      document.getElementById('spWin').classList.remove('highlight');
+      document.getElementById('spResult').classList.add('highlight');
 
       document.getElementById('histBalls').innerHTML = apiData.slice(0, 5).map(i => {
         let n = parseInt(i.number);
@@ -1436,50 +1463,44 @@
       if (!apiData) return;
 
       let resultItem = apiData.find(i => i.issueNumber === currentPrediction.period);
-      if (!resultItem) return; // Wait for correct period
+      if (!resultItem) return;
 
       let actualN = parseInt(resultItem.number);
-      let actualBS = actualN >= 5 ? 'BIG' : 'SMALL';
+      let actualBS = actualN >= 5 ? "BIG" : "SMALL";
       let actualColor = (actualN === 0 || actualN === 5) ? (actualN === 0 ? "RED" : "GREEN") : (actualN % 2 === 0 ? "RED" : "GREEN");
 
       let isColorMode = document.getElementById('colorTgl').checked;
       let isWin = isColorMode ? (actualColor === currentPrediction.color) : (actualBS === currentPrediction.bs);
       let isJackpot = (actualN === currentPrediction.target);
 
-      // History Sync: Win/Loss status fix
       if (isWin) { appLossStreak = 0; winCount++; } else { appLossStreak++; }
       totalCount++;
       updateUIGraphsAndRings();
 
-      let dispStatus = isJackpot ? 'HIT 🎯' : (isWin ? 'WIN' : 'LOSS');
-      let statusClr = isWin ? '#00ff00' : 'red';
-      let botPredDisp = isColorMode ? currentPrediction.color : currentPrediction.bs;
-      let actualResultDisp = isColorMode ? actualColor : actualBS;
-
-      // Ensure color displays correctly in history
-      let botClr = currentPrediction.color === 'RED' ? '#ff0055' : '#00ffff';
-      let actualClr = actualColor === 'RED' ? '#ff0055' : '#00ffff';
-
       let tr = `<tr>
         <td>${currentPrediction.period.slice(-4)}</td>
-        <td style="color:${botClr}">${botPredDisp}</td>
-        <td style="color:${actualClr}">${actualResultDisp}</td>
-        <td style="color:${statusClr}; font-weight:bold;">${dispStatus}</td>
+        <td style="color:${currentPrediction.color === 'RED' ? '#ff0055' : '#00ffff'}">${isColorMode ? currentPrediction.color : currentPrediction.bs}</td>
+        <td style="color:${actualColor === 'RED' ? '#ff0055' : '#00ffff'}">${isColorMode ? actualColor : actualBS}</td>
+        <td style="color:${isWin ? '#00ff00' : 'red'}; font-weight:bold;">${isJackpot ? 'HIT 🎯' : (isWin ? 'WIN' : 'LOSS')}</td>
       </tr>`;
       document.getElementById('historyTableBody').insertAdjacentHTML('afterbegin', tr);
       
-      // Update Past Info UI
-      document.getElementById('mmPastBot').innerText = botPredDisp;
-      document.getElementById('mmPastBot').style.color = botClr;
-      document.getElementById('mmLastStatus').innerText = isWin ? 'WIN' : 'LOSS';
-      document.getElementById('mmLastStatus').style.background = isWin ? 'green' : 'red';
+      // Update Game Tab Server Port Popup Pills
+      if(isWin) {
+          document.getElementById('spWin').classList.add('highlight');
+          document.getElementById('spLoss').classList.remove('loss');
+      } else {
+          document.getElementById('spLoss').classList.add('loss');
+          document.getElementById('spWin').classList.remove('highlight');
+      }
+      document.getElementById('spResult').classList.remove('highlight');
 
       currentPrediction.isPending = false;
       if(tgBotActive) executeStickersSequence(isWin, isJackpot);
     }
 
     // ==========================================
-    // 5. TELEGRAM FETCH & STICKERS
+    // 5. TELEGRAM PERFECT FETCH & EXACT STICKERS
     // ==========================================
     function sendTgPredictionMsg() {
       const token = document.getElementById('botToken').value; 
@@ -1489,14 +1510,14 @@
       let isColorMode = document.getElementById('colorTgl').checked;
       let gameStr = GAMES[selectedGameIndex].name;
       let predStr = isColorMode ? (currentPrediction.color === 'RED' ? '🔴 RED' : '🟢 GREEN') : currentPrediction.bs;
-      let tier = localStorage.getItem('payal_user_tier');
 
-      let msg = `🎰 *THE PAYAL AI BOT* 🎰\n╔═◈═◈═◈═◈═◈═╗\n📅 *Date* : ${new Date().toLocaleDateString('en-GB')}\n🎮 *Game* : ${gameStr}\n🔢 *Period* : ${currentPrediction.period.slice(-4)}\n⏱ *Timer* : ${appTimer < 60 ? '30 Sec' : (appTimer/60)+' Min'}\n*Tier* : ${tier === '2' ? '✨ AI PRO' : '⚡ STANDARD'}\n╚═◈═◈═◈═◈═◈═╝\n\n🎯 *RESULT INFO* 🎯\n🔮 Prediction : ➨ *${predStr}*\n📊 Risk : Level ${appLossStreak+1}\n❄️ Cold Num: ${currentPrediction.target}`;
+      let msg = `🎰 *THE PAYAL AI BOT* 🎰\n╔═◈═◈═◈═◈═◈═╗\n📅 *Date* : ${new Date().toLocaleDateString('en-GB')}\n🎮 *Game* : ${gameStr}\n🔢 *Period* : ${currentPrediction.period.slice(-4)}\n⏱ *Timer* : ${appTimer < 60 ? '30 Sec' : (appTimer/60)+' Min'}\n╚═◈═◈═◈═◈═◈═╝\n\n🎯 *RESULT INFO* 🎯\n🔮 Prediction : ➨ *${predStr}*\n📊 Risk : ${appLossStreak === 0 ? 'Level 1' : 'Level ' + (appLossStreak+1)}\n❄️ Cold Num: ${currentPrediction.target}`;
       
       fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { 
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: chatId, photo: TelegramConfig.images.gameImg, caption: msg, parse_mode: 'Markdown' }) 
+        // Direct Image link applied here for full view
+        body: JSON.stringify({ chat_id: chatId, photo: "https://i.ibb.co/GYHZtT0/image.png", caption: msg, parse_mode: 'Markdown' }) 
       }).then(res => res.json()).then(data => { if(data.ok) lastTgMsgId = data.result.message_id; });
     }
 
