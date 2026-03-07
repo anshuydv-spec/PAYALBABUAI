@@ -6,7 +6,7 @@
   <title>The Payal Bot - Rao Sahab Ultimate</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;500;700&family=Rajdhani:wght@700;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:ital,wght@0,400;0,700;0,900;1,700;1,900&family=Poppins:ital,wght@0,300;0,500;0,700;1,900&family=Rajdhani:wght@700;900&display=swap');
     
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     
@@ -45,15 +45,16 @@
     }
     
     .ticket-header-tabs { display: flex; justify-content: space-around; padding: 15px 10px; border-bottom: 2px dashed rgba(255,255,255,0.5); }
-    .t-tab { border: 1px solid #fff; color: #fff; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+    .t-tab { border: 1px solid #fff; color: #fff; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; }
     .t-tab.active { background: #fff; color: #a3e635; }
+    .t-tab:hover { background: rgba(255,255,255,0.2); }
     
     .ticket-content { padding: 20px; text-align: center; }
     .tc-title { font-size: 16px; color: #fff; font-family: 'Rajdhani'; font-weight: 900; letter-spacing: 1px; }
     .tc-timer { font-family: 'Orbitron'; font-size: 28px; color: #fff; border: 2px solid #fff; display: inline-block; padding: 5px 15px; border-radius: 30px; margin-top: 10px; font-weight: bold; }
     
     .ticket-input-area { background: #fff; margin-top: 20px; padding: 20px; border-radius: 0 0 15px 15px; text-align: center; }
-    .ticket-input-area h3 { color: #000; font-family: 'Poppins'; font-weight: 900; font-size: 18px; margin-bottom: 15px; }
+    .ticket-input-area h3 { color: #000; font-family: 'Poppins'; font-weight: 900; font-size: 18px; margin-bottom: 15px; text-transform: uppercase;}
     
     .device-id-box { background: rgba(163, 230, 53, 0.2); border: 2px dashed #a3e635; padding: 15px; text-align: center; border-radius: 10px; margin-bottom: 15px; cursor: pointer; }
     .dev-label { font-size: 10px; color: #666; margin-bottom: 5px; font-weight: bold; }
@@ -66,20 +67,71 @@
     .btn-unlock:active { transform: scale(0.95); }
     .btn-buy { width: 100%; background: #fff; color: #000; padding: 15px; font-size: 14px; font-family: 'Rajdhani'; font-weight: 900; border: 2px solid #e4e4e7; border-radius: 8px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
     
-    .disclaimer-txt { font-size: 12px; color: #8b5cf6; font-weight: 900; text-decoration: underline; margin-top: 20px; cursor: pointer; text-align: center; font-family: 'Rajdhani'; letter-spacing: 1px; }
+    .disclaimer-txt { font-size: 11px; color: #8b5cf6; font-weight: bold; text-decoration: underline; margin-top: 20px; cursor: pointer; text-align: center; }
+
+    /* =========================================
+       PLANS SLIDING PANEL
+       ========================================= */
+    .plans-panel {
+        position: fixed; bottom: -100%; left: 50%; transform: translateX(-50%); width: 95%; max-width: 450px;
+        background: rgba(5, 10, 20, 0.98); border: 3px solid #a3e635; border-radius: 15px 15px 0 0;
+        box-shadow: 0 0 30px rgba(163, 230, 53, 0.6); padding: 25px;
+        transition: bottom 0.5s ease-in-out; z-index: 100000; backdrop-filter: blur(15px);
+        overflow-y: auto; max-height: 80vh;
+    }
+    .plans-panel.show { bottom: 0; } 
+    .plans-panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+    .plans-panel-title { font-family: 'Orbitron'; font-size: 18px; color: #a3e635; text-shadow: 0 0 10px #a3e635; font-weight: bold; }
+    .plans-close { font-size: 24px; color: #aaa; cursor: pointer; transition: 0.3s; }
+    .plans-close:hover { color: #fff; }
+
+    .plans-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .plan-card {
+        border-radius: 12px; padding: 15px; position: relative; overflow: hidden;
+        border-width: 2px; border-style: solid;
+        transition: transform 0.3s, box-shadow 0.3s; cursor: pointer;
+    }
+    .plan-card.cyan { border-color: #a3e635; background: rgba(163,230,53,0.05); box-shadow: 0 0 10px rgba(163,230,53,0.1); }
+    .plan-card.purple { border-color: #8b5cf6; background: rgba(139,92,246,0.05); box-shadow: 0 0 10px rgba(139,92,246,0.1); }
+    .plan-card.purple.gold-shadow { border-color: #ffd700; box-shadow: 0 0 20px rgba(255,215,0,0.4); }
+
+    .plan-duration { font-family: 'Orbitron'; font-size: 12px; font-weight: 900; text-transform: uppercase; margin-bottom: 5px; }
+    .cyan .plan-duration { color: #a3e635; }
+    .purple .plan-duration { color: #8b5cf6; }
+    .gold-shadow .plan-duration { color: #ffd700; }
+
+    .plan-tier { font-family: 'Poppins'; font-size: 14px; color: #fff; font-weight: bold; margin-bottom: 10px; }
+    
+    .plan-price-row { display: flex; align-items: baseline; gap: 5px; margin-bottom: 10px; }
+    .plan-price { font-family: 'Rajdhani'; font-size: 26px; font-weight: 900; color: #fff; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+    .plan-curr { font-family: 'Rajdhani'; font-size: 12px; color: #aaa; text-transform: uppercase; }
+
+    .plan-features { font-size: 9px; color: #ccc; list-style: none; margin-bottom: 15px; }
+    .plan-features li { margin-bottom: 3px; display: flex; align-items: center; gap: 4px; }
+    .plan-features i { font-size: 10px; }
+    .cyan .plan-features i { color: #a3e635; }
+    .purple .plan-features i { color: #8b5cf6; }
+    .gold-shadow .plan-features i { color: #ffd700; }
+
+    .btn-plan-buy { width: 100%; border-radius: 6px; padding: 8px; font-size: 11px; font-family: 'Orbitron'; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; transition: 0.3s; }
+    .cyan .btn-plan-buy { background: #a3e635; color: #000; }
+    .purple .btn-plan-buy { background: #8b5cf6; color: #fff; }
+    .gold-shadow .btn-plan-buy { background: #ffd700; color: #000; box-shadow: 0 0 15px rgba(255,215,0,0.5); }
 
     /* =========================================
        DISCLAIMER MODAL
        ========================================= */
-    #disclaimerModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
-    .disc-content { background: #fff; color: #000; width: 100%; max-width: 400px; max-height: 80vh; border-radius: 15px; overflow-y: auto; padding: 25px; box-shadow: 0 0 30px rgba(163, 230, 53, 0.5); border: 2px solid #a3e635; }
+    #disclaimerModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100000; justify-content: center; align-items: center; padding: 20px; }
+    .disc-content { background: #fff; color: #000; width: 100%; max-width: 400px; max-height: 80vh; border-radius: 15px; overflow-y: auto; padding: 25px; box-shadow: 0 0 30px rgba(163, 230, 53, 0.5); }
     .disc-content h2 { color: #ff0055; font-family: 'Orbitron'; font-size: 20px; text-align: center; margin-bottom: 15px; border-bottom: 2px solid #ccc; padding-bottom: 10px; }
-    .disc-content h4 { color: #8b5cf6; margin-top: 15px; font-size: 14px; font-weight: 900; font-family: 'Rajdhani'; }
-    .disc-content p { font-size: 12px; color: #444; margin-top: 5px; line-height: 1.6; text-align: justify; font-weight: 500; }
-    .btn-agree { background: #000; color: #a3e635; border: 2px solid #a3e635; padding: 15px; width: 100%; font-family: 'Orbitron'; font-weight: bold; font-size: 16px; border-radius: 8px; margin-top: 20px; cursor: pointer; transition: 0.3s; }
-    .btn-agree:active { transform: scale(0.95); }
+    .disc-content h4 { color: #000; margin-top: 15px; font-size: 14px; }
+    .disc-content p { font-size: 11px; color: #444; margin-top: 5px; line-height: 1.5; text-align: justify; }
+    .disc-content ul { padding-left: 20px; font-size: 11px; color: #444; margin-top: 5px; }
+    .btn-agree { background: #a3e635; color: #000; border: none; padding: 15px; width: 100%; font-family: 'Orbitron'; font-weight: bold; font-size: 16px; border-radius: 8px; margin-top: 20px; cursor: pointer; }
 
-    /* HEADER & MAIN TIMER */
+    /* =========================================
+       HEADER & MAIN TIMER 
+       ========================================= */
     .header { text-align: center; padding: 10px 0; }
     .title-neon { font-family: 'Orbitron', sans-serif; font-size: 28px; font-weight: 900; color: #00ffff; text-shadow: 0 0 10px #00ffff, 0 0 20px #0000ff; margin: 0; }
     .subtitle-white { font-size: 11px; font-weight: bold; color: #fff; letter-spacing: 2px; text-shadow: 0 0 5px #fff; margin-top: 5px; }
@@ -153,73 +205,9 @@
     .sr-txt { font-family: 'Orbitron'; font-size: 10px; color: #fff; font-weight: bold; margin-right: 2px; }
     .sr-perc { position: absolute; left: 13px; font-size: 9px; font-family: 'Orbitron'; font-weight: bold; }
 
-    /* SCANNER */
-    .scan-container { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
-    .scan-img { width: 70%; border-radius: 10px; border: 2px solid #00ffff; height: 110px; object-fit: cover; box-shadow: 0 0 15px rgba(0,255,255,0.3); }
-    .v-meters { display: flex; justify-content: space-around; width: 25%; height: 110px; background: rgba(0,0,0,0.5); border-radius: 10px; padding: 5px; border: 1px solid rgba(255,255,255,0.1); }
-    .v-meter { width: 15px; border-radius: 8px; height: 100%; display: flex; align-items: flex-end; background: #111; box-shadow: inset 0 0 5px #000; }
-    .v-fill { width: 100%; border-radius: 8px; transition: height 0.5s; }
-    .v-green .v-fill { background: linear-gradient(0deg, #004d00, #00ff00); height: 85%; box-shadow: 0 0 15px #00ff00; }
-    .v-yellow .v-fill { background: linear-gradient(0deg, #4d4d00, #ffff00); height: 65%; box-shadow: 0 0 15px #ffff00; }
-    .v-red .v-fill { background: linear-gradient(0deg, #4d0000, #ff0000); height: 45%; box-shadow: 0 0 15px #ff0000; }
-
-    /* SERVERS */
-    .server-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px; }
-    .srv-btn { background: #111; border: 1px solid #333; color: #888; padding: 10px 2px; font-size: 11px; cursor: pointer; font-weight: bold; border-radius: 8px; text-align: center; font-family: 'Rajdhani'; transition: 0.3s; }
-    .srv-btn.active { background: #00ffff; color: #000; box-shadow: 0 0 15px #00ffff; border-color: #00ffff; }
-    .srv-btn-purple.active { background: #bf00ff; color: #fff; box-shadow: 0 0 15px #bf00ff; border-color: #bf00ff; }
-
     /* MASTER POWER */
     .master-power { width: 90px; height: 90px; border-radius: 50%; background: radial-gradient(circle, #ff0000, #990000); margin: 15px auto; display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 900; color: white; box-shadow: 0 0 20px red, inset 0 0 10px #fff; cursor: pointer; border: 4px solid #222; font-family: 'Orbitron'; transition: 0.3s; }
     .master-power.on { background: radial-gradient(circle, #00ff00, #009900); box-shadow: 0 0 30px #00ff00, inset 0 0 10px #fff; color: #000; border-color: #fff; }
-
-    /* PREDICTION UI (Bigger, Glow, Inner Timer) */
-    .pred-ui-box { background: rgba(0,0,0,0.8); border: 3px solid #ffd700; border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 15px; display: none; box-shadow: 0 0 30px rgba(255,215,0,0.4), inset 0 0 20px rgba(255,215,0,0.1); transform: scale(1.02); transition: 0.3s; }
-    .pred-inner-timer { font-family: 'Orbitron'; font-size: 20px; color: #00ffff; font-weight: 900; margin-bottom: 8px; text-shadow: 0 0 10px #00ffff; }
-    .pred-title { color: #ccc; font-size: 13px; }
-    .pred-result { font-family: 'Orbitron'; font-size: 36px; color: #ffd700; font-weight: 900; margin: 5px 0; text-shadow: 0 0 20px #ffd700; }
-    .pred-cold { font-size: 15px; color: #fff; }
-
-    /* AI PRO TAB UI */
-    .ss-action-panel { display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px; }
-    .ss-current-box { background: rgba(0, 255, 255, 0.1); border: 2px solid #00ffff; border-radius: 15px; padding: 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 0 15px rgba(0, 255, 255, 0.2); }
-    .ss-cur-left { background: #00ffff; padding: 8px 12px; border-radius: 10px; font-family: 'Rajdhani'; font-size: 20px; color: #000; font-weight: 900; letter-spacing: 2px; }
-    .ss-cur-right { text-align: right; }
-    .ss-cur-lbl { color: #fff; font-family: 'Rajdhani'; font-size: 12px; margin-bottom: 2px; }
-    .ss-cur-val { color: #00ffff; font-family: 'Rajdhani'; font-size: 20px; font-weight: 900; text-shadow: 0 0 10px #00ffff; }
-    
-    .ss-prev-box { background: rgba(191, 0, 255, 0.1); border: 2px solid #bf00ff; border-radius: 15px; padding: 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 0 15px rgba(191, 0, 255, 0.2); }
-    .ss-prev-left { font-family: 'Courier Prime', monospace; font-size: 14px; color: #fff; letter-spacing: 2px; }
-    .ss-prev-val { color: #bf00ff; font-family: 'Rajdhani'; font-size: 20px; font-weight: 900; text-shadow: 0 0 10px #bf00ff; text-align: right; }
-
-    /* 4 THICK AI METERS */
-    .ai-meters-row-4 { display: flex; justify-content: space-between; margin-bottom: 20px; gap: 5px;}
-    .ai-meter-4 { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
-    .ai-meter-4 svg { width: 60px; height: 60px; transform: rotate(-90deg); }
-    .ai-bg-4 { fill: none; stroke: #222; stroke-width: 8; }
-    .ai-val-4 { fill: none; stroke-width: 8; stroke-dasharray: 160; stroke-dashoffset: 40; transition: 1s ease; stroke-linecap: round; }
-    .ai-perc-4 { position: absolute; top: 22px; font-family: 'Orbitron'; font-size: 10px; font-weight: bold; color: #fff; }
-    .ai-lbl-4 { font-size: 9px; font-family: 'Rajdhani'; font-weight: bold; margin-top: 5px; color: #aaa; text-align: center; }
-
-    /* PERFORMANCE CHART */
-    .ai-perf-box { background: rgba(0,0,0,0.8); border: 1px solid #bf00ff; border-radius: 12px; padding: 10px; margin-bottom: 15px; box-shadow: inset 0 0 15px rgba(191,0,255,0.1); }
-    .perf-title { text-align: center; color: #ff00ff; font-family: 'Orbitron'; font-size: 12px; margin-bottom: 5px; }
-
-    .ai-timer { text-align: center; font-size: 40px; color: #fff; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 15px #fff; font-family: 'Orbitron'; }
-    .tg-input { width: 100%; padding: 10px; background: #111; border: 1px solid #00ffff; border-radius: 8px; color: #00ffff; font-family: monospace; margin-bottom: 12px; font-size: 12px; outline: none; }
-    .config-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 13px; color: #fff; font-family: 'Rajdhani'; }
-    
-    /* TOGGLES */
-    .switch-basic { position: relative; display: inline-block; width: 40px; height: 20px; }
-    .switch-basic input { opacity: 0; width: 0; height: 0; }
-    .slider-basic { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 34px; border: 1px solid #555; }
-    .slider-basic:before { position: absolute; content: ""; height: 14px; width: 14px; left: 2px; bottom: 2px; background-color: #fff; transition: .4s; border-radius: 50%; }
-    .switch-basic input:checked + .slider-basic { background-color: #00ffff; border-color: #00ffff; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
-    .switch-basic input:checked + .slider-basic:before { transform: translateX(20px); background-color: #fff; }
-    
-    /* TELEGRAM BTN */
-    .tg-bot-btn { width: 100%; background: linear-gradient(90deg, #0088cc, #00ffff); color: #000; border: none; padding: 12px; font-family: 'Orbitron'; font-weight: 900; font-size: 16px; border-radius: 8px; cursor: pointer; box-shadow: 0 0 15px rgba(0, 136, 204, 0.5); transition: 0.3s; margin-bottom: 10px; }
-    .tg-bot-btn.running { background: linear-gradient(90deg, #ff0055, #ff0000); color: #fff; box-shadow: 0 0 15px rgba(255, 0, 85, 0.5); }
 
     /* =========================================
        NEW GAME TAB UI (SERVER PORT POPUP) 
@@ -264,23 +252,51 @@
     .sp-game-period { font-family: 'Orbitron'; font-style: italic; font-size: 18px; font-weight: 900; color: #8b5cf6; letter-spacing: 2px; }
     .sp-ball { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Poppins'; font-size: 20px; font-weight: 900; color: #fff; box-shadow: inset -5px -5px 10px rgba(0,0,0,0.3); background: red; text-shadow: 0 0 5px rgba(0,0,0,0.5); }
 
+    /* =========================================
+       AI PRO TAB UI & HISTORY TABLE 
+       ========================================= */
+    .ai-timer { text-align: center; font-size: 40px; color: #fff; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 15px #fff; font-family: 'Orbitron'; }
+    .ai-meters-row-4 { display: flex; justify-content: space-between; margin-bottom: 20px; gap: 5px;}
+    .ai-meter-4 { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
+    .ai-meter-4 svg { width: 60px; height: 60px; transform: rotate(-90deg); }
+    .ai-bg-4 { fill: none; stroke: #222; stroke-width: 8; }
+    .ai-val-4 { fill: none; stroke-width: 8; stroke-dasharray: 160; stroke-dashoffset: 40; transition: 1s ease; stroke-linecap: round; }
+    .ai-perc-4 { position: absolute; top: 22px; font-family: 'Orbitron'; font-size: 10px; font-weight: bold; color: #fff; }
+    .ai-lbl-4 { font-size: 9px; font-family: 'Rajdhani'; font-weight: bold; margin-top: 5px; color: #aaa; text-align: center; }
+
+    .ss-action-panel { display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px; }
+    .ss-current-box { background: rgba(0, 255, 255, 0.1); border: 2px solid #00ffff; border-radius: 15px; padding: 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 0 15px rgba(0, 255, 255, 0.2); }
+    .ss-cur-left { background: #00ffff; padding: 8px 12px; border-radius: 10px; font-family: 'Rajdhani'; font-size: 20px; color: #000; font-weight: 900; letter-spacing: 2px; }
+    .ss-cur-right { text-align: right; }
+    .ss-cur-lbl { color: #fff; font-family: 'Rajdhani'; font-size: 12px; margin-bottom: 2px; }
+    .ss-cur-val { color: #00ffff; font-family: 'Rajdhani'; font-size: 20px; font-weight: 900; text-shadow: 0 0 10px #00ffff; }
+    
+    .ss-prev-box { background: rgba(191, 0, 255, 0.1); border: 2px solid #bf00ff; border-radius: 15px; padding: 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 0 15px rgba(191, 0, 255, 0.2); }
+    .ss-prev-left { font-family: 'Courier Prime', monospace; font-size: 14px; color: #fff; letter-spacing: 2px; }
+    .ss-prev-val { color: #bf00ff; font-family: 'Rajdhani'; font-size: 20px; font-weight: 900; text-shadow: 0 0 10px #bf00ff; text-align: right; }
+
+    .server-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+    .srv-btn { background: #111; border: 1px solid #333; color: #888; padding: 10px 2px; font-size: 11px; cursor: pointer; font-weight: bold; border-radius: 8px; text-align: center; font-family: 'Rajdhani'; transition: 0.3s; }
+    .srv-btn.active { background: #00ffff; color: #000; box-shadow: 0 0 15px #00ffff; border-color: #00ffff; }
+    .srv-btn-purple.active { background: #bf00ff; color: #fff; box-shadow: 0 0 15px #bf00ff; border-color: #bf00ff; }
+
+    .ai-perf-box { background: rgba(0,0,0,0.8); border: 1px solid #bf00ff; border-radius: 12px; padding: 10px; margin-bottom: 15px; box-shadow: inset 0 0 15px rgba(191,0,255,0.1); }
+    .perf-title { text-align: center; color: #ff00ff; font-family: 'Orbitron'; font-size: 12px; margin-bottom: 5px; }
+
+    .tg-input { width: 100%; padding: 10px; background: #111; border: 1px solid #00ffff; border-radius: 8px; color: #00ffff; font-family: monospace; margin-bottom: 12px; font-size: 12px; outline: none; }
+    .tg-bot-btn { width: 100%; background: linear-gradient(90deg, #0088cc, #00ffff); color: #000; border: none; padding: 12px; font-family: 'Orbitron'; font-weight: 900; font-size: 16px; border-radius: 8px; cursor: pointer; box-shadow: 0 0 15px rgba(0, 136, 204, 0.5); transition: 0.3s; margin-bottom: 10px; }
+    .tg-bot-btn.running { background: linear-gradient(90deg, #ff0055, #ff0000); color: #fff; box-shadow: 0 0 15px rgba(255, 0, 85, 0.5); }
+
     table { width: 100%; text-align: center; border-collapse: collapse; font-size: 12px; font-family: 'Rajdhani'; }
     th { padding: 10px; border-bottom: 1px solid #00ffff; color: #00ffff; }
     td { padding: 10px; border-bottom: 1px solid #333; }
 
     /* FOOTER & SLIDING PANEL */
-    .footer { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(5, 5, 5, 0.95); display: flex; justify-content: space-around; padding: 12px 0; border-top: 2px solid #bf00ff; z-index: 100; }
-    .footer-icon { font-size: 22px; cursor: pointer; filter: grayscale(100%); transition: 0.3s; text-align: center; flex: 1; }
+    .footer { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(5, 5, 5, 0.95); display: flex; justify-content: space-around; padding: 12px 0; border-top: 2px solid #a3e635; z-index: 100; }
+    .footer-icon { font-size: 22px; cursor: pointer; filter: grayscale(100%); transition: 0.3s; text-align: center; flex: 1; color: #ccc; }
     .footer-icon div { font-size: 10px; margin-top: 3px; font-family: 'Rajdhani'; font-weight: bold; }
-    .footer-icon.active-tab { filter: grayscale(0%) drop-shadow(0 0 15px #00ffff); transform: scale(1.1); color: #00ffff; }
+    .footer-icon.active-tab { filter: grayscale(0%) drop-shadow(0 0 15px #a3e635); transform: scale(1.1); color: #a3e635; }
     
-    .footer-center-btn {
-        position: absolute; top: -25px; left: 50%; transform: translateX(-50%);
-        background: #000; border: 2px solid #00ff00; color: #00ff00;
-        padding: 5px 15px; border-radius: 20px; font-family: 'Orbitron'; font-size: 10px; font-weight: 900;
-        cursor: pointer; box-shadow: 0 0 15px rgba(0, 255, 0, 0.5); z-index: 102; transition: 0.3s; display: none;
-    }
-
     .sliding-panel {
         position: fixed; bottom: -250px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px;
         background: rgba(0, 20, 0, 0.95); border: 2px solid #00ff00; border-radius: 15px 15px 0 0;
@@ -301,13 +317,13 @@
     .modal-content { background: #111; border: 2px solid #00ffff; border-radius: 15px; padding: 25px 20px; width: 85%; max-width: 350px; text-align: center; color: #fff; box-shadow: 0 0 30px rgba(0,255,255,0.4); }
     .close-btn { margin-top: 15px; padding: 10px 20px; background: #00ffff; color: #000; border: none; border-radius: 8px; cursor: pointer; font-weight: 900; font-family: 'Orbitron'; width: 100%; font-size: 14px; text-align:center; display:block; }
 
-    #toast { visibility: hidden; min-width: 250px; background-color: #000; color: #00ffff; text-align: center; border: 1px solid #00ffff; padding: 16px; position: fixed; z-index: 10005; left: 50%; bottom: 100px; transform: translateX(-50%); font-size: 12px; border-radius: 5px; font-weight: bold; }
+    #toast { visibility: hidden; min-width: 250px; background-color: #000; color: #a3e635; text-align: center; border: 1px solid #a3e635; padding: 16px; position: fixed; z-index: 10005; left: 50%; bottom: 100px; transform: translateX(-50%); font-size: 12px; border-radius: 5px; font-weight: bold; }
     #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
     @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 100px; opacity: 1;} }
     @keyframes fadeout { from {bottom: 100px; opacity: 1;} to {bottom: 0; opacity: 0;} }
 
     /* NEON BLUE ERROR TOAST */
-    #neonBlueToast { visibility: hidden; min-width: 280px; background-color: #05051a; color: #00ffff; text-align: center; border: 2px solid #00ffff; box-shadow: 0 0 20px #0000ff, inset 0 0 15px #0000ff; padding: 16px; position: fixed; z-index: 10005; left: 50%; top: 50px; transform: translateX(-50%); font-size: 13px; border-radius: 12px; font-weight: 900; font-family: 'Orbitron'; text-transform: uppercase; }
+    #neonBlueToast { visibility: hidden; min-width: 280px; background-color: #05051a; color: #ff0055; text-align: center; border: 2px solid #ff0055; box-shadow: 0 0 20px #ff0000, inset 0 0 15px #ff0000; padding: 16px; position: fixed; z-index: 10005; left: 50%; top: 50px; transform: translateX(-50%); font-size: 13px; border-radius: 12px; font-weight: 900; font-family: 'Orbitron'; text-transform: uppercase; }
     #neonBlueToast.show { visibility: visible; animation: dropIn 0.4s, dropOut 0.4s 3.6s; }
     @keyframes dropIn { from {top: -50px; opacity: 0;} to {top: 50px; opacity: 1;} }
     @keyframes dropOut { from {top: 50px; opacity: 1;} to {top: -50px; opacity: 0;} }
@@ -323,12 +339,12 @@
   <div id="toast"></div>
 
   <div id="lockScreen">
-      <div class="ls-top-brand">REXEN MOD ULTRA</div>
+      <div class="ls-top-brand">RAO SAHAB MOD ULTRA</div>
       
       <div class="ticket-box">
           <div class="ticket-header-tabs">
               <span class="t-tab">Period</span>
-              <span class="t-tab active"><i class="fas fa-crown"></i> Subscription</span>
+              <span class="t-tab active" onclick="togglePlansPanel()"><i class="fas fa-crown"></i> Subscription</span>
               <span class="t-tab"><i class="fas fa-lock-open"></i> Free Version</span>
           </div>
           
@@ -338,7 +354,7 @@
           </div>
           
           <div class="ticket-input-area">
-              <h3>DON'T MISS OUT REXEN!</h3>
+              <h3>DON'T MISS OUT RAO SAHAB!</h3>
               
               <div class="device-id-box" onclick="copyDeviceId()">
                   <div class="dev-label">YOUR DEVICE ID (CLICK TO COPY)</div>
@@ -353,6 +369,96 @@
       </div>
       
       <div class="disclaimer-txt" onclick="openDisclaimer()">READ LEGAL & FINANCIAL DISCLAIMER</div>
+  </div>
+
+  <div id="plansPanel" class="plans-panel">
+      <div class="plans-panel-header">
+          <span class="plans-panel-title">PREMIUM PLANS</span>
+          <i class="fas fa-times plans-close" onclick="togglePlansPanel()"></i>
+      </div>
+      
+      <div class="plans-grid">
+          <div class="plan-card cyan">
+              <div class="plan-duration">1 Day</div>
+              <div class="plan-tier">STANDARD</div>
+              <div class="plan-price-row"><span class="plan-price">39</span><span class="plan-curr">INR</span></div>
+              <ul class="plan-features">
+                  <li><i class="fas fa-check"></i> Basic Pattern Logic</li>
+                  <li><i class="fas fa-check"></i> Server Port View</li>
+              </ul>
+              <button class="btn-plan-buy" onclick="contactAdminForPlan('1 Day Standard (39 INR)')">Buy Now</button>
+          </div>
+          <div class="plan-card purple gold-shadow">
+              <div class="plan-duration">1 Day</div>
+              <div class="plan-tier">AI PRO</div>
+              <div class="plan-price-row"><span class="plan-price">59</span><span class="plan-curr">INR</span></div>
+              <ul class="plan-features">
+                  <li><i class="fas fa-bolt"></i> 150 Matrix Engine</li>
+                  <li><i class="fas fa-robot"></i> Multi-Server AI</li>
+              </ul>
+              <button class="btn-plan-buy" onclick="contactAdminForPlan('1 Day AI PRO (59 INR)')">Buy Now</button>
+          </div>
+          <div class="plan-card cyan">
+              <div class="plan-duration">3 Days</div>
+              <div class="plan-tier">STANDARD</div>
+              <div class="plan-price-row"><span class="plan-price">89</span><span class="plan-curr">INR</span></div>
+              <ul class="plan-features">
+                  <li><i class="fas fa-check"></i> Basic Backtesting</li>
+                  <li><i class="fas fa-check"></i> Support Channel</li>
+              </ul>
+              <button class="btn-plan-buy" onclick="contactAdminForPlan('3 Days Standard (89 INR)')">Buy Now</button>
+          </div>
+          <div class="plan-card purple gold-shadow">
+              <div class="plan-duration">3 Days</div>
+              <div class="plan-tier">AI PRO</div>
+              <div class="plan-price-row"><span class="plan-price">119</span><span class="plan-curr">INR</span></div>
+              <ul class="plan-features">
+                  <li><i class="fas fa-robot"></i> Nazar Pattern AI</li>
+                  <li><i class="fas fa-brain"></i> Deep Trend Analyser</li>
+              </ul>
+              <button class="btn-plan-buy" onclick="contactAdminForPlan('3 Days AI PRO (119 INR)')">Buy Now</button>
+          </div>
+          <div class="plan-card cyan">
+              <div class="plan-duration">7 Days</div>
+              <div class="plan-tier">STANDARD</div>
+              <div class="plan-price-row"><span class="plan-price">199</span><span class="plan-curr">INR</span></div>
+              <ul class="plan-features">
+                  <li><i class="fas fa-check"></i> Fast Delivery</li>
+                  <li><i class="fas fa-check"></i> Standard Updates</li>
+              </ul>
+              <button class="btn-plan-buy" onclick="contactAdminForPlan('7 Days Standard (199 INR)')">Buy Now</button>
+          </div>
+          <div class="plan-card purple gold-shadow">
+              <div class="plan-duration">7 Days</div>
+              <div class="plan-tier">AI PRO</div>
+              <div class="plan-price-row"><span class="plan-price">259</span><span class="plan-curr">INR</span></div>
+              <ul class="plan-features">
+                  <li><i class="fas fa-brain"></i> VIP Target Ball</li>
+                  <li><i class="fas fa-matrix"></i> Auto-Loss Cut</li>
+              </ul>
+              <button class="btn-plan-buy" onclick="contactAdminForPlan('7 Days AI PRO (259 INR)')">Buy Now</button>
+          </div>
+          <div class="plan-card cyan">
+              <div class="plan-duration">1 Month</div>
+              <div class="plan-tier">STANDARD</div>
+              <div class="plan-price-row"><span class="plan-price">799</span><span class="plan-curr">INR</span></div>
+              <ul class="plan-features">
+                  <li><i class="fas fa-check"></i> 30 Days Access</li>
+                  <li><i class="fas fa-check"></i> Direct Admin Help</li>
+              </ul>
+              <button class="btn-plan-buy" onclick="contactAdminForPlan('1 Month Standard (799 INR)')">Buy Now</button>
+          </div>
+          <div class="plan-card purple gold-shadow">
+              <div class="plan-duration">1 Month</div>
+              <div class="plan-tier">AI PRO</div>
+              <div class="plan-price-row"><span class="plan-price">1199</span><span class="plan-curr">INR</span></div>
+              <ul class="plan-features">
+                  <li><i class="fas fa-robot"></i> Premium Icons Pack</li>
+                  <li><i class="fas fa-chart-line"></i> Ultimate AI Power</li>
+              </ul>
+              <button class="btn-plan-buy" onclick="contactAdminForPlan('1 Month AI PRO (1199 INR)')">Buy Now</button>
+          </div>
+      </div>
   </div>
 
   <div id="disclaimerModal">
@@ -392,7 +498,7 @@
     <div class="modal-content" style="border-color:#bf00ff; box-shadow: 0 0 30px #bf00ff;">
       <h2 style="color: #bf00ff; font-family: 'Orbitron'; margin-bottom: 15px;">UPDATE PROFILE</h2>
       <img id="modalProfPic" src="https://i.pravatar.cc/150?img=11" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #00ffff; margin: 0 auto 15px auto; display: block; object-fit: cover;">
-      <input type="text" id="profNameInp" class="tg-input" placeholder="Enter Your Name">
+      <input type="text" id="profNameInp" class="tg-input" placeholder="Enter Your Name" style="width:100%; padding:10px; background:#111; border:1px solid #00ffff; border-radius:8px; color:#00ffff; font-family:monospace; margin-bottom:12px; font-size:12px; outline:none;">
       
       <label for="profPicFileInp" class="close-btn" style="background:#bf00ff; color:#fff; margin-bottom:12px;">📸 SELECT FROM GALLERY</label>
       <input type="file" id="profPicFileInp" accept="image/*" style="display:none;" onchange="previewGalleryImage(event)">
@@ -418,31 +524,33 @@
         <div class="profile-name"><span id="mainProfName">User_8472</span> <span class="active-dot"></span> <span style="margin-left:8px;">🇮🇳</span></div>
         <div class="rank-system">Rank: Master Predictor</div>
       </div>
-      <div><i class="fas fa-edit" style="color:#00ffff; font-size:20px;"></i></div>
+      <div style="display:flex; gap:15px; align-items:center;">
+        <i class="fas fa-edit" style="color:#00ffff; font-size:20px;"></i>
+        <i class="fas fa-sign-out-alt" style="color:#ff0055; font-size:20px; text-shadow: 0 0 10px #ff0055;" onclick="event.stopPropagation(); logoutBot();"></i>
+      </div>
     </div>
 
     <div id="tabMain" class="tab-content active">
       
       <div class="graph-wrapper collide-target">
-        <div class="graph-box graph-loss">
-          <div class="graph-text">Loss <span id="uiLossAcc">10%</span> &darr;</div>
+        <div class="graph-box graph-loss" style="background:#d9f99d;">
+          <div class="graph-text" style="color:#000;">Loss <span id="uiLossAcc">10%</span> &darr;</div>
           <svg class="wave-loss" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <path d="M0,30 Q25,80 50,50 T100,70 L100,100 L0,100 Z"/>
+            <path d="M0,30 Q25,80 50,50 T100,70 L100,100 L0,100 Z" style="fill:rgba(0,0,0,0.5); stroke:#000;"/>
           </svg>
         </div>
-        <div class="graph-box graph-win">
-          <div class="graph-text">Win <span id="uiWinAcc">90%</span> &uarr;</div>
+        <div class="graph-box graph-win" style="background:#555;">
+          <div class="graph-text" style="color:#a3e635;">Win <span id="uiWinAcc">90%</span> &uarr;</div>
           <svg class="wave-win" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <path d="M0,70 Q25,30 50,60 T100,20 L100,100 L0,100 Z"/>
+            <path d="M0,70 Q25,30 50,60 T100,20 L100,100 L0,100 Z" style="fill:rgba(163,230,53,0.5); stroke:#a3e635;"/>
           </svg>
         </div>
       </div>
 
-      <div style="color: #00ffff; font-family: 'Orbitron'; font-size: 14px; margin-bottom: 5px; text-shadow: 0 0 5px #00ffff;">🎰 SELECT PLATFORM (API)</div>
-      <div class="iphone-slider collide-target" id="gameSlider">
-        </div>
+      <div style="color: #a3e635; font-family: 'Orbitron'; font-size: 14px; margin-bottom: 5px; text-shadow: 0 0 5px #a3e635;">🎰 SELECT PLATFORM (API)</div>
+      <div class="iphone-slider collide-target" id="gameSlider"></div>
 
-      <div class="section-title"><i class="fas fa-clock"></i> SELECT TIMER</div>
+      <div class="section-title" style="color:#a3e635; text-shadow:none;"><i class="fas fa-clock"></i> SELECT TIMER</div>
       <div class="timer-circle-grid collide-target">
           <div class="timer-circle" onclick="setTimer(30, this)"><i class="fas fa-bolt"></i><span>30 Sec</span></div>
           <div class="timer-circle active" onclick="setTimer(60, this)"><i class="fas fa-stopwatch"></i><span>1 Min</span></div>
@@ -469,23 +577,23 @@
       </div>
 
       <div class="ai-doll-section collide-target">
-        <div class="doll-box" onclick="activateAndOpenAI()">
-          <div class="doll-btn-tag">AI PRO ACTIVATE</div>
+        <div class="doll-box" onclick="tryOpenAIFromFooter()">
+          <div class="doll-btn-tag" style="background:#a3e635; color:#000; border-color:#000;">AI PRO ACTIVATE</div>
         </div>
         <div class="side-rings-col">
           <div class="side-ring-item">
-            <span class="sr-perc" id="sr1-perc" style="color:#00ffff;">85%</span>
+            <span class="sr-perc" id="sr1-perc" style="color:#a3e635;">85%</span>
             <svg class="side-ring-svg" viewBox="0 0 35 35">
               <circle class="sr-bg" cx="17.5" cy="17.5" r="15"></circle>
-              <circle class="sr-val" id="uiRing1" cx="17.5" cy="17.5" r="15" style="stroke: #00ffff;"></circle>
+              <circle class="sr-val" id="uiRing1" cx="17.5" cy="17.5" r="15" style="stroke: #a3e635;"></circle>
             </svg>
             <span class="sr-txt">SRV 1</span>
           </div>
           <div class="side-ring-item">
-            <span class="sr-perc" id="sr2-perc" style="color:#bf00ff;">90%</span>
+            <span class="sr-perc" id="sr2-perc" style="color:#8b5cf6;">90%</span>
             <svg class="side-ring-svg" viewBox="0 0 35 35">
               <circle class="sr-bg" cx="17.5" cy="17.5" r="15"></circle>
-              <circle class="sr-val" id="uiRing2" cx="17.5" cy="17.5" r="15" style="stroke: #bf00ff;"></circle>
+              <circle class="sr-val" id="uiRing2" cx="17.5" cy="17.5" r="15" style="stroke: #8b5cf6;"></circle>
             </svg>
             <span class="sr-txt">SRV 2</span>
           </div>
@@ -500,49 +608,32 @@
         </div>
       </div>
 
-      <div style="color: #fff; font-family: 'Orbitron'; font-size: 12px; margin-bottom: 5px; text-align:center;">SERVER STRATEGY INFO (6 SERVERS)</div>
-      <div class="server-grid collide-target">
-        <div class="srv-btn active" id="btnPayal1" onclick="selServer('PAYAL 1')">PAYAL 1<br><span style="font-size:9px;color:#aaa;">(Direct)</span></div>
-        <div class="srv-btn" id="btnPayal2" onclick="selServer('PAYAL 2')">PAYAL 2<br><span style="font-size:9px;color:#aaa;">(Reverse)</span></div>
-        <div class="srv-btn" id="btnPayal3" onclick="selServer('PAYAL 3')">PAYAL 3<br><span style="font-size:9px;color:#aaa;">(L-3 Safe)</span></div>
-        <div class="srv-btn" id="btnPayal4" onclick="selServer('PAYAL 4')">PAYAL 4<br><span style="font-size:9px;color:#aaa;">(Matrix)</span></div>
-        <div class="srv-btn" id="btnPayal5" onclick="selServer('PAYAL 5')">PAYAL 5<br><span style="font-size:9px;color:#aaa;">(Fast Api)</span></div>
-        <div class="srv-btn" id="btnPayal6" onclick="selServer('PAYAL 6')">PAYAL 6<br><span style="font-size:9px;color:#aaa;">(Deep AI)</span></div>
-      </div>
-
       <div style="text-align: center; margin-top: 15px; margin-bottom: 10px;">
-        <div class="master-power" id="mainPowerBtn" onclick="toggleBotPowerMain()" style="margin: 0 auto;">
+        <div class="master-power" id="mainPowerBtn" onclick="toggleBotPowerMain()" style="margin: 0 auto; border-color:#a3e635;">
           <i class="fas fa-power-off"></i>
         </div>
         <div id="connectionStatus" style="color:#ff0055; font-family:'Orbitron'; font-size:12px; margin-top:10px; font-weight:bold; letter-spacing:1px; text-shadow: 0 0 5px #ff0055;">[ SYSTEM OFFLINE ]</div>
       </div>
 
-      <div class="pred-ui-box collide-target" id="predictionUI">
-        <div class="pred-inner-timer" id="predUiTimer">00:00</div>
-        <div class="pred-title">Period: <span id="predPeriod" style="color:#fff; font-weight:bold;">----</span></div>
-        <div class="pred-result" id="predResult">--</div>
-        <div class="pred-cold">Cold Number: <span id="predCold" style="font-weight:bold; color:#00ffff;">--</span></div>
-        <div style="font-size:10px; color:#aaa; margin-top:5px;">Connected: <span id="predServer" style="color:#00ff00;">PAYAL 1</span></div>
+      <div class="panel border-cyan collide-target" style="padding: 10px; border-color: #a3e635; box-shadow: 0 0 15px rgba(163, 230, 53, 0.2);">
+        <div style="color: #a3e635; font-family: 'Orbitron'; font-size: 12px; margin-bottom: 8px; text-align:center; font-weight:bold; letter-spacing: 1px;">🗓 LIVE 7-DAY CALENDAR</div>
+        <div id="weekCalendar" style="display:flex; justify-content:space-between; gap:5px; overflow-x:auto; padding-bottom: 5px;">
+            </div>
       </div>
+
     </div>
 
     <div id="tabGame" class="tab-content">
-      <div style="display:flex; gap:10px; margin-bottom: 10px;" class="collide-target">
-          <input type="text" id="customGameUrl" class="tg-input" style="margin:0; flex:1;" placeholder="Paste Custom Game URL...">
-          <button onclick="loadCustomGame()" style="background:#00ffff; color:#000; font-weight:bold; font-family:'Orbitron'; border:none; padding:0 15px; border-radius:8px;">LOAD</button>
-      </div>
-
-      <div class="game-frame-container collide-target">
+      <div class="game-frame-container collide-target" style="height: 75vh;">
         <iframe id="gameFrame" src="about:blank"></iframe>
       </div>
-      <button class="close-btn" style="width:100%; font-size:16px;" onclick="tryOpenAIFromFooter()">CONNECT AI PRO TO START</button>
 
       <div id="serverPortPopup" class="server-port-ui">
           <div class="sp-header">
               <span class="sp-title">Server Port :</span>
               <div class="sp-checkbox"></div>
           </div>
-          <div class="sp-code">PORT CODE : REXDSXXXX57 CONNECTING!</div>
+          <div class="sp-code">PORT CODE : RAODSXXXX57 CONNECTING!</div>
           
           <div class="sp-row">
               <div class="sp-period"><i class="fas fa-hourglass-start"></i> <span id="spPeriod">2026...</span></div>
@@ -569,9 +660,8 @@
               <div class="sp-ball" id="spBall">?</div>
           </div>
       </div>
-
     </div>
-
+    
     <div id="tabAI" class="tab-content">
       <div class="panel border-cyan collide-target">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -632,49 +722,9 @@
       <div class="panel border-purple collide-target">
         <h4 style="color: #ff00ff; font-family: 'Orbitron'; text-align: center; margin-top:0; font-size:14px; margin-bottom:15px;">TELEGRAM SETUP API</h4>
         
-        <input type="text" id="botToken" class="tg-input" placeholder="Bot Token: 12345:AAH..." oninput="saveConfig()">
-        <input type="text" id="chatId" class="tg-input" placeholder="Chat ID: @raosahab0035" oninput="saveConfig()">
-        <input type="text" id="channelLink" class="tg-input" placeholder="Channel Link: t.me/..." oninput="saveConfig()">
+        <input type="text" id="botToken" class="tg-input" placeholder="Bot Token: 12345:AAH..." style="width: 100%; padding: 10px; background: #111; border: 1px solid #00ffff; border-radius: 8px; color: #00ffff; font-family: monospace; margin-bottom: 12px; font-size: 12px; outline: none;" oninput="saveConfig()">
+        <input type="text" id="chatId" class="tg-input" placeholder="Chat ID: @raosahab0035" style="width: 100%; padding: 10px; background: #111; border: 1px solid #00ffff; border-radius: 8px; color: #00ffff; font-family: monospace; margin-bottom: 12px; font-size: 12px; outline: none;" oninput="saveConfig()">
         
-        <div class="config-row">
-          <span>Short Predict (Auto-Delete Loss):</span>
-          <label class="switch-basic"><input type="checkbox" id="shortTgl" onchange="saveConfig()"><span class="slider-basic"></span></label>
-        </div>
-
-        <div class="config-row">
-          <span>Color Prediction Mode:</span>
-          <label class="switch-basic"><input type="checkbox" id="colorTgl" onchange="saveConfig()"><span class="slider-basic"></span></label>
-        </div>
-
-        <div class="config-row">
-          <span>Hashtags:</span>
-          <div style="display:flex; align-items:center; gap:10px;">
-            <input type="text" id="hashTxt" style="width: 80px; padding: 6px; background: #111; border: 1px solid #00ffff; color: #00ffff; font-size:12px; border-radius:5px; outline:none;" placeholder="#win" oninput="saveConfig()">
-            <label class="switch-basic"><input type="checkbox" id="hashTgl" onchange="saveConfig()" checked><span class="slider-basic"></span></label>
-          </div>
-        </div>
-        
-        <div class="config-row">
-          <span>Gift Code:</span>
-          <div style="display:flex; align-items:center; gap:10px;">
-            <input type="text" id="giftTxt" style="width: 80px; padding: 6px; background: #111; border: 1px solid #00ffff; color: #00ffff; font-size:12px; border-radius:5px; outline:none;" placeholder="A8X9K..." oninput="saveConfig()">
-            <label class="switch-basic"><input type="checkbox" id="giftTgl" onchange="saveConfig()"><span class="slider-basic"></span></label>
-          </div>
-        </div>
-
-        <div class="config-row">
-          <span>Invite Link:</span>
-          <div style="display:flex; align-items:center; gap:10px;">
-            <input type="text" id="inviteTxt" style="width: 80px; padding: 6px; background: #111; border: 1px solid #00ffff; color: #00ffff; font-size:12px; border-radius:5px; outline:none;" placeholder="http..." oninput="saveConfig()">
-            <label class="switch-basic"><input type="checkbox" id="inviteTgl" onchange="saveConfig()"><span class="slider-basic"></span></label>
-          </div>
-        </div>
-
-        <div class="config-row">
-          <span>Share Channel Button:</span>
-          <label class="switch-basic"><input type="checkbox" id="chTgl" onchange="saveConfig()" checked><span class="slider-basic"></span></label>
-        </div>
-
         <button id="tgBotToggleBtn" class="tg-bot-btn" onclick="toggleTgBot()">▶ START TELEGRAM BOT</button>
         <button class="tg-bot-btn" style="background: #222; color: #00ffff; border: 1px solid #00ffff; margin-bottom: 0;" onclick="saveConfigWithMsg()">💾 SAVE CONFIG</button>
       </div>
@@ -689,28 +739,18 @@
       <div class="panel border-cyan collide-target">
         <h3 style="text-align: center; color: #00ffff; font-family:'Orbitron'; margin-top:0; font-size:16px;">LAST 5 REAL RESULTS</h3>
         <div style="display:flex; justify-content:center; gap: 8px; margin-bottom: 20px;" id="histBalls">
-          </div>
+        </div>
         <table>
           <tr><th>Period</th><th>Bot</th><th>Result</th><th>Status</th></tr>
           <tbody id="historyTableBody">
-            </tbody>
+          </tbody>
         </table>
       </div>
     </div>
+
   </div> 
 
-  <div id="slidingResultPanel" class="sliding-panel">
-      <div style="font-size: 12px; color: #aaa; font-family: 'Rajdhani';">Period: <span id="slidePeriod" style="color: #fff; font-weight: bold;">---</span></div>
-      <div id="slideTimer" style="font-family: 'Orbitron'; font-size: 28px; color: #00ffff; margin: 8px 0; font-weight: 900; text-shadow: 0 0 10px #00ffff;">00:00</div>
-      <div id="slideResult" style="font-family: 'Orbitron'; font-size: 35px; font-weight: 900; color: #00ff00; text-shadow: 0 0 15px #00ff00; margin-bottom: 5px;">---</div>
-      <div style="font-size: 14px; color: #fff; font-family: 'Rajdhani'; font-weight: bold;">Cold No: <span id="slideCold" style="color: #00ffff;">-</span></div>
-  </div>
-
-  <div style="text-align: center; color: #fff; text-shadow: 0 0 10px #bf00ff; font-size: 11px; position: fixed; bottom: 85px; width: 100%; font-weight: bold; z-index: 97; letter-spacing: 2px; font-family: 'Orbitron'; pointer-events: none;">OWNER RAO SAHAB</div>
-  
   <div class="footer">
-    <div class="footer-center-btn" id="footerToggleBtn" onclick="toggleResultPanel()" style="display:none;">SHOW RESULT</div>
-    
     <div class="footer-icon active-tab" id="iconMain" onclick="switchTab('tabMain', 'iconMain')">
       <i class="fas fa-home"></i><div>HOME</div>
     </div>
@@ -730,7 +770,6 @@
     // 1. DATA, CONFIG & SECURITY
     // ==========================================
     let deviceId = '';
-    
     function initDeviceSecurity() {
         deviceId = localStorage.getItem('payal_device_id');
         if(!deviceId) {
@@ -742,6 +781,20 @@
         document.getElementById('lsDeviceId').innerText = deviceId;
         
         let expiry = localStorage.getItem('payal_key_expiry');
+        let tier = localStorage.getItem('payal_user_tier');
+
+        // ADMIN PANEL REVOKE CHECK
+        let adminDb = localStorage.getItem('rao_admin_db_v10');
+        if(adminDb && deviceId) {
+            let users = JSON.parse(adminDb);
+            let userExists = users.some(u => u.id === deviceId);
+            if(!userExists) {
+                localStorage.removeItem('payal_key_expiry');
+                localStorage.removeItem('payal_user_tier');
+                expiry = null; // Force lock instantly if deleted from admin panel
+            }
+        }
+
         if(expiry && Date.now() < parseInt(expiry)) {
             document.getElementById('lockScreen').style.display = 'none';
         } else {
@@ -749,10 +802,7 @@
         }
     }
     
-    function copyDeviceId() {
-        navigator.clipboard.writeText(deviceId);
-        showToast("DEVICE ID COPIED");
-    }
+    function copyDeviceId() { navigator.clipboard.writeText(deviceId); showToast("DEVICE ID COPIED"); }
     
     function unlockBot() {
         const key = document.getElementById('lsKeyInput').value.trim();
@@ -767,41 +817,60 @@
                 localStorage.setItem('payal_user_tier', parts[2]);
                 document.getElementById('lockScreen').style.display = 'none';
                 showToast("✅ SYSTEM UNLOCKED");
-            } else {
-                alert("❌ INVALID KEY");
-            }
-        } catch(e) {
-            alert("❌ CORRUPTED KEY");
+            } else { alert("❌ INVALID KEY"); }
+        } catch(e) { alert("❌ CORRUPTED KEY"); }
+    }
+
+    // NEW LOGOUT FUNCTION (ID CHANGE)
+    function logoutBot() {
+        if(confirm("Are you sure you want to completely logout and remove your ID?")) {
+            localStorage.removeItem('payal_key_expiry');
+            localStorage.removeItem('payal_user_tier');
+            if (botIsActive) toggleBotPowerMain(); // Safely turn off bot loops
+            document.getElementById('lockScreen').style.display = 'flex';
+            showToast("LOGGED OUT SUCCESSFULLY. ENTER NEW KEY.");
         }
     }
     
-    function checkSecurityLoop() {
-        let expiry = localStorage.getItem('payal_key_expiry');
-        
-        // ADMIN PANEL DELETE FIX: Cross-check with Local DB
-        let adminDb = localStorage.getItem('rao_admin_db_v10');
-        if(adminDb && deviceId) {
-            let users = JSON.parse(adminDb);
-            let userExists = users.some(u => u.id === deviceId);
-            if(!userExists) {
-                localStorage.removeItem('payal_key_expiry');
-                localStorage.removeItem('payal_user_tier');
-                expiry = null; // Force lock
-            }
-        }
-
-        if(!expiry || Date.now() > parseInt(expiry)) {
-            if(document.getElementById('lockScreen').style.display === 'none') {
-                document.getElementById('lockScreen').style.display = 'flex';
-                if(botIsActive) {
-                    toggleBotPowerMain(); 
-                }
-            }
-        }
-    }
-
     function openDisclaimer() { document.getElementById('disclaimerModal').style.display = 'flex'; }
     function closeDisclaimer() { document.getElementById('disclaimerModal').style.display = 'none'; }
+
+    // PLANS PANEL LOGIC
+    function togglePlansPanel() {
+        let panel = document.getElementById('plansPanel');
+        panel.classList.toggle('show');
+    }
+    function contactAdminForPlan(planName) {
+        window.open(`https://t.me/raosahab0035?text=Hello%20Rao%20Sahab,%20I%20am%20interested%20in%20purchasing%20the%20${encodeURIComponent(planName)}%20plan.%20My%20Device%20ID%20is:%20${encodeURIComponent(deviceId)}`, '_blank');
+    }
+
+    // 7-DAY CALENDAR GENERATOR
+    function renderCalendar() {
+        const calDiv = document.getElementById('weekCalendar');
+        const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+        let html = '';
+        let today = new Date();
+        
+        // Show 3 days before today, today, and 3 days ahead
+        for(let i = -3; i <= 3; i++) {
+            let d = new Date(today);
+            d.setDate(today.getDate() + i);
+            let isToday = i === 0;
+            let dayName = days[d.getDay()];
+            let dateNum = d.getDate();
+            
+            let bg = isToday ? '#a3e635' : '#111';
+            let color = isToday ? '#000' : '#fff';
+            let border = isToday ? 'border: 2px solid #fff;' : 'border: 1px solid #333;';
+            let shadow = isToday ? 'box-shadow: 0 0 10px #a3e635;' : '';
+            
+            html += `<div style="flex:1; min-width:45px; background:${bg}; color:${color}; ${border} ${shadow} border-radius:8px; padding:8px 0; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; transition:0.3s;">
+                <span style="font-family:'Rajdhani'; font-size:10px; font-weight:bold; letter-spacing:1px;">${dayName}</span>
+                <span style="font-family:'Orbitron'; font-size:16px; font-weight:900; margin-top:2px;">${dateNum}</span>
+            </div>`;
+        }
+        calDiv.innerHTML = html;
+    }
 
     const API_URLS = { 
       30: 'https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json', 
@@ -810,6 +879,7 @@
       300: 'https://draw.ar-lottery01.com/WinGo/WinGo_5M/GetHistoryIssuePage.json'
     };
 
+    // ALL 9 GAMES RESTORED WITH IMAGES
     const GAMES = [
       { name: "DAMAN GAME", img: "https://i.ibb.co/GYHZtT0/image.png", link: "https://damanworld.top/#/register?invitationCode=613534185076", time: 60 },
       { name: "JALWA CLUB", img: "https://i.ibb.co/pBvkLtvP/image.png", link: "https://jalwaclub3.com/#/register?invitationCode=562647318340", time: 60 },
@@ -822,51 +892,23 @@
       { name: "LOTTERY 7", img: "https://i.ibb.co/39BSwjdS/image.jpg", link: "https://www.lottery7kk.com/#/register?invitationCode=364622670994", time: 60 }
     ];
 
-    const TelegramConfig = {
-      images: { 
-          // TELEGRAM IMAGE FIX: Direct Image links provided
-          gameImg: "https://i.ibb.co/GYHZtT0/image.png",
-          startImg: "https://i.ibb.co/DPLZLskP/start.jpg",
-          stopImg: "https://i.ibb.co/ynVfxNzn/stop.jpg"
-      },
-      stickers: {
-        win: [ 
-          "CAACAgUAAxkBAAEQq7FpqAgnHqUj1g2db-MYaafwAAGu_PAAArsTAALWYGFWWhcQp3Dp0r46BA", 
-          ["CAACAgUAAxkBAAEQq7NpqAgte7INM5JVpBBtGy16okgI9QAClxQAAq3TYVZlMULMoFMWAzoE", "CAACAgUAAxkBAAEQq7lpqAhYbndZzrCd2xC7RkxeOAItQwACFxMAAj3RYVaIFvHu8o1VUzoE", "CAACAgUAAxkBAAEQq7VpqAg5-DhOTmBCI3MXN5941Xb-WwACFxYAAl_PYFYjutVlOf2UrToE"], 
-          "CAACAgUAAxkBAAEQq7dpqAg_g8iSIBbYFbYuKuFKMdoXuwAC0xMAAtJlYVZ8CDYuQ-4m-DoE" 
-        ],
-        loss: [ 
-          "CAACAgUAAxkBAAEQq7tpqAklItDYQpSpFiIM-eGCYAFgCAACZxgAAtcTYFaEj8AZKfua5ToE", 
-          "CAACAgUAAxkBAAEQq71pqAk3_fyV4pUssBQBbl_F6cHjHQACrw0AAtY3kVdRBrHQpnB5FToE", 
-          "CAACAgUAAxkBAAEQq79pqAlIttUD4dkrvAIYJ9F0IfoRngACBBUAAkCm0VZ9fTCZOUYXOToE" 
-        ],
-        jackpot: "CAACAgUAAxkBAAEQoNxpoHkG_25CfnXUVSyaDd1l9PFWtAACPgIAApEMUFWQZaH6VMhVjzoE"
-      }
-    };
-
     let selectedGameIndex = 0; 
     let appTimer = 60; 
     let timerInterval;
     let botIsActive = false; 
-    let isAIConnected = false; 
     let tgBotActive = false;
-    let isAiUnlockedByUser = false; 
     let currentPrediction = { period: "", bs: "", color: "", target: 0, isPending: false };
+    let appLossStreak = 0;
     let winCount = 9;
     let totalCount = 10;
-    
-    let appLossStreak = 0; 
-    let activeServer = 'PAYAL 1'; 
-    let perfData = [0, 1, 1, -1, 1, 1, -1, 1, 1, 1];
-    
     let lastTgMsgId = null;
+    let activeServer = 'PAYAL 1';
+    let perfData = [0, 1, 1, -1, 1, 1, -1, 1, 1, 1];
 
-    // ==========================================
-    // 2. INITIALIZATION
-    // ==========================================
     window.onload = () => {
       initDeviceSecurity();
-      setInterval(checkSecurityLoop, 1000);
+      setInterval(initDeviceSecurity, 2000); 
+      renderCalendar(); 
 
       document.getElementById('gameSlider').innerHTML = GAMES.map((g, i) => `
         <div class="iphone-card ${i === 0 ? 'active' : ''}" onclick="loadGame(${i}, this)">
@@ -877,71 +919,9 @@
       `).join(''); 
       
       loadConfig();
-      
-      if (localStorage.getItem('profNamePayal')) {
-        document.getElementById('mainProfName').innerText = localStorage.getItem('profNamePayal');
-      }
-      if (localStorage.getItem('profPicPayal')) {
-        document.getElementById('mainProfPic').src = localStorage.getItem('profPicPayal');
-        document.getElementById('modalProfPic').src = localStorage.getItem('profPicPayal');
-      }
-      
       updateUIGraphsAndRings(); 
       drawPerfChart();
     };
-
-    function previewGalleryImage(event) {
-        let file = event.target.files[0];
-        if (file) {
-            let reader = new FileReader();
-            reader.onload = function(e) {
-                let img = new Image();
-                img.onload = function() {
-                    let canvas = document.createElement('canvas');
-                    let ctx = canvas.getContext('2d');
-                    let MAX_WIDTH = 150;
-                    let MAX_HEIGHT = 150;
-                    let width = img.width;
-                    let height = img.height;
-                    
-                    if (width > height) {
-                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-                    } else {
-                        if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
-                    }
-                    canvas.width = width;
-                    canvas.height = height;
-                    ctx.drawImage(img, 0, 0, width, height);
-                    let dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-                    
-                    document.getElementById('modalProfPic').src = dataUrl;
-                };
-                img.src = e.target.result;
-            }
-            reader.readAsDataURL(file);
-        }
-    }
-
-    function openProfileModal() {
-      document.getElementById('profileModal').style.display = 'flex';
-      document.getElementById('profNameInp').value = document.getElementById('mainProfName').innerText;
-    }
-
-    function saveProfileData() {
-      let n = document.getElementById('profNameInp').value || "User_8472";
-      let p = document.getElementById('modalProfPic').src;
-      
-      document.getElementById('mainProfName').innerText = n;
-      document.getElementById('mainProfPic').src = p;
-      
-      try {
-          localStorage.setItem('profNamePayal', n);
-          localStorage.setItem('profPicPayal', p);
-      } catch(e) { console.warn("Storage full."); }
-      
-      document.getElementById('profileModal').style.display = 'none';
-      showToast("PROFILE UPDATED SUCCESSFULLY!");
-    }
 
     function showToast(m) { 
         let t = document.getElementById('toast'); 
@@ -962,45 +942,12 @@
     function saveConfig() {
       localStorage.setItem('botTokenPayal', document.getElementById('botToken').value);
       localStorage.setItem('chatIdPayal', document.getElementById('chatId').value);
-      localStorage.setItem('channelLinkPayal', document.getElementById('channelLink').value);
-      
-      localStorage.setItem('hashTglPayal', document.getElementById('hashTgl').checked);
-      localStorage.setItem('hashTxtPayal', document.getElementById('hashTxt').value);
-      
-      localStorage.setItem('giftTglPayal', document.getElementById('giftTgl').checked);
-      localStorage.setItem('giftTxtPayal', document.getElementById('giftTxt').value);
-      
-      localStorage.setItem('inviteTglPayal', document.getElementById('inviteTgl').checked);
-      localStorage.setItem('inviteTxtPayal', document.getElementById('inviteTxt').value);
-
-      localStorage.setItem('chTglPayal', document.getElementById('chTgl').checked);
-      localStorage.setItem('shortTglPayal', document.getElementById('shortTgl').checked);
-      localStorage.setItem('colorTglPayal', document.getElementById('colorTgl').checked);
     }
-    
-    function saveConfigWithMsg() {
-        saveConfig();
-        showToast("CONFIG SAVED SUCCESSFULLY!");
-    }
-
     function loadConfig() {
       if (localStorage.getItem('botTokenPayal')) document.getElementById('botToken').value = localStorage.getItem('botTokenPayal');
       if (localStorage.getItem('chatIdPayal')) document.getElementById('chatId').value = localStorage.getItem('chatIdPayal');
-      if (localStorage.getItem('channelLinkPayal')) document.getElementById('channelLink').value = localStorage.getItem('channelLinkPayal');
-      
-      if (localStorage.getItem('hashTglPayal') !== null) document.getElementById('hashTgl').checked = (localStorage.getItem('hashTglPayal') === 'true');
-      if (localStorage.getItem('hashTxtPayal')) document.getElementById('hashTxt').value = localStorage.getItem('hashTxtPayal');
-
-      if (localStorage.getItem('giftTglPayal') !== null) document.getElementById('giftTgl').checked = (localStorage.getItem('giftTglPayal') === 'true');
-      if (localStorage.getItem('giftTxtPayal')) document.getElementById('giftTxt').value = localStorage.getItem('giftTxtPayal');
-
-      if (localStorage.getItem('inviteTglPayal') !== null) document.getElementById('inviteTgl').checked = (localStorage.getItem('inviteTglPayal') === 'true');
-      if (localStorage.getItem('inviteTxtPayal')) document.getElementById('inviteTxt').value = localStorage.getItem('inviteTxtPayal');
-
-      if (localStorage.getItem('chTglPayal') !== null) document.getElementById('chTgl').checked = (localStorage.getItem('chTglPayal') === 'true');
-      if (localStorage.getItem('shortTglPayal') !== null) document.getElementById('shortTgl').checked = (localStorage.getItem('shortTglPayal') === 'true');
-      if (localStorage.getItem('colorTglPayal') !== null) document.getElementById('colorTgl').checked = (localStorage.getItem('colorTglPayal') === 'true');
     }
+    function saveConfigWithMsg() { saveConfig(); showToast("CONFIG SAVED SUCCESSFULLY!"); }
 
     function switchTab(tabId, iconId) {
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -1008,42 +955,17 @@
       document.getElementById(tabId).classList.add('active');
       if (iconId) document.getElementById(iconId).classList.add('active-tab');
       
-      let toggleBtn = document.getElementById('footerToggleBtn');
-      let slidePanel = document.getElementById('slidingResultPanel');
       let spUi = document.getElementById('serverPortPopup');
-
-      if (tabId === 'tabGame') {
-          toggleBtn.style.display = 'block';
-          if(botIsActive) spUi.style.display = 'block';
+      if (tabId === 'tabGame' && botIsActive) {
+          spUi.style.display = 'block';
       } else {
-          toggleBtn.style.display = 'none';
-          slidePanel.classList.remove('show');
-          toggleBtn.innerText = "SHOW RESULT";
-          toggleBtn.style.borderColor = "#00ff00"; toggleBtn.style.color = "#00ff00"; toggleBtn.style.boxShadow = "0 0 15px rgba(0, 255, 0, 0.5)";
           spUi.style.display = 'none';
       }
-      
-      updateCollisionTargets();
     }
 
     function toggleServerPort() {
         let spUi = document.getElementById('serverPortPopup');
         spUi.style.display = spUi.style.display === 'none' ? 'block' : 'none';
-    }
-
-    function activateAndOpenAI() {
-        isAiUnlockedByUser = true;
-        switchTab('tabAI', 'iconAI');
-        showToast("AI PRO ACTIVATED SUCCESSFULLY!");
-    }
-
-    function tryOpenAIFromFooter() {
-        let tier = localStorage.getItem('payal_user_tier');
-        if (tier === '2' || isAiUnlockedByUser) {
-            switchTab('tabAI', 'iconAI');
-        } else {
-            showNeonBlueError("MADERCHOD ADMIN SE HELP LELE KAISE CHLE GA");
-        }
     }
 
     function loadGame(index, el) { 
@@ -1055,39 +977,22 @@
       switchTab('tabGame', 'iconGame');
     }
 
-    function loadCustomGame() {
-        let url = document.getElementById('customGameUrl').value;
-        if(url) {
-            document.getElementById('gameFrame').src = url;
-            showToast("CUSTOM GAME LOADED");
-        }
-    }
-
-    function toggleResultPanel() {
-        let panel = document.getElementById('slidingResultPanel');
-        let btn = document.getElementById('footerToggleBtn');
-        if(panel.classList.contains('show')) {
-            panel.classList.remove('show');
-            btn.innerText = "SHOW RESULT";
-            btn.style.borderColor = "#00ff00"; btn.style.color = "#00ff00"; btn.style.boxShadow = "0 0 15px rgba(0, 255, 0, 0.5)";
-        } else {
-            panel.classList.add('show');
-            btn.innerText = "HIDE PANEL";
-            btn.style.borderColor = "#ff0055"; btn.style.color = "#ff0055"; btn.style.boxShadow = "0 0 15px rgba(255, 0, 85, 0.5)";
-        }
-    }
-
     function setTimer(secs, el) {
       appTimer = secs;
       document.querySelectorAll('.timer-circle').forEach(b => b.classList.remove('active'));
       el.classList.add('active');
-      
-      if (botIsActive) {
-          clearInterval(timerInterval);
-          startBotMasterLoop();
-      }
     }
-
+    
+    function tryOpenAIFromFooter() {
+        let tier = localStorage.getItem('payal_user_tier');
+        if (tier === '2') {
+            switchTab('tabAI', 'iconAI');
+        } else {
+            showNeonBlueError("MADERCHOD ADMIN SE HELP LELE KAISE CHLE GA");
+            togglePlansPanel();
+        }
+    }
+    
     function selServer(serverName) {
       activeServer = serverName;
       document.getElementById('predServer').innerText = activeServer;
@@ -1117,14 +1022,12 @@
         if (!token || !chatId) return;
 
         try {
-            // Using sendDocument ensures full uncropped original image goes to Telegram
             await fetch(`https://api.telegram.org/bot${token}/sendDocument`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ chat_id: chatId, document: url, caption: caption, parse_mode: 'Markdown' })
             });
         } catch (e) {
-            // Fallback to text if document fails
             fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -1133,7 +1036,6 @@
         }
     }
 
-    // DELETE TG MESSAGE FUNCTION
     async function deleteTgMessage(msgId) {
         const token = document.getElementById('botToken').value;
         const chatId = document.getElementById('chatId').value;
@@ -1156,55 +1058,277 @@
             btn.innerHTML = "▶ START TELEGRAM BOT";
             showToast("TELEGRAM BOT STOPPED");
             
-            if (lastTgMsgId) {
-                deleteTgMessage(lastTgMsgId); 
-                lastTgMsgId = null;
-            }
-            sendTgPhotoBase("🛑 *SESSION STOPPED*", TelegramConfig.images.stopImg); 
+            if (lastTgMsgId) { deleteTgMessage(lastTgMsgId); lastTgMsgId = null; }
+            sendTgPhotoBase("🛑 *SESSION STOPPED*", "https://i.ibb.co/ynVfxNzn/stop.jpg"); 
         } else {
             if(!document.getElementById('botToken').value || !document.getElementById('chatId').value) {
-                alert("Please enter Bot Token and Chat ID first!");
-                return;
+                alert("Please enter Bot Token and Chat ID first!"); return;
             }
             tgBotActive = true;
             btn.classList.add('running');
             btn.innerHTML = "🛑 STOP TELEGRAM BOT";
             showToast("TELEGRAM BOT STARTED");
-            
-            sendTgPhotoBase("🚀 *SESSION STARTED* \n\nGood Luck!", TelegramConfig.images.startImg);
+            sendTgPhotoBase("🚀 *SESSION STARTED* \n\nGood Luck!", "https://i.ibb.co/DPLZLskP/start.jpg");
         }
     }
 
+    // ==========================================================
+    // 3. REAL BOT ENGINE (Advanced Nazar Pattern + 150 Matrix)
+    // ==========================================================
+    const RaoSahabEngine = {
+      masterCalculate: function(history, currentPeriod, serverName, lossStreak) {
+        if (!history || history.length < 6) return { bs: "WAIT", color: "WAIT", target: 0 };
+        
+        let N1 = history[0], N2 = history[1], N3 = history[2];
+        let p_last = parseInt(currentPeriod.slice(-1));
+        let p_full = parseInt(currentPeriod.slice(-4));
+        let sum5 = history.slice(0, 5).reduce((a, b) => a + b, 0);
+
+        let histBS = history.map(n => n >= 5 ? "B" : "S");
+        let p1 = histBS[0], p2 = histBS[1], p3 = histBS[2], p4 = histBS[3];
+        let isStreak = (p1 == p2 && p2 == p3 && p3 == p4); 
+        let isAlt = (p1 != p2 && p2 != p3 && p3 != p4);
+
+        let bigVotes = 0, smallVotes = 0;
+        for (let i = 1; i <= 150; i++) {
+            let calc = ((N1 * i) + (history[i % history.length] * N2) + p_last) % 10;
+            if (calc >= 5) bigVotes++; else smallVotes++;
+        }
+
+        let smartBS = bigVotes > smallVotes ? "BIG" : "SMALL";
+        if (isStreak) smartBS = p1; 
+        else if (isAlt) smartBS = p1 === "B" ? "SMALL" : "BIG"; 
+
+        if (lossStreak === 1) smartBS = smartBS === "BIG" ? "SMALL" : "BIG";
+
+        let targetNumber = smartBS === "BIG" ? ((p_last + N1) % 2 === 0 ? 8 : 7) : ((p_last + N1) % 2 === 0 ? 2 : 3);
+        let finalColor = targetNumber % 2 === 0 ? "RED" : "GREEN";
+
+        return { bs: smartBS, color: finalColor, target: targetNumber };
+      }
+    };
+
+    async function fetchWingoLive() {
+      try { 
+        let res = await fetch(`${API_URLS[appTimer]}?pageSize=50&ts=${Date.now()}`);
+        let data = await res.json(); 
+        if (data && data.data && data.data.list) return data.data.list;
+      } catch(e) {} return null;
+    }
+
+    async function toggleBotPowerMain() {
+      let mainBtn = document.getElementById('mainPowerBtn');
+      let statusText = document.getElementById('connectionStatus');
+
+      if (botIsActive) {
+        mainBtn.classList.remove('on');
+        statusText.innerText = "[ SYSTEM OFFLINE ]";
+        statusText.style.color = "#ff0055";
+        botIsActive = false;
+        document.getElementById('serverPortPopup').style.display = 'none';
+        clearInterval(timerInterval);
+        if(tgBotActive && lastTgMsgId) { deleteTgMessage(lastTgMsgId); lastTgMsgId = null; }
+      } else {
+        let tier = localStorage.getItem('payal_user_tier');
+        if(!tier) return;
+
+        statusText.innerText = "[ SYSTEM ONLINE ]";
+        statusText.style.color = "#00ff00";
+        mainBtn.classList.add('on');
+        botIsActive = true;
+        
+        if(document.getElementById('tabGame').classList.contains('active')){
+            document.getElementById('serverPortPopup').style.display = 'block';
+        }
+        startBotMasterLoop();
+      }
+    }
+
+    async function startBotMasterLoop() {
+      await performPredictionLogic(); 
+      window.isFetchingData = false;
+
+      timerInterval = setInterval(async () => {
+        if (!botIsActive) return;
+        
+        let realSeconds = new Date().getSeconds();
+        let rem = appTimer - (realSeconds % appTimer);
+        
+        if (appTimer === 30) rem = 30 - (realSeconds % 30);
+        else if (appTimer === 60) rem = 60 - realSeconds;
+        else if (appTimer === 180) rem = 180 - (((new Date().getMinutes() % 3) * 60) + realSeconds);
+        else if (appTimer === 300) rem = 300 - (((new Date().getMinutes() % 5) * 60) + realSeconds);
+        
+        let m = Math.floor(rem / 60);
+        let s = rem % 60;
+        let timeStr = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+        
+        document.getElementById('mainUiTimer').innerText = timeStr;
+        document.getElementById('spTimer').innerText = timeStr; // Update Game Tab Popup Timer
+        let aiTimerEl = document.getElementById('aiTimer');
+        if(aiTimerEl) aiTimerEl.innerText = timeStr;
+        
+        if (rem === 3) await checkResultAndStickers(); 
+        
+        if ((rem === appTimer || rem === 1) && !window.isFetchingData) { 
+            window.isFetchingData = true;
+            setTimeout(async () => {
+                await performPredictionLogic();
+                window.isFetchingData = false;
+            }, 1500); 
+        }
+      }, 1000);
+    }
+
+    async function performPredictionLogic() {
+      let apiData = await fetchWingoLive(); 
+      if(!apiData) return;
+      
+      let histNum = apiData.map(i => parseInt(i.number));
+      let lastPeriod = apiData[0].issueNumber;
+      let nextPeriod = (BigInt(lastPeriod) + 1n).toString();
+
+      let predObj = RaoSahabEngine.masterCalculate(histNum, nextPeriod, 'PAYAL 1', appLossStreak);
+      currentPrediction = { period: nextPeriod, bs: predObj.bs, color: predObj.color, target: predObj.target, isPending: true };
+
+      // Update Game Tab Server Port Popup
+      document.getElementById('spPeriod').innerText = "2026XX" + nextPeriod.slice(-4);
+      document.getElementById('spGamePeriod').innerText = nextPeriod.slice(-4);
+      document.getElementById('spResult').innerText = predObj.bs;
+      document.getElementById('spBall').innerText = predObj.target;
+      
+      let ballColor = predObj.target % 2 === 0 ? "red" : "green";
+      if(predObj.target === 0 || predObj.target === 5) ballColor = "purple";
+      document.getElementById('spBall').style.background = ballColor;
+      
+      // Reset Pills
+      document.getElementById('spLoss').classList.remove('loss');
+      document.getElementById('spWin').classList.remove('highlight');
+      document.getElementById('spResult').classList.add('highlight');
+      
+      // Update Main Green UI
+      document.getElementById('mmPresentPeriod').innerText = nextPeriod.slice(-4);
+      document.getElementById('mmPresentResult').innerText = predObj.bs;
+      document.getElementById('mmPresentResult').style.color = predObj.color === "RED" ? "#ff0055" : "#00ffff";
+      
+      // Update History Balls
+      document.getElementById('histBalls').innerHTML = apiData.slice(0, 5).map(i => {
+        let n = parseInt(i.number);
+        let color = (n == 0 || n == 5) ? 'purple' : (n % 2 == 0 ? 'red' : 'green');
+        return `<div style="width:30px;height:30px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;">${n}</div>`;
+      }).join('');
+
+      if(tgBotActive) {
+          const token = document.getElementById('botToken').value; 
+          const chatId = document.getElementById('chatId').value; 
+          if (!token || !chatId) return;
+          
+          let gameStr = GAMES[selectedGameIndex].name;
+          let msg = `🎰 *RAO SAHAB AI BOT* 🎰\n╔═◈═◈═◈═◈═◈═╗\n📅 *Date* : ${new Date().toLocaleDateString('en-GB')}\n🎮 *Game* : ${gameStr}\n🔢 *Period* : ${nextPeriod.slice(-4)}\n⏱ *Timer* : ${appTimer < 60 ? '30 Sec' : (appTimer/60)+' Min'}\n╚═◈═◈═◈═◈═◈═╝\n\n🎯 *RESULT INFO* 🎯\n🔮 Prediction : ➨ *${predObj.bs}*\n📊 Risk : Level ${appLossStreak+1}\n❄️ Target Ball: ${predObj.target}`;
+          
+          fetch(`https://api.telegram.org/bot${token}/sendDocument`, { 
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, document: "https://i.ibb.co/GYHZtT0/image.png", caption: msg, parse_mode: 'Markdown' }) 
+          }).then(res => res.json()).then(data => { if(data.ok) lastTgMsgId = data.result.message_id; });
+      }
+    }
+
+    async function checkResultAndStickers() {
+      if (!currentPrediction.isPending) return;
+      let apiData = await fetchWingoLive(); 
+      if(!apiData || apiData[0].issueNumber !== currentPrediction.period) return;
+      
+      let actualNumber = parseInt(apiData[0].number);
+      let actualBs = actualNumber >= 5 ? "BIG" : "SMALL";
+      let actualColor = (actualNumber === 0 || actualNumber === 5) ? (actualNumber === 0 ? "RED" : "GREEN") : (actualNumber % 2 === 0 ? "RED" : "GREEN");
+      
+      let isWin = (actualBs === currentPrediction.bs);
+      let isJackpot = (actualNumber === currentPrediction.target);
+
+      if (!isWin) { appLossStreak++; } else { appLossStreak = 0; winCount++; }
+      totalCount++;
+      updateUIGraphsAndRings();
+
+      // Update Game Tab Server Port Popup Pills
+      if(isWin) {
+          document.getElementById('spWin').classList.add('highlight');
+          document.getElementById('spLoss').classList.remove('loss');
+      } else {
+          document.getElementById('spLoss').classList.add('loss');
+          document.getElementById('spWin').classList.remove('highlight');
+      }
+      document.getElementById('spResult').classList.remove('highlight');
+      
+      // Update Past Green UI
+      document.getElementById('mmPastPeriod').innerText = currentPrediction.period.slice(-4);
+      document.getElementById('mmPastBot').innerText = currentPrediction.bs;
+      document.getElementById('mmLastStatus').innerText = isWin ? 'WIN' : 'LOSS';
+      document.getElementById('mmLastStatus').style.background = isWin ? 'green' : 'red';
+      
+      // Add to History Table
+      let tr = `<tr>
+        <td>${currentPrediction.period.slice(-4)}</td>
+        <td style="color:${currentPrediction.color === 'RED' ? '#ff0055' : '#00ffff'}">${currentPrediction.bs}</td>
+        <td style="color:${actualColor === 'RED' ? '#ff0055' : '#00ffff'}">${actualBs}</td>
+        <td style="color:${isWin ? '#00ff00' : 'red'}; font-weight:bold;">${isJackpot ? 'HIT 🎯' : (isWin ? 'WIN' : 'LOSS')}</td>
+      </tr>`;
+      let tbody = document.getElementById('historyTableBody');
+      if(tbody) tbody.insertAdjacentHTML('afterbegin', tr);
+
+      currentPrediction.isPending = false;
+
+      if(tgBotActive) {
+          const token = document.getElementById('botToken').value; 
+          const chatId = document.getElementById('chatId').value; 
+          if (!token || !chatId) return;
+          const sendStck = async (id) => fetch(`https://api.telegram.org/bot${token}/sendSticker`, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({chat_id: chatId, sticker: id})});
+
+          if (isWin) {
+            if (isJackpot) await sendStck(TelegramConfig.stickers.jackpot);
+            await sendStck(TelegramConfig.stickers.win[0]);
+            setTimeout(() => sendStck(TelegramConfig.stickers.win[1][0]), 1000);
+          } else {
+            await sendStck(TelegramConfig.stickers.loss[0]);
+          }
+      }
+    }
+    
     function updateUIGraphsAndRings() {
       let winPer = Math.floor((winCount / totalCount) * 100);
       if (winPer < 50) winPer = 80; 
       let lossPer = 100 - winPer;
 
-      document.getElementById('uiWinAcc').innerText = winPer + '%';
-      document.getElementById('uiLossAcc').innerText = lossPer + '%';
+      let uiWin = document.getElementById('uiWinAcc');
+      let uiLoss = document.getElementById('uiLossAcc');
+      if(uiWin) uiWin.innerText = winPer + '%';
+      if(uiLoss) uiLoss.innerText = lossPer + '%';
 
       let srv1 = 100 - winPer; 
       let srv2 = 100 - (winPer - 5);
       let srv3 = 100 - (winPer + 2);
       if(srv3 < 0) srv3 = 5;
 
-      document.getElementById('uiRing1').style.strokeDashoffset = srv1;
-      document.getElementById('sr1-perc').innerText = (100 - srv1) + '%';
+      let r1 = document.getElementById('uiRing1');
+      if(r1) r1.style.strokeDashoffset = srv1;
+      let p1 = document.getElementById('sr1-perc');
+      if(p1) p1.innerText = (100 - srv1) + '%';
       
-      document.getElementById('uiRing2').style.strokeDashoffset = srv2;
-      document.getElementById('sr2-perc').innerText = (100 - srv2) + '%';
+      let r2 = document.getElementById('uiRing2');
+      if(r2) r2.style.strokeDashoffset = srv2;
+      let p2 = document.getElementById('sr2-perc');
+      if(p2) p2.innerText = (100 - srv2) + '%';
       
-      document.getElementById('uiRing3').style.strokeDashoffset = srv3;
-      document.getElementById('sr3-perc').innerText = (100 - srv3) + '%';
+      let r3 = document.getElementById('uiRing3');
+      if(r3) r3.style.strokeDashoffset = srv3;
+      let p3 = document.getElementById('sr3-perc');
+      if(p3) p3.innerText = (100 - srv3) + '%';
 
       let mt1 = document.getElementById('m1-perc');
       if(mt1) {
           mt1.innerText = winPer + '%';
           document.getElementById('m1-val').style.strokeDashoffset = 160 - (160 * winPer / 100);
-
           document.getElementById('m2-perc').innerText = lossPer + '%';
           document.getElementById('m2-val').style.strokeDashoffset = 160 - (160 * lossPer / 100);
-
           let stable = Math.min(99, winPer + 10);
           document.getElementById('m3-perc').innerText = stable + '%';
           document.getElementById('m3-val').style.strokeDashoffset = 160 - (160 * stable / 100);
@@ -1240,317 +1364,19 @@
       }
     }
 
-    // ==========================================================
-    // 3. MASTER AI PRO ENGINE (NAZAR PATTERN + 150 MATRIX LOGIC)
-    // ==========================================================
-    const CalculationEngine = {
-      predict: function(apiData, nextPeriod, serverName, lossStreak) {
-        if (!apiData || apiData.length < 6) return { bs: "WAIT", color: "WAIT", target: 0 };
-        
-        let N1 = parseInt(apiData[0].number);
-        let N2 = parseInt(apiData[1].number);
-        let N3 = parseInt(apiData[2].number);
-        
-        let p_last = parseInt(nextPeriod.slice(-1));
-        let p_full = parseInt(nextPeriod.slice(-4));
-        let sum5 = apiData.slice(0, 5).reduce((a, b) => a + parseInt(b.number), 0);
-
-        // --- ADVANCED PATTERN DETECTOR (NAZAR ENGINE) ---
-        let histBS = apiData.slice(0, 5).map(n => parseInt(n.number) >= 5 ? "B" : "S");
-        let p1 = histBS[0], p2 = histBS[1], p3 = histBS[2], p4 = histBS[3], p5 = histBS[4];
-
-        let isStreak = (p1 == p2 && p2 == p3 && p3 == p4); // BBBB
-        let isAlt = (p1 != p2 && p2 != p3 && p3 != p4); // BSBS
-        let isTwoByTwo = (p1 == p2 && p3 == p4 && p1 != p3); // BBSS
-
-        // CORE 150 Matrix
-        let bigVotes = 0, smallVotes = 0;
-        for (let i = 1; i <= 150; i++) {
-            let calc;
-            if (i <= 50) calc = ((N1 * i) + (parseInt(apiData[i % 50].number) * N2) + p_last) % 10;
-            else if (i <= 100) calc = ((p_full * i) + sum5 + N3) % 10;
-            else calc = (Math.pow(N1, 2) + parseInt(apiData[i % 50].number) + i) % 10;
-            if (calc >= 5) bigVotes++; else smallVotes++;
-        }
-
-        let add = N1 + N2;
-        let sub = Math.abs(N1 - N2);
-        let mul = N1 * N2;
-        if (((add * N1) + p_last) % 10 >= 5) bigVotes += 15; else smallVotes += 15;
-        if (((mul - sub) + p_last) % 10 >= 5) bigVotes += 15; else smallVotes += 15;
-
-        let baseBS = bigVotes > smallVotes ? "BIG" : "SMALL";
-        
-        let smartBS = baseBS;
-        if (isStreak) smartBS = p1; // Ride trend
-        else if (isAlt) smartBS = p1 === "B" ? "SMALL" : "BIG"; // Ride alt
-        else if (isTwoByTwo) smartBS = p1 === "B" ? "SMALL" : "BIG"; 
-
-        let finalBS = smartBS;
-
-        // SERVER OVERRIDES
-        if (serverName === 'PAYAL 2') {
-            finalBS = smartBS === "BIG" ? "SMALL" : "BIG"; 
-        } 
-        else if (serverName === 'PAYAL 3' || serverName === 'PAYAL 1') {
-            if (lossStreak === 1) {
-                finalBS = smartBS === "BIG" ? "SMALL" : "BIG"; // L2 Reverse
-            } else if (lossStreak === 2) {
-                if (isStreak) finalBS = p1 === "B" ? "SMALL" : "BIG";
-                else if (isAlt) finalBS = p1; 
-                else finalBS = baseBS; 
-            }
-        }
-
-        // TARGET NUMBER LOGIC
-        let targetNumber;
-        if (finalBS === "BIG") targetNumber = (p_last + N1) % 2 === 0 ? 8 : 7;
-        else targetNumber = (p_last + N1) % 2 === 0 ? 2 : 3;
-        
-        let finalColor = targetNumber % 2 === 0 ? "RED" : "GREEN";
-
-        return { bs: finalBS, color: finalColor, target: targetNumber };
-      }
-    };
-
-    // ==========================================
-    // 4. LIVE API ENGINE & MASTER CONNECTION
-    // ==========================================
-    function pingExtraAPIs() {
-        try {
-            let ts = Date.now();
-            fetch(`https://draw.ar-lottery01.com/WinGo/WinGo_30S.json?ts=${ts}`).catch(e=>e);
-        } catch(e) {}
-    }
-
-    async function fetchWingoLive() {
-      let url = API_URLS[appTimer];
-      pingExtraAPIs(); 
-      try { 
-        let res = await fetch(`${url}?pageSize=50&ts=${Date.now()}`);
-        let data = await res.json(); 
-        if (data && data.data && data.data.list) return data.data.list;
-      } catch(e) { console.error(e); } 
-      return null;
-    }
-
-    async function toggleBotPowerMain() {
-      let mainBtn = document.getElementById('mainPowerBtn');
-      let statusText = document.getElementById('connectionStatus');
-
-      if (botIsActive) {
-        mainBtn.classList.remove('on');
-        statusText.innerText = "[ SYSTEM OFFLINE ]";
-        statusText.style.color = "#ff0055";
-        document.getElementById('predictionUI').style.display = 'none';
-        document.getElementById('serverPortPopup').style.display = 'none';
-        clearInterval(timerInterval);
-        botIsActive = false;
-        if(tgBotActive && lastTgMsgId) { deleteTgMessage(lastTgMsgId); lastTgMsgId = null; }
-      } else {
-        if(!document.getElementById('lsKeyInput').value && !localStorage.getItem('payal_key_expiry')) { 
-            showNeonBlueError("MADERCHOD ADMIN SE HELP LELE KAISE CHLE GA"); return; 
-        }
-        statusText.innerText = "[ CONNECTING... ]";
-        statusText.style.color = "orange";
-        await new Promise(r => setTimeout(r, 1500));
-        statusText.innerText = "[ SMART BRAIN ONLINE ]";
-        statusText.style.color = "#00ff00";
-        mainBtn.classList.add('on');
-        document.getElementById('predictionUI').style.display = 'block';
-        
-        if (document.getElementById('tabGame').classList.contains('active')) {
-            document.getElementById('serverPortPopup').style.display = 'block';
-        }
-
-        botIsActive = true;
-        startBotMasterLoop();
-      }
-    }
-
-    async function startBotMasterLoop() {
-      await performPredictionLogic(); 
-      window.isFetchingData = false;
-
-      timerInterval = setInterval(async () => {
-        if (!botIsActive) return;
-        
-        let realSeconds = new Date().getSeconds();
-        let rem = appTimer - (realSeconds % appTimer);
-        
-        if (appTimer === 30) rem = 30 - (realSeconds % 30);
-        else if (appTimer === 60) rem = 60 - realSeconds;
-        else if (appTimer === 180) rem = 180 - (((new Date().getMinutes() % 3) * 60) + realSeconds);
-        else if (appTimer === 300) rem = 300 - (((new Date().getMinutes() % 5) * 60) + realSeconds);
-        
-        let m = Math.floor(rem / 60);
-        let s = rem % 60;
-        let timeStr = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
-        
-        document.getElementById('aiTimer').innerText = timeStr;
-        document.getElementById('mainUiTimer').innerText = timeStr;
-        document.getElementById('predUiTimer').innerText = timeStr;
-        document.getElementById('slideTimer').innerText = timeStr;
-        document.getElementById('spTimer').innerText = timeStr; // Game Tab Popup Timer
-        
-        if (rem === 3) await checkResultAndStickers(); 
-        
-        if ((rem === appTimer || rem === 1) && !window.isFetchingData) { 
-            window.isFetchingData = true;
-            setTimeout(async () => {
-                await performPredictionLogic();
-                window.isFetchingData = false;
-            }, 1500); 
-        }
-      }, 1000);
-    }
-
-    async function performPredictionLogic() {
-      let apiData = await fetchWingoLive(); 
-      if (!apiData) return;
-
-      let lastPeriod = apiData[0].issueNumber;
-      let nextPeriod = (BigInt(lastPeriod) + 1n).toString();
-      
-      let res = CalculationEngine.predict(apiData, nextPeriod, activeServer, appLossStreak);
-      currentPrediction = { period: nextPeriod, bs: res.bs, color: res.color, target: res.target, isPending: true };
-
-      let isColorMode = document.getElementById('colorTgl').checked;
-      let dispRes = isColorMode ? currentPrediction.color : currentPrediction.bs;
-      let clr = currentPrediction.color === "RED" ? "#ff0055" : "#00ffff";
-
-      // AI Tab Updates
-      document.getElementById('aiDispPeriod').innerText = nextPeriod.slice(-4);
-      document.getElementById('aiPending').innerText = dispRes;
-      document.getElementById('aiPending').style.color = clr;
-      
-      // Main UI Updates
-      document.getElementById('predPeriod').innerText = nextPeriod.slice(-4);
-      document.getElementById('predResult').innerText = dispRes;
-      document.getElementById('predResult').style.color = clr;
-      document.getElementById('predCold').innerText = currentPrediction.target;
-      document.getElementById('mmPresentPeriod').innerText = nextPeriod.slice(-4);
-      document.getElementById('slideResult').innerText = dispRes;
-      document.getElementById('slideResult').style.color = clr;
-      document.getElementById('slideCold').innerText = currentPrediction.target;
-
-      // Server Port Popup UI Updates (Game Tab)
-      document.getElementById('spPeriod').innerText = "2026XX" + nextPeriod.slice(-4);
-      document.getElementById('spGamePeriod').innerText = nextPeriod.slice(-4);
-      document.getElementById('spResult').innerText = dispRes;
-      document.getElementById('spBall').innerText = currentPrediction.target;
-      let ballColor = currentPrediction.target % 2 === 0 ? "red" : "green";
-      if(currentPrediction.target === 0 || currentPrediction.target === 5) ballColor = "purple";
-      document.getElementById('spBall').style.background = ballColor;
-      
-      // Reset Server Port Pills
-      document.getElementById('spLoss').classList.remove('loss');
-      document.getElementById('spWin').classList.remove('highlight');
-      document.getElementById('spResult').classList.add('highlight');
-
-      document.getElementById('histBalls').innerHTML = apiData.slice(0, 5).map(i => {
-        let n = parseInt(i.number);
-        let color = (n == 0 || n == 5) ? 'purple' : (n % 2 == 0 ? 'red' : 'green');
-        return `<div style="width:30px;height:30px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;">${n}</div>`;
-      }).join('');
-      
-      if(tgBotActive) sendTgPredictionMsg();
-    }
-
-    async function checkResultAndStickers() {
-      if (!currentPrediction.isPending) return;
-      let apiData = await fetchWingoLive(); 
-      if (!apiData) return;
-
-      let resultItem = apiData.find(i => i.issueNumber === currentPrediction.period);
-      if (!resultItem) return;
-
-      let actualN = parseInt(resultItem.number);
-      let actualBS = actualN >= 5 ? "BIG" : "SMALL";
-      let actualColor = (actualN === 0 || actualN === 5) ? (actualN === 0 ? "RED" : "GREEN") : (actualN % 2 === 0 ? "RED" : "GREEN");
-
-      let isColorMode = document.getElementById('colorTgl').checked;
-      let isWin = isColorMode ? (actualColor === currentPrediction.color) : (actualBS === currentPrediction.bs);
-      let isJackpot = (actualN === currentPrediction.target);
-
-      if (isWin) { appLossStreak = 0; winCount++; } else { appLossStreak++; }
-      totalCount++;
-      updateUIGraphsAndRings();
-
-      let tr = `<tr>
-        <td>${currentPrediction.period.slice(-4)}</td>
-        <td style="color:${currentPrediction.color === 'RED' ? '#ff0055' : '#00ffff'}">${isColorMode ? currentPrediction.color : currentPrediction.bs}</td>
-        <td style="color:${actualColor === 'RED' ? '#ff0055' : '#00ffff'}">${isColorMode ? actualColor : actualBS}</td>
-        <td style="color:${isWin ? '#00ff00' : 'red'}; font-weight:bold;">${isJackpot ? 'HIT 🎯' : (isWin ? 'WIN' : 'LOSS')}</td>
-      </tr>`;
-      document.getElementById('historyTableBody').insertAdjacentHTML('afterbegin', tr);
-      
-      // Update Game Tab Server Port Popup Pills
-      if(isWin) {
-          document.getElementById('spWin').classList.add('highlight');
-          document.getElementById('spLoss').classList.remove('loss');
-      } else {
-          document.getElementById('spLoss').classList.add('loss');
-          document.getElementById('spWin').classList.remove('highlight');
-      }
-      document.getElementById('spResult').classList.remove('highlight');
-
-      currentPrediction.isPending = false;
-      if(tgBotActive) executeStickersSequence(isWin, isJackpot);
-    }
-
-    // ==========================================
-    // 5. TELEGRAM PERFECT FETCH & EXACT STICKERS
-    // ==========================================
-    function sendTgPredictionMsg() {
-      const token = document.getElementById('botToken').value; 
-      const chatId = document.getElementById('chatId').value; 
-      if (!token || !chatId) return;
-      
-      let isColorMode = document.getElementById('colorTgl').checked;
-      let gameStr = GAMES[selectedGameIndex].name;
-      let predStr = isColorMode ? (currentPrediction.color === 'RED' ? '🔴 RED' : '🟢 GREEN') : currentPrediction.bs;
-
-      let msg = `🎰 *THE PAYAL AI BOT* 🎰\n╔═◈═◈═◈═◈═◈═╗\n📅 *Date* : ${new Date().toLocaleDateString('en-GB')}\n🎮 *Game* : ${gameStr}\n🔢 *Period* : ${currentPrediction.period.slice(-4)}\n⏱ *Timer* : ${appTimer < 60 ? '30 Sec' : (appTimer/60)+' Min'}\n╚═◈═◈═◈═◈═◈═╝\n\n🎯 *RESULT INFO* 🎯\n🔮 Prediction : ➨ *${predStr}*\n📊 Risk : ${appLossStreak === 0 ? 'Level 1' : 'Level ' + (appLossStreak+1)}\n❄️ Cold Num: ${currentPrediction.target}`;
-      
-      fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { 
-        method: 'POST', 
-        headers: { 'Content-Type': 'application/json' },
-        // Direct Image link applied here for full view
-        body: JSON.stringify({ chat_id: chatId, photo: "https://i.ibb.co/GYHZtT0/image.png", caption: msg, parse_mode: 'Markdown' }) 
-      }).then(res => res.json()).then(data => { if(data.ok) lastTgMsgId = data.result.message_id; });
-    }
-
-    async function executeStickersSequence(isWin, isJackpot) {
-      const token = document.getElementById('botToken').value; 
-      const chatId = document.getElementById('chatId').value; 
-      if (!token || !chatId) return;
-      const sendStck = async (id) => fetch(`https://api.telegram.org/bot${token}/sendSticker`, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({chat_id: chatId, sticker: id})});
-
-      if (isWin) {
-        if (isJackpot) await sendStck(TelegramConfig.stickers.jackpot);
-        await sendStck(TelegramConfig.stickers.win[0]);
-        setTimeout(() => sendStck(TelegramConfig.stickers.win[1][0]), 1000);
-      } else {
-        await sendStck(TelegramConfig.stickers.loss[0]);
-      }
-    }
-
-    // Physics Engine (Background Flowers)
     const canvas = document.getElementById('flowerCanvas'); 
     const ctx = canvas.getContext('2d');
     let width, height, flowers = [], collisionBoxes = [];
-    function resizeCanvas() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; updateCollisionTargets(); }
+    function resizeCanvas() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
     window.addEventListener('resize', resizeCanvas);
-    function updateCollisionTargets() { collisionBoxes = []; document.querySelectorAll('.collide-target').forEach(el => { const rect = el.getBoundingClientRect(); if (rect.width > 0) collisionBoxes.push({ top: rect.top, left: rect.left, right: rect.right }); }); }
     class Flower {
-      constructor() { this.x = Math.random() * width; this.y = -20; this.size = Math.random() * 5 + 3; this.vx = (Math.random() - 0.5) * 1.5; this.vy = Math.random() * 2 + 1; this.color = Math.random() > 0.5 ? '#00ffff' : '#bf00ff'; this.spin = 0; this.spinSpeed = (Math.random() - 0.5) * 0.1; }
-      update() { this.x += this.vx; this.y += this.vy; this.spin += this.spinSpeed; for (let b of collisionBoxes) { if (this.y + this.size >= b.top && this.y < b.top + 10 && this.x > b.left && this.x < b.right && this.vy > 0) { this.vy *= -0.6; this.y = b.top - this.size; } } this.vy += 0.05; if (this.y > height + 20) { this.y = -20; this.x = Math.random() * width; } }
+      constructor() { this.x = Math.random() * width; this.y = -20; this.size = Math.random() * 5 + 3; this.vx = (Math.random() - 0.5) * 1.5; this.vy = Math.random() * 2 + 1; this.color = Math.random() > 0.5 ? '#a3e635' : '#8b5cf6'; this.spin = 0; this.spinSpeed = (Math.random() - 0.5) * 0.1; }
+      update() { this.x += this.vx; this.y += this.vy; this.spin += this.spinSpeed; this.vy += 0.05; if (this.y > height + 20) { this.y = -20; this.x = Math.random() * width; } }
       draw() { ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.spin); ctx.fillStyle = this.color; ctx.beginPath(); for (let i = 0; i < 5; i++) { ctx.ellipse(0, this.size/2, this.size/3, this.size/1.5, i * 72 * Math.PI / 180, 0, 2 * Math.PI); } ctx.fill(); ctx.restore(); }
     }
     resizeCanvas(); for (let i = 0; i < 30; i++) flowers.push(new Flower());
     function animate() { ctx.clearRect(0, 0, width, height); flowers.forEach(f => { f.update(); f.draw(); }); requestAnimationFrame(animate); }
-    setTimeout(() => { updateCollisionTargets(); animate(); }, 500);
+    setTimeout(() => { animate(); }, 500);
 
   </script>
 </body>
