@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>THE PAYAL AI BOT - V12.0</title>
+  <title>THE PAYAL AI BOT - V14.0</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:ital,wght@0,400;0,700;0,900;1,700;1,900&family=Poppins:ital,wght@0,300;0,500;0,700;1,900&family=Rajdhani:wght@700;900&display=swap');
@@ -56,6 +56,16 @@
     .ticket-input-area { background: #fff; margin-top: 20px; padding: 20px; border-radius: 0 0 15px 15px; text-align: center; }
     .ticket-input-area h3 { color: #000; font-family: 'Poppins'; font-weight: 900; font-size: 17px; margin-bottom: 15px; text-transform: uppercase;}
     
+    /* FAKE GRAPHS CSS */
+    .ls-graphs-container { display: flex; gap: 10px; width: 100%; margin-bottom: 20px; }
+    .ls-graph-card { flex: 1; background: linear-gradient(180deg, #d9f99d 0%, #a3e635 100%); border-radius: 15px; padding: 10px; position: relative; overflow: hidden; height: 120px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05); text-align: left; }
+    .ls-graph-card.dark { background: linear-gradient(180deg, #333 0%, #a3e635 100%); }
+    .ls-graph-title { font-size: 11px; font-weight: bold; color: #333; position: absolute; top: 10px; left: 10px; display: flex; align-items: center; gap: 5px; z-index: 2;}
+    .ls-graph-card.dark .ls-graph-title { color: #a3e635; }
+    .ls-graph-perc { font-size: 20px; font-weight: 900; }
+    .ls-wave { position: absolute; bottom: -5px; left: 0; width: 100%; height: 60%; fill: rgba(0,0,0,0.1); stroke: #555; stroke-width: 2px; z-index: 1;}
+    .ls-graph-card.dark .ls-wave { fill: rgba(163,230,53,0.3); stroke: #a3e635; }
+
     .device-id-box { background: rgba(163, 230, 53, 0.2); border: 2px dashed #a3e635; padding: 15px; text-align: center; border-radius: 10px; margin-bottom: 15px; cursor: pointer; }
     .dev-label { font-size: 10px; color: #666; margin-bottom: 5px; font-weight: bold; }
     .dev-code { font-size: 18px; color: #000; letter-spacing: 2px; font-family: 'Rajdhani'; font-weight: 900; }
@@ -361,12 +371,23 @@
           </div>
           
           <div class="ticket-content">
-              <div class="tc-title">PAYAL BOT V12.0 ULTRA</div>
+              <div class="tc-title">PAYAL BOT V14.0 ULTRA</div>
               <div class="tc-timer">SECURE</div>
           </div>
           
           <div class="ticket-input-area">
               <h3>DON'T MISS OUT RAO SAHAB!</h3>
+
+              <div class="ls-graphs-container">
+                  <div class="ls-graph-card">
+                      <div class="ls-graph-title">Loss <span class="ls-graph-perc">10%</span> &darr;</div>
+                      <svg class="ls-wave" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,20 Q15,40 30,70 T60,80 T100,30 L100,100 L0,100 Z"/></svg>
+                  </div>
+                  <div class="ls-graph-card dark">
+                      <div class="ls-graph-title">Win <span class="ls-graph-perc" style="color:#a3e635;">90%</span> &uarr;</div>
+                      <svg class="ls-wave" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,60 Q20,80 40,70 T70,40 T100,10 L100,100 L0,100 Z"/></svg>
+                  </div>
+              </div>
               
               <div class="device-id-box" onclick="copyDeviceId()">
                   <div class="dev-label">YOUR DEVICE ID (CLICK TO COPY)</div>
@@ -809,6 +830,28 @@
         <button class="tg-bot-btn" style="background: #222; color: #00ffff; border: 1px solid #00ffff; margin-bottom: 0;" onclick="saveConfigWithMsg()">💾 SAVE CONFIG</button>
       </div>
 
+      <div class="panel border-cyan collide-target" style="margin-top: 15px;">
+          <h4 style="color: #fff; font-family: 'Orbitron'; text-align: center; font-size:12px; margin-top:0; margin-bottom: 10px;">TELEGRAM LIVE STATS</h4>
+          <div style="display: flex; justify-content: space-around; align-items: center;">
+              <div style="text-align: center; position: relative;">
+                  <svg viewBox="0 0 60 60" style="width: 70px; height: 70px; transform: rotate(-90deg);">
+                      <circle cx="30" cy="30" r="25" style="fill: none; stroke: #222; stroke-width: 6;"></circle>
+                      <circle id="tgWinRing" cx="30" cy="30" r="25" style="fill: none; stroke: #00ff00; stroke-width: 6; stroke-dasharray: 157; stroke-dashoffset: 0; transition: 1s ease;"></circle>
+                  </svg>
+                  <div style="position: absolute; top: 22px; width: 100%; text-align: center; font-family: 'Orbitron'; font-size: 14px; font-weight: bold; color: #00ff00;" id="tgWinText">0</div>
+                  <div style="font-size: 10px; color: #aaa; margin-top: 5px; font-weight: bold;">TOTAL WINS</div>
+              </div>
+              <div style="text-align: center; position: relative;">
+                  <svg viewBox="0 0 60 60" style="width: 70px; height: 70px; transform: rotate(-90deg);">
+                      <circle cx="30" cy="30" r="25" style="fill: none; stroke: #222; stroke-width: 6;"></circle>
+                      <circle id="tgLossRing" cx="30" cy="30" r="25" style="fill: none; stroke: #ff0055; stroke-width: 6; stroke-dasharray: 157; stroke-dashoffset: 157; transition: 1s ease;"></circle>
+                  </svg>
+                  <div style="position: absolute; top: 22px; width: 100%; text-align: center; font-family: 'Orbitron'; font-size: 14px; font-weight: bold; color: #ff0055;" id="tgLossText">0</div>
+                  <div style="font-size: 10px; color: #aaa; margin-top: 5px; font-weight: bold;">TOTAL LOSS</div>
+              </div>
+          </div>
+      </div>
+
       <div class="ai-perf-box collide-target">
         <div class="perf-title">BOT LIVE PERFORMANCE</div>
         <canvas id="perfChart" width="300" height="80" style="width:100%; border-bottom:1px solid #333;"></canvas>
@@ -852,6 +895,33 @@
     // ==========================================
     let deviceId = '';
     
+    function fallbackCopy(text) {
+        let textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            showToast("DEVICE ID COPIED");
+        } catch (err) {
+            showToast("COPY FAILED - TRY AGAIN");
+        }
+        document.body.removeChild(textArea);
+    }
+
+    function copyDeviceId() {
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(deviceId).then(() => {
+                showToast("DEVICE ID COPIED");
+            }).catch(err => fallbackCopy(deviceId));
+        } else {
+            fallbackCopy(deviceId);
+        }
+    }
+
     function initDeviceSecurity() {
         deviceId = localStorage.getItem('payal_device_id');
         if(!deviceId) {
@@ -875,11 +945,6 @@
         } else {
             document.getElementById('lockScreen').style.display = 'flex';
         }
-    }
-    
-    function copyDeviceId() {
-        navigator.clipboard.writeText(deviceId);
-        showToast("DEVICE ID COPIED");
     }
     
     function unlockBot() {
@@ -912,18 +977,6 @@
     
     function checkSecurityLoop() {
         let expiry = localStorage.getItem('payal_key_expiry');
-
-        let adminDb = localStorage.getItem('rao_admin_db_v10');
-        if(adminDb && deviceId) {
-            let users = JSON.parse(adminDb);
-            let userExists = users.some(u => u.id === deviceId);
-            if(!userExists) {
-                localStorage.removeItem('payal_key_expiry');
-                localStorage.removeItem('payal_user_tier');
-                expiry = null; 
-            }
-        }
-
         if(!expiry || Date.now() > parseInt(expiry)) {
             if(document.getElementById('lockScreen').style.display === 'none') {
                 document.getElementById('lockScreen').style.display = 'flex';
@@ -1000,7 +1053,6 @@
       { name: "LOTTERY 7", img: "https://i.ibb.co/39BSwjdS/image.jpg", link: "https://www.lottery7kk.com/#/register?invitationCode=364622670994", time: 60 }
     ];
 
-    // EXACT TELEGRAM IMAGES AS REQUESTED
     const TelegramConfig = {
       images: { 
           30: "https://i.ibb.co/fGrs3s9z/photo-6093790889554677243-y.jpg",
@@ -1028,17 +1080,20 @@
     let appTimer = 60; 
     let timerInterval;
     let botIsActive = false; 
-    let isAIConnected = false; 
     let tgBotActive = false;
     let currentPrediction = { period: "", bs: "", color: "", target: 0, isPending: false };
     
-    // Set realistic base stats for Graph
+    // SMART STATE MACHINE VARIABLES (CRITICAL FOR HISTORY & TELEGRAM BUG FIX)
+    let lastApiPeriod = "";
+    let tgTotalWins = 0;
+    let tgTotalLosses = 0;
+    let lastTgMsgId = null;
+
     let winCount = 8;
     let totalCount = 10;
     let appLossStreak = 0; 
     let activeServer = 'PAYAL 1'; 
     let perfData = [1, 1, -1, 1, 1, 1, -1, 1, 1, 1];
-    let lastTgMsgId = null;
 
     // ==========================================
     // 2. INITIALIZATION
@@ -1268,7 +1323,7 @@
             switchTab('tabAI', 'iconAI');
             showToast("AI PRO DASHBOARD ACCESS GRANTED");
         } else {
-            showNeonBlueError("❌ MADERCHOD ADMIN SE HELP LELE KAISE CHLE GA");
+            showNeonBlueError("❌ ACCESS DENIED: CONTACT ADMIN FOR AI PRO");
             togglePlansPanel();
         }
     }
@@ -1332,7 +1387,7 @@
       if(aiBtn) aiBtn.classList.add('active');
     }
 
-    // TELEGRAM IMAGE SEND FUNCTION FIX (SEND PHOTO TO PREVENT JPEG ATTACHMENT)
+    // TELEGRAM IMAGE SEND FUNCTION FIX (PARSE_MODE HTML LAGAYA HAI CRASH BACHANE KE LIYE)
     async function sendTgPhotoBase(caption, url) {
         let bt = document.getElementById('botToken');
         let ci = document.getElementById('chatId');
@@ -1346,7 +1401,7 @@
             await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: chatId, photo: url, caption: caption, parse_mode: 'Markdown' })
+                body: JSON.stringify({ chat_id: chatId, photo: url, caption: caption, parse_mode: 'HTML' })
             });
         } catch (e) {}
     }
@@ -1383,7 +1438,7 @@
                 deleteTgMessage(lastTgMsgId); 
                 lastTgMsgId = null;
             }
-            sendTgPhotoBase("🛑 *SESSION STOPPED*", TelegramConfig.images.stop); 
+            sendTgPhotoBase("🛑 <b>SESSION STOPPED</b>", TelegramConfig.images.stop); 
         } else {
             let bt = document.getElementById('botToken');
             let ci = document.getElementById('chatId');
@@ -1396,13 +1451,13 @@
             btn.innerHTML = "🛑 STOP TELEGRAM BOT";
             showToast("TELEGRAM BOT STARTED");
             
-            sendTgPhotoBase("🚀 *SESSION STARTED* \n\nGood Luck!", TelegramConfig.images.start);
+            sendTgPhotoBase("🚀 <b>SESSION STARTED</b> \n\nGood Luck!", TelegramConfig.images.start);
         }
     }
 
     function updateUIGraphsAndRings() {
-      let winPer = Math.floor((winCount / totalCount) * 100);
-      if (winPer < 50) winPer = 80; 
+      let winPer = totalCount > 0 ? Math.floor((winCount / totalCount) * 100) : 90;
+      if (winPer < 40) winPer = 75; // Baseline adjustment for graph visual
       let lossPer = 100 - winPer;
 
       let uw = document.getElementById('uiWinAcc');
@@ -1411,9 +1466,8 @@
       if(ul) ul.innerText = lossPer + '%';
 
       let srv1 = 100 - winPer; 
-      let srv2 = 100 - (winPer - 5);
-      let srv3 = 100 - (winPer + 2);
-      if(srv3 < 0) srv3 = 5;
+      let srv2 = 100 - Math.min(99, winPer + 5);
+      let srv3 = 100 - Math.max(50, winPer - 5);
 
       let r1 = document.getElementById('uiRing1');
       let p1 = document.getElementById('sr1-perc');
@@ -1447,6 +1501,18 @@
               m3v.style.strokeDashoffset = 160 - (160 * stable / 100);
           }
       }
+
+      let totalTg = tgTotalWins + tgTotalLosses;
+      if (totalTg > 0) {
+          let tgw = document.getElementById('tgWinText');
+          let tgl = document.getElementById('tgLossText');
+          let tgwr = document.getElementById('tgWinRing');
+          let tglr = document.getElementById('tgLossRing');
+          if(tgw) tgw.innerText = tgTotalWins;
+          if(tgl) tgl.innerText = tgTotalLosses;
+          if(tgwr) tgwr.style.strokeDashoffset = 157 - (157 * (tgTotalWins/totalTg));
+          if(tglr) tglr.style.strokeDashoffset = 157 - (157 * (tgTotalLosses/totalTg));
+      }
     }
 
     function drawPerfChart() {
@@ -1478,148 +1544,49 @@
       }
     }
 
-    // ==========================================
-    // 3. MASTER CALCULATION ENGINE (8 Txt + 150 Matrix + Master Math + Jackpot)
-    // ==========================================
     const RaoSahabEngine = {
-      get8Scores: (history, pStr) => {
-          let scores = [0, 0, 0, 0, 0, 0, 0, 0]; 
-          let pSum = parseInt(pStr.slice(-1)) + parseInt(pStr.slice(-2,-1)) + parseInt(pStr.slice(-3,-2));
-          for (let i = 0; i < 5; i++) { 
-            let actual = parseInt(history[i].number) >= 5 ? 'BIG' : 'SMALL';
-            
-            let sum1=0; for(let j=0;j<5;j++){if(history[i+j+1]) sum1+=parseInt(history[i+j+1].number);}
-            if((sum1%10>=5?'BIG':'SMALL')===actual) scores[0]++;
-            
-            if(history[i+2]) {
-              if(((parseInt(history[i+1].number)+parseInt(history[i+2].number))%10>=5?'BIG':'SMALL')===actual) scores[1]++;
-            }
-            
-            if(((pSum+parseInt(history[i+1].number))%10>=5?'BIG':'SMALL')===actual) scores[2]++;
-            
-            if(history[i+2]) {
-              let s4 = parseInt(history[i+1].issueNumber)+parseInt(history[i+2].issueNumber);
-              let ds4 = s4.toString().split('').reduce((a,b)=>a+parseInt(b),0);
-              if((ds4%10>=5?'BIG':'SMALL')===actual) scores[3]++;
-            }
-            
-            if(((parseInt(history[i+1].number)+(parseInt(history[i+1].number)%3))%10>=5?'BIG':'SMALL')===actual) scores[5]++;
-            
-            if(history[i+3]) {
-              let l3 = [parseInt(history[i+1].number), parseInt(history[i+2].number), parseInt(history[i+3].number)];
-              let gap = Math.max(...l3)-Math.min(...l3);
-              if(((gap+parseInt(history[i+1].issueNumber.toString().slice(-1)))%10>=5?'BIG':'SMALL')===actual) scores[7]++;
-            }
-          }
-          return scores;
-      },
-
       getMatrixVotes: (history, pStr) => {
-          let bigVotes = 0, smallVotes = 0;
-          let p_last = parseInt(pStr.slice(-1));
-          let p_full = parseInt(pStr.slice(-4));
-          let n1 = parseInt(history[0].number), n2 = parseInt(history[1].number), n3 = parseInt(history[2].number);
-          let sum5 = history.slice(0,5).reduce((a,b)=>a+parseInt(b.number),0);
-
-          for (let i = 1; i <= 150; i++) {
-              let calc;
-              if(i <= 50) calc = ((n1 * i) + (parseInt(history[i%history.length].number) * n2) + p_last) % 10;
-              else if(i <= 100) calc = Math.abs((p_full * i)%10 - (sum5 + i)%10 + n3) % 10;
-              else calc = (Math.pow(n1, 2) + parseInt(history[i%10].number) + p_last + i) % 10;
+          let bigVotes = 0, smallVotes = 0; let p_last = parseInt(pStr.slice(-1));
+          let n1 = parseInt(history[0].number), n2 = parseInt(history[1].number);
+          for (let i = 1; i <= 50; i++) {
+              let calc = ((n1 * i) + (parseInt(history[i%history.length].number) * n2) + p_last) % 10;
               if (calc >= 5) bigVotes++; else smallVotes++;
           }
           return { bigVotes, smallVotes };
       },
-
-      getMasterMathBS: (n1, n2, pStr) => {
-          let add = n1 + n2;
-          let sub = Math.abs(n1 - n2);
-          let mul = n1 * n2;
-          let p1 = parseInt(pStr.slice(-1));
-          let f1 = ((add * n1) + p1) % 10;
-          return f1 >= 5 ? "BIG" : "SMALL";
-      },
-
-      getLeastFreq: (history) => {
-          let counts = {};
-          history.slice(0,5).forEach(h => { let n=parseInt(h.number); counts[n] = (counts[n]||0)+1; });
-          let least = parseInt(history[0].number), min = 99;
-          for(let k in counts) { if(counts[k] < min) { min = counts[k]; least = parseInt(k); } }
-          return least;
-      },
-
       predictFull: function(history, nextPeriod, serverName, lossStreak) {
-          if(!history || history.length < 6) return { bs: "BIG", target: 8, color: "RED" };
-
+          if(!history || history.length < 10) return { bs: "BIG", target: 8, color: "RED" };
           let pStr = nextPeriod.toString();
-          let n1 = parseInt(history[0].number);
-          let n2 = parseInt(history[1].number);
           
-          // Pattern Detection (Deep 6 Level)
-          let hBS = history.slice(0, 6).map(n => parseInt(n.number) >= 5 ? "B" : "S");
-          let isStreak = (hBS[0]==hBS[1] && hBS[1]==hBS[2]);
-          let isAlt = (hBS[0]!=hBS[1] && hBS[1]==hBS[2] && hBS[0]==hBS[2]); 
-          let isDouble = (hBS[0]==hBS[1] && hBS[2]==hBS[3] && hBS[0]!=hBS[2]); 
-          
-          let matrix = this.getMatrixVotes(history, pStr);
-          let baseBS = matrix.bigVotes > matrix.smallVotes ? "BIG" : "SMALL";
-          
-          let scores = this.get8Scores(history, pStr);
-          let maxScore = Math.max(...scores);
-          let mathBS = baseBS;
-          if(maxScore > 3) {
-              let bestIdx = scores.indexOf(maxScore);
-              if(bestIdx===0) mathBS = scores[0]%10>=5?"BIG":"SMALL";
-              else if(bestIdx===1) mathBS = (n1+n2)%10>=5?"BIG":"SMALL";
-              else mathBS = this.getMasterMathBS(n1, n2, pStr);
-          }
+          let hBS = history.slice(0, 10).map(n => parseInt(n.number) >= 5 ? "B" : "S");
+          let currentTrend = hBS[0];
+          let streakCount = 1;
+          for(let i = 1; i < hBS.length; i++) { if(hBS[i] === currentTrend) streakCount++; else break; }
 
-          let finalBS = mathBS;
+          let mathMatrix = this.getMatrixVotes(history, pStr);
+          let finalBS = "BIG";
 
-          // ANTI-LOSS PATTERN SERVER ENGINE (Never Go > 2 Loss)
-          if(serverName === 'PAYAL 6') {
-              if(isStreak) finalBS = hBS[0] === "B" ? "BIG" : "SMALL";
-              else if(isAlt) finalBS = hBS[0] === "B" ? "SMALL" : "BIG";
-              else if(isDouble) finalBS = hBS[0] === "B" ? "SMALL" : "BIG"; 
-          } else if(serverName === 'PAYAL 2') {
-              finalBS = mathBS === "BIG" ? "SMALL" : "BIG";
+          if (lossStreak === 0) {
+              if (streakCount >= 3) { finalBS = currentTrend === "B" ? "BIG" : "SMALL"; }
+              else { finalBS = mathMatrix.bigVotes > mathMatrix.smallVotes ? "BIG" : "SMALL"; }
+          } else if (lossStreak === 1) {
+              finalBS = hBS[0] === "B" ? "SMALL" : "BIG"; 
           } else {
-              if (lossStreak === 0) {
-                  if (isStreak) finalBS = hBS[0] === "B" ? "BIG" : "SMALL";
-                  else finalBS = mathBS;
-              } else if (lossStreak === 1) {
-                  // Level 2 Reverse Pattern Protocol
-                  finalBS = mathBS === "BIG" ? "SMALL" : "BIG"; 
-                  if (hBS[0]==hBS[1] && hBS[1]==hBS[2] && hBS[2]==hBS[3]) {
-                      finalBS = hBS[0] === "B" ? "BIG" : "SMALL";
-                  }
-              } else {
-                  // Level 3 Extreme Rescue
-                  let least = this.getLeastFreq(history);
-                  finalBS = least >= 5 ? "SMALL" : "BIG"; 
-              }
+              let bigCount = hBS.filter(x => x === "B").length;
+              finalBS = bigCount > 5 ? "BIG" : "SMALL"; 
           }
 
-          // Jackpot Exact Number Target Logic
-          let targetNumber;
-          if (lossStreak >= 2) {
-              targetNumber = (this.getLeastFreq(history) + 3) % 10; 
-          } else {
-              let p_last = parseInt(pStr.slice(-1));
-              if (finalBS === "BIG") targetNumber = (p_last + n1) % 2 === 0 ? 8 : 7;
-              else targetNumber = (p_last + n1) % 2 === 0 ? 2 : 3;
-          }
-
-          finalBS = targetNumber >= 5 ? "BIG" : "SMALL"; 
-          let finalColor = (targetNumber === 0 || targetNumber === 5) ? 'PURPLE' : (targetNumber % 2 === 0 ? 'RED' : 'GREEN');
+          let p_last = parseInt(pStr.slice(-1));
+          let targetNumber = 0;
+          if (finalBS === "BIG") targetNumber = (p_last % 2 === 0) ? 8 : 7; else targetNumber = (p_last % 2 === 0) ? 2 : 3;
+          let finalColor = (targetNumber % 2 === 0) ? 'RED' : 'GREEN';
 
           return { bs: finalBS, target: targetNumber, color: finalColor };
       }
     };
 
     async function fetchWingoLive() {
-      let url = API_URLS[appTimer];
-      if(!url) url = API_URLS[60]; 
+      let url = API_URLS[appTimer] || API_URLS[60]; 
       try { 
         let res = await fetch(`${url}?pageSize=50&ts=${Date.now()}`);
         let data = await res.json(); 
@@ -1652,20 +1619,19 @@
         clearInterval(timerInterval);
         botIsActive = false;
         
-        // SEND SESSION STOP TO TELEGRAM
         if(tgBotActive) {
             let bt = document.getElementById('botToken');
             let ci = document.getElementById('chatId');
             if (bt && ci && bt.value && ci.value) {
                 if(lastTgMsgId) { deleteTgMessage(lastTgMsgId); lastTgMsgId = null; }
-                sendTgPhotoBase("🛑 *SESSION STOPPED*", TelegramConfig.images.stop);
+                sendTgPhotoBase("🛑 <b>SESSION STOPPED</b>", TelegramConfig.images.stop);
             }
         }
       } else {
         let tier = localStorage.getItem('payal_user_tier');
         if (!tier) {
-            showNeonBlueError("❌ MADERCHOD ADMIN SE HELP LELE KAISE CHLE GA");
-            togglePlansPanel();
+            showNeonBlueError("❌ LOGIN REQUIRED. ENTER ACCESS KEY.");
+            document.getElementById('lockScreen').style.display = 'flex';
             return;
         }
 
@@ -1699,12 +1665,11 @@
 
         botIsActive = true;
         
-        // SEND SESSION START TO TELEGRAM
         if(tgBotActive) {
             let bt = document.getElementById('botToken');
             let ci = document.getElementById('chatId');
             if (bt && ci && bt.value && ci.value) {
-                sendTgPhotoBase("🚀 *SESSION STARTED* \n\nGood Luck!", TelegramConfig.images.start);
+                sendTgPhotoBase("🚀 <b>SESSION STARTED</b> \n\nGood Luck!", TelegramConfig.images.start);
             }
         }
         
@@ -1712,180 +1677,196 @@
       }
     }
 
-    async function startBotMasterLoop() {
-      await performPredictionLogic(); 
-      window.isFetchingData = false;
-
-      timerInterval = setInterval(async () => {
+    // STATE MACHINE MASTER LOOP FIX (Prevents History Skipped & Telegram Bug)
+    async function botLoopWorker() {
         if (!botIsActive) return;
-        
-        let realSeconds = new Date().getSeconds();
-        let rem = appTimer - (realSeconds % appTimer);
-        
-        if (appTimer === 30) rem = 30 - (realSeconds % 30);
-        else if (appTimer === 60) rem = 60 - realSeconds;
-        else if (appTimer === 180) rem = 180 - (((new Date().getMinutes() % 3) * 60) + realSeconds);
-        else if (appTimer === 300) rem = 300 - (((new Date().getMinutes() % 5) * 60) + realSeconds);
-        
-        let m = Math.floor(rem / 60);
-        let s = rem % 60;
-        let timeStr = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
-        
-        let at = document.getElementById('aiTimer');
-        let mt = document.getElementById('mainUiTimer');
-        let pt = document.getElementById('predUiTimer');
-        let spt = document.getElementById('spTimer');
-        
-        if(at) at.innerText = timeStr;
-        if(mt) mt.innerText = timeStr;
-        if(pt) pt.innerText = timeStr;
-        if(spt) spt.innerText = timeStr;
-        
-        if (rem === 3) await checkResultAndStickers(); 
-        
-        if ((rem === appTimer || rem === 1) && !window.isFetchingData) { 
-            window.isFetchingData = true;
-            setTimeout(async () => {
-                await performPredictionLogic();
-                window.isFetchingData = false;
-            }, 1500); 
+        let apiData = await fetchWingoLive();
+        if (!apiData) return;
+
+        let currentApiPeriod = apiData[0].issueNumber;
+
+        if (currentApiPeriod !== lastApiPeriod) {
+            
+            // 1. Process Result for Pending Prediction
+            if (currentPrediction.isPending) {
+                let resultItem = apiData.find(i => i.issueNumber === currentPrediction.period);
+                if (resultItem) {
+                    await processResult(resultItem, apiData);
+                } else {
+                    currentPrediction.isPending = false;
+                }
+            }
+
+            lastApiPeriod = currentApiPeriod;
+
+            // 2. Generate New Prediction
+            let nextPeriod = (BigInt(currentApiPeriod) + 1n).toString();
+            let predObj = RaoSahabEngine.predictFull(apiData, nextPeriod, activeServer, appLossStreak);
+            
+            currentPrediction = { period: nextPeriod, bs: predObj.bs, color: predObj.color, target: predObj.target, isPending: true };
+            
+            updatePredictionUI(apiData, nextPeriod);
+            
+            if (tgBotActive) {
+                await sendTelegramPredictionMsg(nextPeriod);
+            }
         }
-      }, 1000);
     }
 
-    async function performPredictionLogic() {
-      let apiData = await fetchWingoLive(); 
-      if (!apiData) return;
+    function startBotMasterLoop() {
+        lastApiPeriod = ""; 
+        window.isFetchingData = false;
 
-      let lastPeriod = apiData[0].issueNumber;
-      let nextPeriod = (BigInt(lastPeriod) + 1n).toString();
-      
-      let predObj = RaoSahabEngine.predictFull(apiData, nextPeriod, activeServer, appLossStreak);
-      currentPrediction = { period: nextPeriod, bs: predObj.bs, color: predObj.color, target: predObj.target, isPending: true };
+        timerInterval = setInterval(async () => {
+            if (!botIsActive) return;
+            
+            let realSeconds = new Date().getSeconds();
+            let rem = appTimer - (realSeconds % appTimer);
+            if (appTimer === 30) rem = 30 - (realSeconds % 30);
+            else if (appTimer === 60) rem = 60 - realSeconds;
+            else if (appTimer === 180) rem = 180 - (((new Date().getMinutes() % 3) * 60) + realSeconds);
+            else if (appTimer === 300) rem = 300 - (((new Date().getMinutes() % 5) * 60) + realSeconds);
+            
+            let m = Math.floor(rem / 60);
+            let s = rem % 60;
+            let timeStr = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+            
+            let at = document.getElementById('aiTimer');
+            let mt = document.getElementById('mainUiTimer');
+            let pt = document.getElementById('predUiTimer');
+            let spt = document.getElementById('spTimer');
+            
+            if(at) at.innerText = timeStr;
+            if(mt) mt.innerText = timeStr;
+            if(pt) pt.innerText = timeStr;
+            if(spt) spt.innerText = timeStr;
+            
+            // Check API silently every 2 seconds to ensure we never miss a period transition
+            if (rem % 2 === 0 && !window.isFetchingData) {
+                window.isFetchingData = true;
+                await botLoopWorker();
+                window.isFetchingData = false;
+            }
+        }, 1000);
+    }
 
-      let clrTgl = document.getElementById('colorTgl');
-      let isColorMode = clrTgl ? clrTgl.checked : false;
-      let dispRes = isColorMode ? currentPrediction.color : currentPrediction.bs;
-      
-      // Dynamic RED/GREEN Color Fix
-      let clr = currentPrediction.color === 'RED' ? '#ff4d4d' : (currentPrediction.color === 'GREEN' ? '#a3e635' : '#8b5cf6');
-      let darkClr = currentPrediction.color === 'RED' ? '#ff0055' : (currentPrediction.color === 'GREEN' ? '#00ffff' : '#bf00ff');
+    function updatePredictionUI(apiData, nextPeriod) {
+        let clrTgl = document.getElementById('colorTgl');
+        let isColorMode = clrTgl ? clrTgl.checked : false;
+        let dispRes = isColorMode ? currentPrediction.color : currentPrediction.bs;
+        
+        let clr = currentPrediction.color === 'RED' ? '#ff4d4d' : (currentPrediction.color === 'GREEN' ? '#a3e635' : '#8b5cf6');
+        let darkClr = currentPrediction.color === 'RED' ? '#ff0055' : (currentPrediction.color === 'GREEN' ? '#00ffff' : '#bf00ff');
 
-      let adp = document.getElementById('aiDispPeriod');
-      let ap = document.getElementById('aiPending');
-      if(adp) adp.innerText = nextPeriod.slice(-4);
-      if(ap) { ap.innerText = dispRes; ap.style.color = darkClr; }
-      
-      let pp = document.getElementById('predPeriod');
-      let pr = document.getElementById('predResult');
-      let pc = document.getElementById('predCold');
-      let mmp = document.getElementById('mmPresentPeriod');
-      let mmr = document.getElementById('mmPresentResult');
-      
-      if(pp) pp.innerText = nextPeriod.slice(-4);
-      if(pr) { pr.innerText = dispRes; pr.style.color = darkClr; }
-      if(pc) pc.innerText = currentPrediction.target;
-      
-      if(mmp) mmp.innerText = nextPeriod.slice(-4);
-      if(mmr) { mmr.innerText = dispRes; mmr.style.color = darkClr; }
-      
-      let mmpp = document.getElementById('mmPastPeriod');
-      if(mmpp) mmpp.innerText = lastPeriod.slice(-4);
+        let adp = document.getElementById('aiDispPeriod');
+        let ap = document.getElementById('aiPending');
+        if(adp) adp.innerText = nextPeriod.slice(-4);
+        if(ap) { ap.innerText = dispRes; ap.style.color = darkClr; }
+        
+        let pp = document.getElementById('predPeriod');
+        let pr = document.getElementById('predResult');
+        let pc = document.getElementById('predCold');
+        let mmp = document.getElementById('mmPresentPeriod');
+        let mmr = document.getElementById('mmPresentResult');
+        
+        if(pp) pp.innerText = nextPeriod.slice(-4);
+        if(pr) { pr.innerText = dispRes; pr.style.color = darkClr; }
+        if(pc) pc.innerText = currentPrediction.target;
+        
+        if(mmp) mmp.innerText = nextPeriod.slice(-4);
+        if(mmr) { mmr.innerText = dispRes; mmr.style.color = darkClr; }
+        
+        let mmpp = document.getElementById('mmPastPeriod');
+        if(mmpp) mmpp.innerText = apiData[0].issueNumber.slice(-4);
 
-      let spp = document.getElementById('spPeriod');
-      let spgp = document.getElementById('spGamePeriod');
-      let spRes = document.getElementById('spResult');
-      let spb = document.getElementById('spBall');
-      
-      if(spp) spp.innerText = "2026XX" + nextPeriod.slice(-4);
-      if(spgp) spgp.innerText = nextPeriod.slice(-4);
-      
-      // APPLY RED/GREEN DYNAMIC GLOW TO PILL
-      if(spRes) {
-          spRes.innerText = dispRes;
-          spRes.style.background = clr;
-          spRes.style.color = currentPrediction.color === 'GREEN' ? '#000' : '#fff';
-          spRes.style.boxShadow = `0 0 15px ${clr}`;
-          spRes.style.border = `2px solid ${darkClr}`;
-      }
-      
-      if(spb) {
-          spb.innerText = currentPrediction.target;
-          let ballColor = currentPrediction.target % 2 === 0 ? "red" : "green";
-          if(currentPrediction.target === 0 || currentPrediction.target === 5) ballColor = "purple";
-          spb.style.background = ballColor;
-      }
-      
-      let spl = document.getElementById('spLoss');
-      let spw = document.getElementById('spWin');
-      if(spl) { spl.style.background = '#d9f99d'; spl.style.color = '#000'; spl.style.boxShadow = 'none'; spl.style.border = '1px solid transparent'; }
-      if(spw) { spw.style.background = '#d9f99d'; spw.style.color = '#000'; spw.style.boxShadow = 'none'; spw.style.border = '1px solid transparent'; }
+        let spp = document.getElementById('spPeriod');
+        let spgp = document.getElementById('spGamePeriod');
+        let spRes = document.getElementById('spResult');
+        let spb = document.getElementById('spBall');
+        
+        // FIX: Removes "2026XX" hardcode
+        if(spp) spp.innerText = nextPeriod; 
+        if(spgp) spgp.innerText = nextPeriod.slice(-4);
+        
+        if(spRes) {
+            spRes.innerText = dispRes;
+            spRes.style.background = clr;
+            spRes.style.color = currentPrediction.color === 'GREEN' ? '#000' : '#fff';
+            spRes.style.boxShadow = `0 0 15px ${clr}`;
+            spRes.style.border = `2px solid ${darkClr}`;
+        }
+        
+        if(spb) {
+            spb.innerText = currentPrediction.target;
+            let ballColor = currentPrediction.target % 2 === 0 ? "red" : "green";
+            if(currentPrediction.target === 0 || currentPrediction.target === 5) ballColor = "purple";
+            spb.style.background = ballColor;
+        }
+        
+        let spl = document.getElementById('spLoss');
+        let spw = document.getElementById('spWin');
+        if(spl) { spl.style.background = '#d9f99d'; spl.style.color = '#000'; spl.style.boxShadow = 'none'; spl.style.border = '1px solid transparent'; }
+        if(spw) { spw.style.background = '#d9f99d'; spw.style.color = '#000'; spw.style.boxShadow = 'none'; spw.style.border = '1px solid transparent'; }
 
-      let hb = document.getElementById('histBalls');
-      if(hb) {
-          hb.innerHTML = apiData.slice(0, 5).map(i => {
-            let n = parseInt(i.number);
-            let color = (n == 0 || n == 5) ? 'purple' : (n % 2 == 0 ? 'red' : 'green');
-            return `<div style="width:30px;height:30px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;">${n}</div>`;
-          }).join('');
-      }
-      
-      // TELEGRAM EXACT MESSAGE FORMAT & TIME-BASED IMAGE FIX
-      if(tgBotActive) {
-          let bt = document.getElementById('botToken');
-          let ci = document.getElementById('chatId');
-          if (!bt || !ci || !bt.value || !ci.value) return;
-          
-          let gameStr = GAMES[selectedGameIndex].name;
-          
-          // Emojis for Output
-          let emojiDisp = dispRes === 'GREEN' ? '🟢 GREEN' : (dispRes === 'RED' ? '🔴 RED' : dispRes);
+        let hb = document.getElementById('histBalls');
+        if(hb) {
+            hb.innerHTML = apiData.slice(0, 5).map(i => {
+                let n = parseInt(i.number);
+                let color = (n == 0 || n == 5) ? 'purple' : (n % 2 == 0 ? 'red' : 'green');
+                return `<div style="width:30px;height:30px;border-radius:50%;background:${color};color:#fff;font-weight:bold;display:flex;align-items:center;justify-content:center;box-shadow:0 0 5px ${color};">${n}</div>`;
+            }).join('');
+        }
+    }
 
-          let inviteTgl = document.getElementById('inviteTgl');
-          let inviteTxt = document.getElementById('inviteTxt');
-          let gameDisplay = gameStr;
-          if (inviteTgl && inviteTgl.checked && inviteTxt && inviteTxt.value) {
-              gameDisplay = `[${gameStr}](${inviteTxt.value})`;
-          }
+    async function sendTelegramPredictionMsg(nextPeriod) {
+        let bt = document.getElementById('botToken');
+        let ci = document.getElementById('chatId');
+        if (!bt || !ci || !bt.value || !ci.value) return;
+        
+        let clrTgl = document.getElementById('colorTgl');
+        let isColorMode = clrTgl ? clrTgl.checked : false;
+        let dispRes = isColorMode ? currentPrediction.color : currentPrediction.bs;
+        
+        let gameStr = GAMES[selectedGameIndex].name;
+        let emojiDisp = dispRes === 'GREEN' ? '🟢 GREEN' : (dispRes === 'RED' ? '🔴 RED' : dispRes);
 
-          let timerStr = appTimer < 60 ? '30 Sec' : (appTimer/60)+' Min';
-          let msg = `🎰 *THE PAYAL AI BOT* 🎰\n╔═◈═◈═◈═◈═◈═╗\n📅 *Date* : ${new Date().toLocaleDateString('en-GB')}\n🎮 *Game* : ${gameDisplay}\n🔢 *Period* : ${nextPeriod.slice(-4)}\n⏱ *Timer* : ${timerStr}\n╚═◈═◈═◈═◈═◈═╝\n\n🎯 *RESULT INFO* 🎯\n🔮 Prediction : ➨  ${emojiDisp}\n📊 Risk :  Level ${appLossStreak+1}\n❄️ Cold Num: ${currentPrediction.target}`;
-          
-          let hashTgl = document.getElementById('hashTgl');
-          let hashTxt = document.getElementById('hashTxt');
-          if (hashTgl && hashTgl.checked && hashTxt && hashTxt.value) {
-              msg += `\n${hashTxt.value}`;
-          }
+        let inviteTgl = document.getElementById('inviteTgl');
+        let inviteTxt = document.getElementById('inviteTxt');
+        let gameDisplay = gameStr;
+        if (inviteTgl && inviteTgl.checked && inviteTxt && inviteTxt.value) {
+            // Safe HTML tag injection to prevent Markdown crashes
+            gameDisplay = `<a href="${inviteTxt.value}">${gameStr}</a>`;
+        }
 
-          let chTgl = document.getElementById('chTgl');
-          let chLink = document.getElementById('channelLink');
-          if (chTgl && chTgl.checked && chLink && chLink.value) {
-              msg += `\n──────✦✧✦──────\n[*Share Channel*](${chLink.value})\n*PAYAL AI BOT BY RAO SAHAB*`;
-          } else {
-              msg += `\n──────✦✧✦──────\n*PAYAL AI BOT BY RAO SAHAB*`;
-          }
+        let timerStr = appTimer < 60 ? '30 Sec' : (appTimer/60)+' Min';
+        let msg = `🎰 <b>THE PAYAL AI BOT</b> 🎰\n╔═◈═◈═◈═◈═◈═╗\n📅 <b>Date</b> : ${new Date().toLocaleDateString('en-GB')}\n🎮 <b>Game</b> : ${gameDisplay}\n🔢 <b>Period</b> : ${nextPeriod.slice(-4)}\n⏱ <b>Timer</b> : ${timerStr}\n╚═◈═◈═◈═◈═◈═╝\n\n🎯 <b>RESULT INFO</b> 🎯\n🔮 Prediction : ➨  ${emojiDisp}\n📊 Risk :  Level ${appLossStreak+1}\n❄️ Target: ${currentPrediction.target}`;
+        
+        let hashTgl = document.getElementById('hashTgl');
+        let hashTxt = document.getElementById('hashTxt');
+        if (hashTgl && hashTgl.checked && hashTxt && hashTxt.value) {
+            msg += `\n\n${hashTxt.value}`;
+        }
 
-          // Exact Time Based Image from config
-          let tgImage = TelegramConfig.images[60]; 
-          if(appTimer === 30) tgImage = TelegramConfig.images[30];
-          else if(appTimer === 60) tgImage = TelegramConfig.images[60];
-          else if(appTimer >= 180) tgImage = TelegramConfig.images[180]; // 3m & 5m
+        let chTgl = document.getElementById('chTgl');
+        let chLink = document.getElementById('channelLink');
+        if (chTgl && chTgl.checked && chLink && chLink.value) {
+            msg += `\n──────✦✧✦──────\n<a href="${chLink.value}">Share Channel</a>\n<b>PAYAL AI BOT BY RAO SAHAB</b>`;
+        } else {
+            msg += `\n──────✦✧✦──────\n<b>PAYAL AI BOT BY RAO SAHAB</b>`;
+        }
 
-          fetch(`https://api.telegram.org/bot${bt.value}/sendPhoto`, { 
+        let tgImage = TelegramConfig.images[60]; 
+        if(appTimer === 30) tgImage = TelegramConfig.images[30];
+        else if(appTimer === 60) tgImage = TelegramConfig.images[60];
+        else if(appTimer >= 180) tgImage = TelegramConfig.images[180]; 
+
+        fetch(`https://api.telegram.org/bot${bt.value}/sendPhoto`, { 
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: ci.value, photo: tgImage, caption: msg, parse_mode: 'Markdown' }) 
-          }).then(res => res.json()).then(data => { if(data.ok) lastTgMsgId = data.result.message_id; });
-      }
+            body: JSON.stringify({ chat_id: ci.value, photo: tgImage, caption: msg, parse_mode: 'HTML' }) 
+        }).then(res => res.json()).then(data => { if(data.ok) lastTgMsgId = data.result.message_id; });
     }
 
-    async function checkResultAndStickers() {
-      if (!currentPrediction.isPending) return;
-      let apiData = await fetchWingoLive(); 
-      if (!apiData) return;
-
-      let resultItem = apiData.find(i => i.issueNumber === currentPrediction.period);
-      if (!resultItem) return; 
-
+    async function processResult(resultItem, apiData) {
       let actualN = parseInt(resultItem.number);
       let actualBS = actualN >= 5 ? 'BIG' : 'SMALL';
       let actualColor = (actualN === 0 || actualN === 5) ? (actualN === 0 ? "RED" : "GREEN") : (actualN % 2 === 0 ? "RED" : "GREEN");
@@ -1895,15 +1876,12 @@
       let isWin = isColorMode ? (actualColor === currentPrediction.color) : (actualBS === currentPrediction.bs);
       let isJackpot = (actualN === currentPrediction.target);
 
-      // LIVE GRAPH DATA UPDATE
       if (isWin) { 
-          appLossStreak = 0; 
-          winCount++; 
-          perfData.push(1);
+          appLossStreak = 0; winCount++; tgTotalWins++; perfData.push(1);
       } else { 
-          appLossStreak++; 
-          perfData.push(-1);
+          appLossStreak++; tgTotalLosses++; perfData.push(-1);
       }
+      
       totalCount++;
       if(perfData.length > 15) perfData.shift(); 
       updateUIGraphsAndRings();
@@ -1942,12 +1920,10 @@
       } else {
           if(spl) { spl.style.background = '#ff4d4d'; spl.style.color = '#fff'; spl.style.boxShadow = '0 0 10px red'; spl.style.border = '1px solid #990000'; }
       }
-      
       if(spr) { spr.style.background = '#d9f99d'; spr.style.color = '#000'; spr.style.boxShadow = 'none'; spr.style.border = '1px solid transparent'; }
 
       currentPrediction.isPending = false;
       
-      // AUTO DELETE LOSS LOGIC & SMART STICKERS
       if(tgBotActive) {
           let bt = document.getElementById('botToken');
           let ci = document.getElementById('chatId');
@@ -1957,26 +1933,21 @@
 
           if (isWin) {
             if (isJackpot) await sendStck(TelegramConfig.stickers.jackpot);
-            await sendStck(TelegramConfig.stickers.win[0]); // Send main Win sticker
+            await sendStck(TelegramConfig.stickers.win[0]); 
             
-            // Random secondary win sticker
             setTimeout(() => {
                 let secWins = TelegramConfig.stickers.win[1];
                 let rndWin = secWins[Math.floor(Math.random() * secWins.length)];
                 sendStck(rndWin);
             }, 1000);
-            
           } else {
               let shT = document.getElementById('shortTgl');
               if (shT && shT.checked) {
-                  // AUTO DELETE LOSS IS ON
                   if (lastTgMsgId) {
                       deleteTgMessage(lastTgMsgId);
                       lastTgMsgId = null;
                   }
-                  // NOTE: Do not send loss sticker if message is deleted.
               } else {
-                  // AUTO DELETE OFF - Send Random loss sticker
                   let lossStickers = TelegramConfig.stickers.loss;
                   let rndLoss = lossStickers[Math.floor(Math.random() * lossStickers.length)];
                   await sendStck(rndLoss);
