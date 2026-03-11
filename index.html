@@ -32,6 +32,7 @@
         .live-clock { font-family: 'Orbitron', sans-serif; font-size: 32px; font-weight: 900; color: #00e5ff; text-shadow: 0 0 15px #00e5ff; margin-bottom: 10px; }
         .live-pred-title { color: #88ddff; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; font-weight: bold; }
         .live-pred-value { font-size: 42px; font-weight: 900; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.8); text-transform: uppercase; line-height: 1.1; }
+        .live-pred-num { color: #ffd700; font-size: 14px; font-weight: bold; margin-top: 5px; text-shadow: 0 0 10px #ffd700; }
 
         .section-title { color: #88ddff; font-size: 13px; margin-bottom: 8px; margin-top: 10px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid rgba(0,229,255,0.3); padding-bottom: 5px;}
         
@@ -62,7 +63,6 @@
         .log-loss { border-color: #ff3366; }
         .log-del { border-color: #ffcc00; color: #aaa;}
 
-        /* Side-by-Side History Design */
         .history-list { display: flex; flex-direction: column; gap: 10px; }
         .history-card { background: #001a22; border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 10px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.5);}
         .h-period { background: rgba(0, 229, 255, 0.1); text-align: center; padding: 6px; font-weight: bold; font-size: 12px; letter-spacing: 1px; color: #88ddff; border-bottom: 1px solid rgba(0, 229, 255, 0.2);}
@@ -74,6 +74,7 @@
         .badge { display: inline-block; padding: 3px 6px; border-radius: 4px; font-weight: bold; font-size: 10px; text-transform: uppercase; margin-top: 4px;}
         .badge-win { background: rgba(0, 255, 170, 0.2); color: #00ffaa; border: 1px solid #00ffaa; }
         .badge-loss { background: rgba(255, 51, 102, 0.2); color: #ff3366; border: 1px solid #ff3366; }
+        .badge-jackpot { background: rgba(255, 215, 0, 0.2); color: #ffd700; border: 1px solid #ffd700; }
         .txt-red { color: #ff3366; text-shadow: 0 0 5px rgba(255,51,102,0.5);}
         .txt-green { color: #00ffaa; text-shadow: 0 0 5px rgba(0,255,170,0.5);}
 
@@ -110,6 +111,7 @@
                     <div class="live-clock" id="liveTime">30s</div>
                     <div class="live-pred-title" id="predPeriod">Waiting for Session...</div>
                     <div class="live-pred-value" id="predValue">--</div>
+                    <div class="live-pred-num" id="predTargetNum">Target: ?</div>
                 </div>
 
                 <div class="section-title">Prediction Server</div>
@@ -143,12 +145,12 @@
 
             <div id="historyScreen" class="screen">
                 <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>Calculated Past Results</span>
-                    <button onclick="loadHistory()" style="padding: 5px 10px; font-size:10px; border-radius: 5px;">🔄 Refresh Server API</button>
+                    <span>Live Session History</span>
+                    <button onclick="clearHistory()" style="padding: 5px 10px; font-size:10px; border-radius: 5px;">🗑️ Clear</button>
                 </div>
                 
                 <div class="history-list" id="historyContainer">
-                    <p style="text-align:center; color:#558899; font-size:12px; margin-top:10px;">Click Refresh to load side-by-side history.</p>
+                    <p id="histPlaceholder" style="text-align:center; color:#558899; font-size:12px; margin-top:10px;">Bot history will appear here once session starts.</p>
                 </div>
             </div>
 
@@ -163,7 +165,7 @@
                 <span class="nav-icon">⚙️</span>
                 <span>Settings</span>
             </button>
-            <button class="nav-btn" id="nav-historyScreen" onclick="switchTab('historyScreen'); loadHistory();">
+            <button class="nav-btn" id="nav-historyScreen" onclick="switchTab('historyScreen')">
                 <span class="nav-icon">📜</span>
                 <span>History</span>
             </button>
@@ -172,16 +174,13 @@
 
     <script>
         let isActive = false;
-        let isFetching = false;
         let currentServer = 'PREMIUM';
         let wins = 0; let losses = 0; let botLevel = 1;
         let lastProcessedPeriod = "";
         let pendingPrediction = null; 
-        let lastTgMessageId = null; // Stores ID to delete on loss
+        let lastTgMessageId = null; 
         let syncLoop; let clockLoop;
         
-        const apiUrl = "https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json?pageSize=1000";
-
         document.getElementById('botToken').value = localStorage.getItem('raoToken') || "";
         document.getElementById('chatId').value = localStorage.getItem('raoChatId') || "";
 
@@ -203,6 +202,7 @@
         const winMiddleStickers = ["CAACAgUAAxkBAAEQlKRpmc6YKoTbG9mtawI1wwABuQcxkfQAAkoTAAKLKmFWDJoBh856d0Y6BA", "CAACAgUAAxkBAAEQlKZpmc6aK74AAdmQTU5pzHvRwaqw7kYAAhcNAAKnzeBWXQtoMocETe06BA"];
         const winLastStickers = ["CAACAgUAAxkBAAEQlK5pmc6yU2kj7DMmOHGDzzo82qxT1gAC1hMAAmp9YVbvJhOMbbSNmDoE", "CAACAgUAAxkBAAEQlKhpmc6etFnxDItnzJwhAWlPXg240gAC0xMAAtJlYVZ8CDYuQ-4m-DoE"];
         const lossStickers = ["CAACAgUAAxkBAAEQlLJpmc6_OGO-OzS4pO4D6BxunLlM2QACcRQAAiWLYFaCAQAB8ZzOON86BA", "CAACAgUAAxkBAAEQlKJpmc6TGK5kA5LlPk4RmwWv2F-obgAC4BEAAsSNmVRK1rmkcLLTfDoE"];
+        const jackpotSticker = "CAACAgUAAxkBAAEQsUppqwa6JcUSVwlv3_SF9sjt-5_XzAAC5Q0AAi5hWFelqTPkIh-T4ToE"; 
 
         function getSticker(array, periodString) { return array[Number(BigInt(periodString) % BigInt(array.length))]; }
 
@@ -229,28 +229,28 @@
             if(isActive) {
                 isActive = false; clearInterval(syncLoop);
                 
-                // USER REQUEST: If bot stops, delete the last pending bet message!
                 if(lastTgMessageId !== null) {
                     await deleteTgMessage(lastTgMessageId);
                     addLog("Deleted last bet to avoid risk.", "log-del");
                     lastTgMessageId = null;
                 }
 
-                updateLiveUI("Session Ended", "--", "#fff");
+                updateLiveUI("Session Ended", "--", "#fff", "?");
                 addLog("System Hang Stopped!"); showToast("Bot Offline", "#ff3366");
                 let stopMsg = "🛑 <b>SYSTUMM HANG SESSION ENDED</b> 🛑\n\nPredictions stopped. Calculate your profits!";
                 await sendTgMessage(stopMsg);
                 btn.innerHTML = "▶️ START VIP"; btn.classList.remove('active-stop');
             } else {
-                showToast("Connecting to API...", "#00e5ff");
+                showToast("System Started...", "#00e5ff");
                 setTimeout(async () => {
                     isActive = true; wins = 0; losses = 0; botLevel = 1; updateStats();
                     lastProcessedPeriod = ""; pendingPrediction = null; lastTgMessageId = null;
                     document.getElementById('sessionLog').innerHTML = "";
-                    addLog("Bot Started! Syncing..."); showToast("Connected & Syncing!", "#00ffaa");
+                    document.getElementById('historyContainer').innerHTML = '<p id="histPlaceholder" style="text-align:center; color:#558899; font-size:12px; margin-top:10px;">Bot history will appear here once session starts.</p>';
+                    addLog("Bot Started! Syncing Time..."); showToast("Connected & Syncing!", "#00ffaa");
                     let startMsg = "💠 <b>SYSTUMM HANG VIP DESTINATION STARTED</b> 💠\n\nSystem is ACTIVE. All members get ready!";
                     await sendTgMessage(startMsg);
-                    syncLoop = setInterval(botLogicTick, 1500);
+                    syncLoop = setInterval(botLogicTick, 1000); // Changed to 1 sec for exact time match
                     btn.innerHTML = "⏹️ STOP VIP"; btn.classList.add('active-stop');
                 }, 800);
             }
@@ -262,7 +262,7 @@
             document.getElementById('btnPremium').className = 'server-btn';
             if(server === 'AIPRO') document.getElementById('btnAiPro').classList.add('active', 'aipro');
             if(server === 'PREMIUM') document.getElementById('btnPremium').classList.add('active', 'premium');
-            addLog(`Server switched to: ${server}`);
+            addLog(`Server logic switched to: ${server}`);
         }
 
         function updateStats() {
@@ -271,9 +271,10 @@
             document.getElementById('currentLevelDisplay').innerText = botLevel;
         }
 
-        function updateLiveUI(period, text, colorCode) {
+        function updateLiveUI(period, text, colorCode, targetNum) {
             document.getElementById('predPeriod').innerText = `Period: ${period}`;
             document.getElementById('predValue').innerHTML = `<span style="color:${colorCode}">${text}</span>`;
+            document.getElementById('predTargetNum').innerText = `Target: ${targetNum}`;
         }
 
         function addLog(msg, type = "normal") {
@@ -287,183 +288,10 @@
             logBox.innerHTML = `<div class="${cssClass}">[${timeStr}] ${msg}</div>` + logBox.innerHTML;
         }
 
+        function clearHistory() {
+            document.getElementById('historyContainer').innerHTML = '<p id="histPlaceholder" style="text-align:center; color:#558899; font-size:12px; margin-top:10px;">History cleared.</p>';
+        }
+
         function getTgData() { return { token: document.getElementById('botToken').value, chatId: document.getElementById('chatId').value }; }
         
-        // TELEGRAM SENDER (Saves Message ID)
-        async function sendTgMessage(text) {
-            const { token, chatId } = getTgData(); if(!token || !chatId) return;
-            try { 
-                let response = await fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}&parse_mode=HTML`); 
-                let data = await response.json();
-                if(data.ok && data.result) return data.result.message_id;
-            } catch(e) {}
-            return null;
-        }
-
-        async function sendTgSticker(stickerId) {
-            const { token, chatId } = getTgData(); if(!token || !chatId) return;
-            try { await fetch(`https://api.telegram.org/bot${token}/sendSticker?chat_id=${chatId}&sticker=${stickerId}`); } catch(e) {}
-        }
-
-        // DELETE MESSAGE FUNCTION (The Ultimate Fix for Loss)
-        async function deleteTgMessage(msgId) {
-            const { token, chatId } = getTgData(); if(!token || !chatId || !msgId) return;
-            try { await fetch(`https://api.telegram.org/bot${token}/deleteMessage?chat_id=${chatId}&message_id=${msgId}`); } catch(e) {}
-        }
-
-        // ENGINE: RAO PREMIUM
-        function raoPremiumCalculation(dataList, targetPeriod) {
-            if (!dataList || dataList.length < 4) return { isBig: true, conf: 85 };
-
-            let lastNum = parseInt(dataList[0].number); let lastDigit = parseInt(targetPeriod.toString().slice(-1));
-            let matrixPred = null;
-            if (lastDigit === 1) { if ([1, 3].includes(lastNum)) matrixPred = false; if ([5, 7, 9].includes(lastNum)) matrixPred = true; } 
-            else if (lastDigit === 0) { if ([2, 4].includes(lastNum)) matrixPred = false; if (lastNum === 8) matrixPred = true; }
-
-            let isLBig = parseInt(dataList[0].number) > 4; let isPBig = parseInt(dataList[1].number) > 4;
-            let isP2Big = parseInt(dataList[2].number) > 4; let isP3Big = parseInt(dataList[3].number) > 4;
-            let trendPred = null;
-            if (isLBig === isPBig && isPBig === isP2Big) trendPred = isLBig; // Dragon
-            else if (isLBig !== isPBig && isPBig !== isP2Big && isP2Big !== isP3Big) trendPred = !isLBig; // ABAB
-            else if (isLBig === isPBig && isPBig !== isP2Big && isP2Big === isP3Big) trendPred = !isLBig; // AABB
-
-            let finalIsBig;
-            if (matrixPred !== null) finalIsBig = matrixPred; else if (trendPred !== null) finalIsBig = trendPred; else finalIsBig = (lastNum <= 4); 
-
-            // Dynamic Config 85% to 98%
-            let dynConf = Math.floor(Math.random() * (98 - 85 + 1)) + 85;
-            return { isBig: finalIsBig, conf: dynConf };
-        }
-
-        // ENGINE: AI PRO
-        function aiProCalculation() {
-            let isBig = Math.random() >= 0.5; let conf = Math.floor(Math.random() * (95 - 80 + 1)) + 80; 
-            return { isBig: isBig, conf: conf };
-        }
-
-        async function fetchApi() {
-            try { let res = await fetch(apiUrl); let json = await res.json(); if(json && json.data && json.data.list) return json.data.list; } catch (e) {} return null;
-        }
-
-        async function botLogicTick() {
-            if (!isActive || isFetching) return; isFetching = true; 
-            let data = await fetchApi(); if (!data) { isFetching = false; return; }
-
-            let latestPeriod = data[0].issueNumber; let latestNumber = data[0].number; let latestIsBig = latestNumber >= 5;
-
-            if (lastProcessedPeriod !== "" && latestPeriod !== lastProcessedPeriod) {
-                lastProcessedPeriod = latestPeriod;
-
-                if (pendingPrediction !== null && pendingPrediction.period === latestPeriod) {
-                    if (pendingPrediction.isBig === latestIsBig) {
-                        // WIN LOGIC
-                        wins++; addLog(`WON Period ${latestPeriod} (Level ${botLevel})`, "win");
-                        botLevel = 1; updateStats(); 
-                        
-                        await sendTgSticker(winFirstSticker);
-                        await sendTgSticker(getSticker(winMiddleStickers, latestPeriod + "1"));
-                        await sendTgSticker(getSticker(winLastStickers, latestPeriod + "2"));
-                        lastTgMessageId = null; // Win ho gaya, toh delete karne ki jarurat nahi
-                    } else {
-                        // LOSS LOGIC
-                        losses++; addLog(`LOST Period ${latestPeriod} (Level ${botLevel})`, "loss");
-                        
-                        // DELETING THE LOSING BET FROM TELEGRAM
-                        if(lastTgMessageId !== null) {
-                            await deleteTgMessage(lastTgMessageId);
-                            addLog("Loss Msg Deleted from Telegram!", "log-del");
-                            lastTgMessageId = null;
-                        }
-
-                        // Managing Levels strictly to 1 and 2
-                        botLevel++; 
-                        if(botLevel > 2) botLevel = 1; // Strict loop 1 -> 2 -> 1
-                        updateStats(); 
-                    }
-                }
-
-                let nextPeriod = (BigInt(latestPeriod) + 1n).toString();
-                let resultObj = (currentServer === 'PREMIUM') ? raoPremiumCalculation(data, nextPeriod) : aiProCalculation();
-                pendingPrediction = { period: nextPeriod, isBig: resultObj.isBig };
-                
-                let typeStr = resultObj.isBig ? "BIG" : "SMALL";
-                let uiColorCode = resultObj.isBig ? "#ff3366" : "#00ffaa";
-                
-                // Fund multiplier based on level
-                let fundM = (botLevel === 1) ? "1X (₹10)" : "3X (₹30)";
-                
-                // Risk Check
-                let riskText = (Math.random() > 0.7) ? "⚠️ HIGH" : "✅ LOW";
-
-                updateLiveUI(nextPeriod, typeStr, uiColorCode);
-
-                let serverName = (currentServer === 'PREMIUM') ? "RAO PREMIUM" : "AI PRO";
-
-                let vipMsg = `💠 <b>SYSTUMM HANG VIP SIGNAL</b> 💠\n\n🎯 Game: Wingo 30 sec \n🆔 Period: <b>${nextPeriod}</b>\n\n🔥 Prediction: <b>${typeStr}</b>\n💰 Fund: <b>${fundM}</b>\n\n🖥️ Server: ${serverName}\n📈 Accuracy: ${resultObj.conf}%\n${riskText}\n\n💎 Powered By: RAO SAHAB SYSTEM`;
-                
-                // Store message ID to delete if loss
-                lastTgMessageId = await sendTgMessage(vipMsg); 
-                addLog(`Signal Sent: ${typeStr} (Level ${botLevel})`);
-            } else if (lastProcessedPeriod === "") { lastProcessedPeriod = latestPeriod; addLog("API Connected. Ready for signal..."); }
-            isFetching = false;
-        }
-
-        // SIDE-BY-SIDE HISTORY UI
-        async function loadHistory() {
-            const container = document.getElementById('historyContainer');
-            container.innerHTML = '<p style="text-align:center; color:#00e5ff;">Syncing Data...</p>'; 
-
-            let data = await fetchApi();
-            if(data) {
-                let displayData = data.slice(0, 15);
-                let revData = [...displayData].reverse();
-                let simLevel = 1;
-                let historyHTML = '';
-
-                for(let i=0; i<revData.length - 1; i++) {
-                    let actualData = revData[i];
-                    let actualIsBig = actualData.number >= 5;
-                    let pastDataForCalculation = data.slice(data.indexOf(actualData) + 1);
-
-                    let botResult = (currentServer === 'PREMIUM') ? raoPremiumCalculation(pastDataForCalculation, actualData.issueNumber) : aiProCalculation();
-                    let botPredIsBig = botResult.isBig;
-                    let isWin = (actualIsBig === botPredIsBig);
-                    
-                    let badge = '';
-                    if(isWin) { badge = `<div class="badge badge-win">✅ WIN (L${simLevel})</div>`; simLevel = 1; } 
-                    else { badge = `<div class="badge badge-loss">❌ LOSS (L${simLevel})</div>`; simLevel++; if(simLevel > 2) simLevel = 1; }
-
-                    let botPredText = botPredIsBig ? "BIG" : "SMALL";
-                    let botPredClass = botPredIsBig ? "txt-red" : "txt-green";
-
-                    let gameColor = ([1,3,7,9].includes(actualData.number)) ? "🟢 GREEN" : ([2,4,6,8].includes(actualData.number)) ? "🔴 RED" : "🟣 VIOLET";
-                    if(actualData.number === 0 || actualData.number === 5) gameColor += (actualData.number===0)?"+🔴":"+🟢";
-                    
-                    let gameText = actualIsBig ? "🔴 BIG" : "🟢 SMALL";
-
-                    historyHTML = `
-                    <div class="history-card">
-                        <div class="h-period">PERIOD: ${actualData.issueNumber}</div>
-                        <div class="h-body">
-                            <div class="h-side">
-                                <div class="h-title">Bot Predicted</div>
-                                <div class="h-val ${botPredClass}">${botPredText}</div>
-                                ${badge}
-                            </div>
-                            
-                            <div class="h-divider"></div>
-                            
-                            <div class="h-side">
-                                <div class="h-title">Game Result</div>
-                                <div class="h-val" style="color:#fff;">${actualData.number} | ${gameText}</div>
-                                <div style="font-size:10px; margin-top:5px; font-weight:bold; color:#aaa;">${gameColor}</div>
-                            </div>
-                        </div>
-                    </div>` + historyHTML;
-                }
-                container.innerHTML = historyHTML;
-            }
-        }
-    </script>
-</body>
-</html>
+        async 
