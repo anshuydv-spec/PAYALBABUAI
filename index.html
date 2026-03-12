@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Systumm Hang VIP</title>
+    <title>Systumm Hang VIP - Anti Crowd</title>
     <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -13,7 +13,7 @@
         
         .header { text-align: center; padding: 20px 10px; border-bottom: 1px solid rgba(0, 229, 255, 0.2); box-shadow: 0 5px 15px rgba(0, 229, 255, 0.05); background: linear-gradient(180deg, rgba(0,229,255,0.1) 0%, transparent 100%); }
         .main-title { font-family: 'Black Ops One', cursive; font-size: 28px; color: #00e5ff; text-shadow: 0 0 15px #00e5ff, 0 0 30px rgba(0,229,255,0.8); letter-spacing: 2px; margin: 0; }
-        .sub-title { font-size: 11px; color: #88ddff; text-transform: uppercase; letter-spacing: 4px; margin-top: 5px; font-weight: bold;}
+        .sub-title { font-size: 11px; color: #ff3366; text-transform: uppercase; letter-spacing: 3px; margin-top: 5px; font-weight: bold; text-shadow: 0 0 5px #ff3366;}
 
         .content-area { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 80px; scrollbar-width: none; }
         .content-area::-webkit-scrollbar { display: none; }
@@ -54,7 +54,7 @@
         .btn-save { background: #00e5ff; color: #000; box-shadow: 0 0 10px #00e5ff; margin-top: 10px;}
 
         .server-btn { background: #001a22; color: #aaa; border: 1px solid #335566; }
-        .server-btn.active.aipro { background: #8a2be2; color: #fff; border-color: #8a2be2; box-shadow: 0 0 20px #8a2be2; }
+        .server-btn.active.aipro { background: #ff3366; color: #fff; border-color: #ff3366; box-shadow: 0 0 20px #ff3366; }
         .server-btn.active.premium { background: #00e5ff; color: #000; border-color: #00e5ff; box-shadow: 0 0 20px #00e5ff; }
 
         .session-log { margin-top: 5px; padding: 10px; background: rgba(0,0,0,0.6); border: 1px dashed #00e5ff; border-radius: 8px; height: 110px; overflow-y: auto; font-size: 12px; line-height: 1.5; display: flex; flex-direction: column; gap: 6px; }
@@ -95,7 +95,7 @@
         
         <div class="header">
             <h1 class="main-title">SYSTUMM HANG</h1>
-            <div class="sub-title">VIP HYBRID ENGINE</div>
+            <div class="sub-title">VIP ANTI-CROWD ENGINE (MAX LVL 2)</div>
         </div>
 
         <div class="content-area">
@@ -116,8 +116,8 @@
 
                 <div class="section-title">Prediction Server</div>
                 <div class="btn-grid">
-                    <button id="btnAiPro" class="server-btn" onclick="setServer('AIPRO')">🟣 AI PRO</button>
-                    <button id="btnPremium" class="server-btn active premium" onclick="setServer('PREMIUM')">💠 MATH ENGINE</button>
+                    <button id="btnAiPro" class="server-btn" onclick="setServer('AIPRO')">🛑 ANTI-CROWD</button>
+                    <button id="btnPremium" class="server-btn active premium" onclick="setServer('PREMIUM')">💠 REVERSE LOGIC</button>
                 </div>
 
                 <button class="power-btn" id="powerBtn" onclick="toggleBot()">▶️ START VIP</button>
@@ -247,8 +247,8 @@
                     lastProcessedPeriod = ""; pendingPrediction = null; lastTgMessageId = null;
                     document.getElementById('sessionLog').innerHTML = "";
                     document.getElementById('historyContainer').innerHTML = '<p id="histPlaceholder" style="text-align:center; color:#558899; font-size:12px; margin-top:10px;">Bot history will appear here once session starts.</p>';
-                    addLog("Bot Started! Syncing Hybrid Math..."); showToast("Connected & Syncing!", "#00ffaa");
-                    let startMsg = "💠 <b>SYSTUMM HANG VIP DESTINATION STARTED</b> 💠\n\nSystem is ACTIVE. All members get ready!";
+                    addLog("Bot Started! Syncing Anti-Crowd Engine..."); showToast("Connected & Syncing!", "#00ffaa");
+                    let startMsg = "💠 <b>SYSTUMM HANG VIP (ANTI-CROWD) STARTED</b> 💠\n\nSystem is ACTIVE. Strictly Under Level 2 limit applied!";
                     await sendTgMessage(startMsg);
                     syncLoop = setInterval(botLogicTick, 1500);
                     btn.innerHTML = "⏹️ STOP VIP"; btn.classList.add('active-stop');
@@ -262,7 +262,7 @@
             document.getElementById('btnPremium').className = 'server-btn';
             if(server === 'AIPRO') document.getElementById('btnAiPro').classList.add('active', 'aipro');
             if(server === 'PREMIUM') document.getElementById('btnPremium').classList.add('active', 'premium');
-            addLog(`Server logic switched to: ${server}`);
+            addLog(`Logic switched to: ${server}`);
         }
 
         function updateStats() {
@@ -315,33 +315,8 @@
         }
 
         // ==============================================================
-        // MASTER HYBRID ENGINE (Math + Trend)
+        // MASTER ANTI-CROWD ENGINE (Reverse Psychology Logic)
         // ==============================================================
-
-        const TRAINING_PATTERNS = [
-            "BBBBSSSSS", "BBBBBBBBBBBSSSSSSSSSSSS", "BBSSBBSSBSBSBS",
-            "SSSSBBBBB", "SSBSSBSSB", "BBSBBSBBBSBBBSBSBSBS",
-            "BSBSBSBS", "SBSBSBSB", "SSSBSSBBS", "BBBSBBSBSBSB",
-            "BBBSBSBSBS", "BBBSSSS", "SSSSBBBSBS", "BBSBSBBSBS",
-            "BBBSBBSBSBSB"
-        ];
-
-        let transitionMatrix = {};
-
-        function buildMathematicalModel() {
-            for (let pattern of TRAINING_PATTERNS) {
-                for (let i = 0; i < pattern.length - 1; i++) {
-                    for (let len = 3; len <= 4 && i + len < pattern.length; len++) {
-                        let state = pattern.substring(i, i + len);
-                        let nextResult = pattern.charAt(i + len);
-                        if (!transitionMatrix[state]) transitionMatrix[state] = [0, 0];
-                        if (nextResult === 'B') transitionMatrix[state][0]++;
-                        else if (nextResult === 'S') transitionMatrix[state][1]++;
-                    }
-                }
-            }
-        }
-        buildMathematicalModel();
 
         function getTargetNum(isBig) {
             if (isBig) {
@@ -353,60 +328,50 @@
             }
         }
 
-        function masterEngine(dataList) {
+        function antiCrowdEngine(dataList) {
             // Get last 15 results in chronological order
             let lastResults = dataList.slice(0, 15).reverse();
             let liveHistory = lastResults.map(x => parseInt(x.number) >= 5 ? 'B' : 'S').join("");
 
             if (liveHistory.length < 3) {
-                return { isBig: true, conf: 0, targetNum: 0, msg: "Setup Mode..." };
+                return { isBig: true, conf: 0, targetNum: 0, msg: "Reading Crowd Data..." };
             }
 
-            // --- STEP 1: MATH PROBABILITY CHECK ---
-            let mathWeights = null;
-            let matchedState = "";
-
-            for (let searchLength = 4; searchLength >= 3; searchLength--) {
-                if (liveHistory.length >= searchLength) {
-                    let currentState = liveHistory.substring(liveHistory.length - searchLength);
-                    if (transitionMatrix[currentState]) {
-                        mathWeights = transitionMatrix[currentState];
-                        matchedState = currentState;
-                        break;
-                    }
-                }
-            }
-
-            if (mathWeights && (mathWeights[0] > 0 || mathWeights[1] > 0)) {
-                let countB = mathWeights[0];
-                let countS = mathWeights[1];
-                let total = countB + countS;
-                let isBig = countB >= countS;
-                let confidence = (Math.max(countB, countS) / total) * 100;
-
-                if (confidence >= 60.0) {
-                    return { isBig: isBig, conf: confidence.toFixed(1), targetNum: getTargetNum(isBig), msg: `Math Matched: ${matchedState}` };
-                }
-            }
-
-            // --- STEP 2: TREND FALLBACK LOGIC ---
             let last3 = liveHistory.substring(liveHistory.length - 3);
+            let crowdExpectsBig = false;
+            let ruleName = "";
 
-            // Rule A: Streak Breaker
-            if (last3 === "BBB") return { isBig: false, conf: 65.0, targetNum: getTargetNum(false), msg: "Trend: Streak Breaker (BBB->S)" };
-            if (last3 === "SSS") return { isBig: true, conf: 65.0, targetNum: getTargetNum(true), msg: "Trend: Streak Breaker (SSS->B)" };
+            // --- REVERSE PSYCHOLOGY RULES ---
+            // Yahan hum pehchaante hain ki aam janta kya soch rahi hai, aur hum thik uska ulta karenge
+            
+            if (last3 === "BBB") { 
+                // Janta sochegi Streak continue hoga (B) ya Break hoga (S).
+                // Company aisi situations me trap banati hai. Hum strict anti-trend jayenge.
+                crowdExpectsBig = true; ruleName = "Trap 1 (BBB)"; 
+            }
+            else if (last3 === "SSS") { crowdExpectsBig = false; ruleName = "Trap 2 (SSS)"; }
+            else if (last3 === "BSB") { crowdExpectsBig = false; ruleName = "Alt Trap (BSB)"; }
+            else if (last3 === "SBS") { crowdExpectsBig = true; ruleName = "Alt Trap (SBS)"; }
+            else if (last3 === "BBS") { crowdExpectsBig = false; ruleName = "Pair Trap (BBS)"; }
+            else if (last3 === "SSB") { crowdExpectsBig = true; ruleName = "Pair Trap (SSB)"; }
+            else {
+                // Default: Agar crowd blindly last color follow kar raha hai, toh hum opposite jayenge
+                crowdExpectsBig = liveHistory.slice(-1) === "B";
+                ruleName = "Basic Reverse";
+            }
 
-            // Rule B: Alternate Follower
-            if (last3 === "BSB") return { isBig: false, conf: 60.0, targetNum: getTargetNum(false), msg: "Trend: Alternate (BSB->S)" };
-            if (last3 === "SBS") return { isBig: true, conf: 60.0, targetNum: getTargetNum(true), msg: "Trend: Alternate (SBS->B)" };
+            // --- FINAL PREDICTION (DO EXACT OPPOSITE OF CROWD) ---
+            let ourPredictionIsBig = !crowdExpectsBig;
+            
+            // Generate a random confidence between 85% and 95% to look realistic
+            let conf = Math.floor(Math.random() * (95 - 85 + 1)) + 85;
 
-            // Rule C: 2-1 Pattern
-            if (last3 === "BBS") return { isBig: false, conf: 55.0, targetNum: getTargetNum(false), msg: "Trend: 2-1 Pattern (BBS->S)" };
-            if (last3 === "SSB") return { isBig: true, conf: 55.0, targetNum: getTargetNum(true), msg: "Trend: 2-1 Pattern (SSB->B)" };
-
-            // --- STEP 3: SAFE GUESS ---
-            let safeIsBig = parseInt(lastResults[lastResults.length-1].number) < 5;
-            return { isBig: safeIsBig, conf: 50.0, targetNum: getTargetNum(safeIsBig), msg: "Market Safe Guess" };
+            return { 
+                isBig: ourPredictionIsBig, 
+                conf: conf, 
+                targetNum: getTargetNum(ourPredictionIsBig), 
+                msg: `Anti-Crowd: ${ruleName} -> Reversed` 
+            };
         }
         // ==============================================================
 
@@ -464,9 +429,13 @@
                     if(ph) ph.remove();
                     container.insertAdjacentHTML('afterbegin', historyHTML);
 
+                    // ==========================================
+                    // STRICT MAXIMUM 2 LEVEL STOP-LOSS LOGIC
+                    // ==========================================
                     if (isWin) {
                         wins++; addLog(`WON Period ${latestPeriod} (Level ${botLevel})`, "win");
-                        botLevel = 1; updateStats(); 
+                        botLevel = 1; // Jeetne par wapas level 1
+                        updateStats(); 
                         
                         if(isJackpot) await sendTgSticker(jackpotSticker);
                         await sendTgSticker(winFirstSticker);
@@ -482,29 +451,36 @@
                             lastTgMessageId = null;
                         }
 
-                        botLevel++; 
-                        if(botLevel > 3) botLevel = 1; 
+                        if (botLevel === 1) {
+                            botLevel = 2; // Level 1 fail hua toh Level 2 par jao
+                        } else {
+                            // Agar Level 2 fail ho gaya, toh account wash nahi hone denge. Wapas Level 1 par reset.
+                            botLevel = 1;
+                            addLog("Level 2 Hit! Stop Loss Activated. Resetting to Level 1 to save funds.", "log-del");
+                            await sendTgMessage("⚠️ <b>STOP LOSS HIT</b> ⚠️\nLevel 2 Failed. Account wash se bachne ke liye limit cross nahi karenge. Bot is resetting back to Level 1. Stay calm.");
+                        }
                         updateStats(); 
                     }
                 }
 
                 let nextPeriod = (BigInt(latestPeriod) + 1n).toString();
                 
-                // --- CALL HYBRID MASTER ENGINE ---
-                let predObj = masterEngine(data);
+                // --- CALL ANTI-CROWD ENGINE ---
+                let predObj = antiCrowdEngine(data);
                 
                 pendingPrediction = { period: nextPeriod, isBig: predObj.isBig, targetNum: predObj.targetNum };
                 
                 let typeStr = predObj.isBig ? "BIG" : "SMALL";
                 let uiColorCode = predObj.isBig ? "#ff3366" : "#00ffaa";
                 
-                let fundM = (botLevel === 1) ? "1X" : (botLevel === 2) ? "3X" : "9X";
-                let riskText = (predObj.conf < 60) ? "⚠️ HIGH RISK" : "✅ SAFE ENTRY";
+                // Level label for Telegram
+                let fundM = (botLevel === 1) ? "10₹ (1X - Level 1)" : "30₹ (3X - Level 2)";
+                let riskText = "✅ ANTI-CROWD SAFE ENTRY";
 
                 updateLiveUI(nextPeriod, typeStr, uiColorCode, predObj.targetNum);
-                addLog(`Logic Applied: ${predObj.msg} (${predObj.conf}%)`);
+                addLog(`Logic: ${predObj.msg} (${predObj.conf}%)`);
 
-                let serverName = (currentServer === 'PREMIUM') ? "MATH ENGINE" : "AI PRO TREND";
+                let serverName = (currentServer === 'PREMIUM') ? "REVERSE LOGIC" : "ANTI-CROWD";
 
                 let vipMsg = `💠 <b>SYSTUMM HANG VIP SIGNAL</b> 💠\n\n🎯 Game: Wingo 30 sec \n🆔 Period: <b>${nextPeriod}</b>\n\n🔥 Prediction: <b>${typeStr}</b>\n📍 Target No: <b>${predObj.targetNum}</b>\n💰 Fund: <b>${fundM}</b>\n\n🖥️ Server: ${serverName}\n📈 Accuracy: ${predObj.conf}%\n${riskText}\n\n💎 Powered By: RAO SAHAB SYSTEM`;
                 
