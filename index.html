@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Systumm Hang VIP - Anti Crowd</title>
+    <title>Systumm Hang VIP - Adaptive Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -13,7 +13,7 @@
         
         .header { text-align: center; padding: 20px 10px; border-bottom: 1px solid rgba(0, 229, 255, 0.2); box-shadow: 0 5px 15px rgba(0, 229, 255, 0.05); background: linear-gradient(180deg, rgba(0,229,255,0.1) 0%, transparent 100%); }
         .main-title { font-family: 'Black Ops One', cursive; font-size: 28px; color: #00e5ff; text-shadow: 0 0 15px #00e5ff, 0 0 30px rgba(0,229,255,0.8); letter-spacing: 2px; margin: 0; }
-        .sub-title { font-size: 11px; color: #ff3366; text-transform: uppercase; letter-spacing: 3px; margin-top: 5px; font-weight: bold; text-shadow: 0 0 5px #ff3366;}
+        .sub-title { font-size: 11px; color: #ffcc00; text-transform: uppercase; letter-spacing: 3px; margin-top: 5px; font-weight: bold; text-shadow: 0 0 5px #ffcc00;}
 
         .content-area { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 80px; scrollbar-width: none; }
         .content-area::-webkit-scrollbar { display: none; }
@@ -28,11 +28,13 @@
         .loss-txt { color: #ff3366; text-shadow: 0 0 5px #ff3366; }
         .lvl-txt { color: #ffcc00; text-shadow: 0 0 5px #ffcc00; }
 
-        .live-pred-box { background: rgba(0, 229, 255, 0.05); border: 2px solid #00e5ff; border-radius: 12px; padding: 20px 10px; text-align: center; margin-bottom: 20px; box-shadow: 0 0 20px rgba(0, 229, 255, 0.15); position: relative; }
-        .live-clock { font-family: 'Orbitron', sans-serif; font-size: 32px; font-weight: 900; color: #00e5ff; text-shadow: 0 0 15px #00e5ff; margin-bottom: 10px; }
-        .live-pred-title { color: #88ddff; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; font-weight: bold; }
+        .live-pred-box { background: rgba(0, 229, 255, 0.05); border: 2px solid #00e5ff; border-radius: 12px; padding: 20px 10px; text-align: center; margin-bottom: 10px; box-shadow: 0 0 20px rgba(0, 229, 255, 0.15); position: relative; }
+        .live-clock { font-family: 'Orbitron', sans-serif; font-size: 32px; font-weight: 900; color: #00e5ff; text-shadow: 0 0 15px #00e5ff; margin-bottom: 5px; }
+        .live-pred-title { color: #88ddff; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; font-weight: bold; }
         .live-pred-value { font-size: 42px; font-weight: 900; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.8); text-transform: uppercase; line-height: 1.1; }
         .live-pred-num { color: #ffd700; font-size: 14px; font-weight: bold; margin-top: 5px; text-shadow: 0 0 10px #ffd700; }
+        
+        .active-engine-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; text-transform: uppercase; margin-top: 10px; background: rgba(0, 229, 255, 0.2); border: 1px solid #00e5ff; color: #00e5ff; }
 
         .section-title { color: #88ddff; font-size: 13px; margin-bottom: 8px; margin-top: 10px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid rgba(0,229,255,0.3); padding-bottom: 5px;}
         
@@ -53,15 +55,11 @@
         .btn-full { grid-column: span 2; }
         .btn-save { background: #00e5ff; color: #000; box-shadow: 0 0 10px #00e5ff; margin-top: 10px;}
 
-        .server-btn { background: #001a22; color: #aaa; border: 1px solid #335566; }
-        .server-btn.active.aipro { background: #ff3366; color: #fff; border-color: #ff3366; box-shadow: 0 0 20px #ff3366; }
-        .server-btn.active.premium { background: #00e5ff; color: #000; border-color: #00e5ff; box-shadow: 0 0 20px #00e5ff; }
-
         .session-log { margin-top: 5px; padding: 10px; background: rgba(0,0,0,0.6); border: 1px dashed #00e5ff; border-radius: 8px; height: 110px; overflow-y: auto; font-size: 12px; line-height: 1.5; display: flex; flex-direction: column; gap: 6px; }
         .log-entry { background: #001a22; padding: 6px 10px; border-left: 3px solid #00e5ff; border-radius: 4px; }
         .log-win { border-color: #00ffaa; }
         .log-loss { border-color: #ff3366; }
-        .log-del { border-color: #ffcc00; color: #aaa;}
+        .log-sys { border-color: #ffcc00; color: #ffcc00; }
 
         .history-list { display: flex; flex-direction: column; gap: 10px; }
         .history-card { background: #001a22; border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 10px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.5);}
@@ -74,9 +72,10 @@
         .badge { display: inline-block; padding: 3px 6px; border-radius: 4px; font-weight: bold; font-size: 10px; text-transform: uppercase; margin-top: 4px;}
         .badge-win { background: rgba(0, 255, 170, 0.2); color: #00ffaa; border: 1px solid #00ffaa; }
         .badge-loss { background: rgba(255, 51, 102, 0.2); color: #ff3366; border: 1px solid #ff3366; }
-        .badge-jackpot { background: rgba(255, 215, 0, 0.2); color: #ffd700; border: 1px solid #ffd700; }
+        .badge-skip { background: rgba(255, 204, 0, 0.2); color: #ffcc00; border: 1px solid #ffcc00; }
         .txt-red { color: #ff3366; text-shadow: 0 0 5px rgba(255,51,102,0.5);}
         .txt-green { color: #00ffaa; text-shadow: 0 0 5px rgba(0,255,170,0.5);}
+        .txt-yellow { color: #ffcc00; text-shadow: 0 0 5px rgba(255,204,0,0.5);}
 
         .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; background: #000b11; border-top: 1px solid rgba(0, 229, 255, 0.3); display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -5px 15px rgba(0, 229, 255, 0.1); z-index: 10;}
         .nav-btn { background: transparent; border: none; color: #558899; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 11px; padding: 5px; box-shadow: none; text-transform: none; }
@@ -95,7 +94,7 @@
         
         <div class="header">
             <h1 class="main-title">SYSTUMM HANG</h1>
-            <div class="sub-title">VIP ANTI-CROWD ENGINE (MAX LVL 2)</div>
+            <div class="sub-title">VIP ADAPTIVE AUTO-SWITCH</div>
         </div>
 
         <div class="content-area">
@@ -112,12 +111,7 @@
                     <div class="live-pred-title" id="predPeriod">Waiting for Session...</div>
                     <div class="live-pred-value" id="predValue">--</div>
                     <div class="live-pred-num" id="predTargetNum">Target: ?</div>
-                </div>
-
-                <div class="section-title">Prediction Server</div>
-                <div class="btn-grid">
-                    <button id="btnAiPro" class="server-btn" onclick="setServer('AIPRO')">🛑 ANTI-CROWD</button>
-                    <button id="btnPremium" class="server-btn active premium" onclick="setServer('PREMIUM')">💠 REVERSE LOGIC</button>
+                    <div class="active-engine-badge" id="engineBadge">⚙️ INITIALIZING...</div>
                 </div>
 
                 <button class="power-btn" id="powerBtn" onclick="toggleBot()">▶️ START VIP</button>
@@ -175,12 +169,19 @@
     <script>
         let isActive = false;
         let isFetching = false;
-        let currentServer = 'PREMIUM';
+        
+        // --- MASTER STATE VARIABLES ---
         let wins = 0; let losses = 0; let botLevel = 1;
         let lastProcessedPeriod = "";
         let pendingPrediction = null; 
         let lastTgMessageId = null; 
         let syncLoop; let clockLoop;
+        
+        // --- ADAPTIVE ENGINE VARIABLES ---
+        let currentEngine = "TREND"; // Default start
+        let isVirtualMode = false; // "SAFE SHIELD" - True when market is completely volatile
+        let virtualWinCount = 0; // Needs 2 virtual wins to resume real signals
+        let historyDataWindow = []; // Stores last 20 results for deep analysis
         
         const apiUrl = "https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json?pageSize=1000";
 
@@ -200,6 +201,7 @@
             msg.style.display = "block"; setTimeout(() => { msg.style.display = "none"; }, 3000);
         }
 
+        // --- STICKERS ---
         const winFirstSticker = "CAACAgUAAxkBAAEQg65pkGLJ3sfc9IXFEvzrDZxtQULGxQACuxMAAtZgYVZaFxCncOnSvjoE";
         const winMiddleStickers = ["CAACAgUAAxkBAAEQlKRpmc6YKoTbG9mtawI1wwABuQcxkfQAAkoTAAKLKmFWDJoBh856d0Y6BA", "CAACAgUAAxkBAAEQlKZpmc6aK74AAdmQTU5pzHvRwaqw7kYAAhcNAAKnzeBWXQtoMocETe06BA"];
         const winLastStickers = ["CAACAgUAAxkBAAEQlK5pmc6yU2kj7DMmOHGDzzo82qxT1gAC1hMAAmp9YVbvJhOMbbSNmDoE", "CAACAgUAAxkBAAEQlKhpmc6etFnxDItnzJwhAWlPXg240gAC0xMAAtJlYVZ8CDYuQ-4m-DoE"];
@@ -232,10 +234,13 @@
                 isActive = false; clearInterval(syncLoop);
                 if(lastTgMessageId !== null) {
                     await deleteTgMessage(lastTgMessageId);
-                    addLog("Deleted last bet to avoid risk.", "log-del");
+                    addLog("Deleted last bet to avoid risk.", "log-sys");
                     lastTgMessageId = null;
                 }
                 updateLiveUI("Session Ended", "--", "#fff", "?");
+                document.getElementById('engineBadge').innerText = "⚙️ SYSTEM HALTED";
+                document.getElementById('engineBadge').style.color = "#ff3366";
+                document.getElementById('engineBadge').style.borderColor = "#ff3366";
                 addLog("System Hang Stopped!"); showToast("Bot Offline", "#ff3366");
                 let stopMsg = "🛑 <b>SYSTUMM HANG SESSION ENDED</b> 🛑\n\nPredictions stopped. Calculate your profits!";
                 await sendTgMessage(stopMsg);
@@ -243,12 +248,15 @@
             } else {
                 showToast("Connecting to API...", "#00e5ff");
                 setTimeout(async () => {
-                    isActive = true; wins = 0; losses = 0; botLevel = 1; updateStats();
+                    isActive = true; wins = 0; losses = 0; botLevel = 1; 
+                    currentEngine = "TREND"; isVirtualMode = false; virtualWinCount = 0;
+                    updateStats();
                     lastProcessedPeriod = ""; pendingPrediction = null; lastTgMessageId = null;
                     document.getElementById('sessionLog').innerHTML = "";
                     document.getElementById('historyContainer').innerHTML = '<p id="histPlaceholder" style="text-align:center; color:#558899; font-size:12px; margin-top:10px;">Bot history will appear here once session starts.</p>';
-                    addLog("Bot Started! Syncing Anti-Crowd Engine..."); showToast("Connected & Syncing!", "#00ffaa");
-                    let startMsg = "💠 <b>SYSTUMM HANG VIP (ANTI-CROWD) STARTED</b> 💠\n\nSystem is ACTIVE. Strictly Under Level 2 limit applied!";
+                    addLog("Bot Started! Initializing Dual Brain...", "log-sys"); 
+                    showToast("Connected & Syncing!", "#00ffaa");
+                    let startMsg = "💠 <b>SYSTUMM HANG ADAPTIVE VIP STARTED</b> 💠\n\nSystem is ACTIVE with Auto-Switch Engine & Max Level 2 Limit!";
                     await sendTgMessage(startMsg);
                     syncLoop = setInterval(botLogicTick, 1500);
                     btn.innerHTML = "⏹️ STOP VIP"; btn.classList.add('active-stop');
@@ -256,19 +264,19 @@
             }
         }
 
-        function setServer(server) {
-            currentServer = server;
-            document.getElementById('btnAiPro').className = 'server-btn';
-            document.getElementById('btnPremium').className = 'server-btn';
-            if(server === 'AIPRO') document.getElementById('btnAiPro').classList.add('active', 'aipro');
-            if(server === 'PREMIUM') document.getElementById('btnPremium').classList.add('active', 'premium');
-            addLog(`Logic switched to: ${server}`);
-        }
-
         function updateStats() {
             document.getElementById('winCount').innerText = wins;
             document.getElementById('lossCount').innerText = losses;
-            document.getElementById('currentLevelDisplay').innerText = botLevel;
+            document.getElementById('currentLevelDisplay').innerText = isVirtualMode ? "VIRTUAL" : botLevel;
+            
+            let badge = document.getElementById('engineBadge');
+            if(isVirtualMode) {
+                badge.innerText = "🛡️ VIRTUAL COOLDOWN MODE";
+                badge.style.color = "#ffcc00"; badge.style.borderColor = "#ffcc00"; badge.style.background = "rgba(255,204,0,0.1)";
+            } else {
+                badge.innerText = `⚙️ ACTIVE: ${currentEngine} ENGINE`;
+                badge.style.color = "#00e5ff"; badge.style.borderColor = "#00e5ff"; badge.style.background = "rgba(0,229,255,0.1)";
+            }
         }
 
         function updateLiveUI(period, text, colorCode, targetNum) {
@@ -283,7 +291,7 @@
             let cssClass = "log-entry"; 
             if(type === "win") cssClass += " log-win"; 
             if(type === "loss") cssClass += " log-loss";
-            if(type === "log-del") cssClass += " log-del";
+            if(type === "log-sys") cssClass += " log-sys";
             let timeStr = new Date().toLocaleTimeString('en-IN', { hour12: false });
             logBox.innerHTML = `<div class="${cssClass}">[${timeStr}] ${msg}</div>` + logBox.innerHTML;
         }
@@ -295,7 +303,8 @@
         function getTgData() { return { token: document.getElementById('botToken').value, chatId: document.getElementById('chatId').value }; }
         
         async function sendTgMessage(text) {
-            const { token, chatId } = getTgData(); if(!token || !chatId) return;
+            if(isVirtualMode) return null; // Do not send real messages during virtual cooldown
+            const { token, chatId } = getTgData(); if(!token || !chatId) return null;
             try { 
                 let response = await fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}&parse_mode=HTML`); 
                 let data = await response.json();
@@ -305,6 +314,7 @@
         }
 
         async function sendTgSticker(stickerId) {
+            if(isVirtualMode) return;
             const { token, chatId } = getTgData(); if(!token || !chatId) return;
             try { await fetch(`https://api.telegram.org/bot${token}/sendSticker?chat_id=${chatId}&sticker=${stickerId}`); } catch(e) {}
         }
@@ -315,62 +325,75 @@
         }
 
         // ==============================================================
-        // MASTER ANTI-CROWD ENGINE (Reverse Psychology Logic)
+        // MASTER DUAL BRAIN (Adaptive Auto-Switch Logic)
         // ==============================================================
 
         function getTargetNum(isBig) {
             if (isBig) {
-                let bigs = [5, 6, 7, 8, 9];
-                return bigs[Math.floor(Math.random() * bigs.length)];
+                let bigs = [5, 6, 7, 8, 9]; return bigs[Math.floor(Math.random() * bigs.length)];
             } else {
-                let smalls = [0, 1, 2, 3, 4];
-                return smalls[Math.floor(Math.random() * smalls.length)];
+                let smalls = [0, 1, 2, 3, 4]; return smalls[Math.floor(Math.random() * smalls.length)];
             }
         }
 
-        function antiCrowdEngine(dataList) {
-            // Get last 15 results in chronological order
-            let lastResults = dataList.slice(0, 15).reverse();
-            let liveHistory = lastResults.map(x => parseInt(x.number) >= 5 ? 'B' : 'S').join("");
+        // Engine 1: Mathematical & Pattern Following
+        function calcTrendEngine(historyStr) {
+            if(historyStr.length < 3) return { isBig: true, conf: 50 };
+            let last3 = historyStr.slice(-3);
+            if (last3 === "BBB") return { isBig: true, conf: 85 };  // Follow streak
+            if (last3 === "SSS") return { isBig: false, conf: 85 }; // Follow streak
+            if (last3 === "BSB") return { isBig: true, conf: 80 };  // Follow alternate
+            if (last3 === "SBS") return { isBig: false, conf: 80 }; // Follow alternate
+            return { isBig: historyStr.slice(-1) === "B", conf: 60 };
+        }
 
-            if (liveHistory.length < 3) {
-                return { isBig: true, conf: 0, targetNum: 0, msg: "Reading Crowd Data..." };
-            }
+        // Engine 2: Anti-Crowd & Reverse Psychology
+        function calcReverseEngine(historyStr) {
+            if(historyStr.length < 3) return { isBig: false, conf: 50 };
+            let last3 = historyStr.slice(-3);
+            if (last3 === "BBB") return { isBig: false, conf: 90 }; // Break streak trap
+            if (last3 === "SSS") return { isBig: true, conf: 90 };  // Break streak trap
+            if (last3 === "BSB") return { isBig: false, conf: 85 }; // Break alternate trap
+            if (last3 === "SBS") return { isBig: true, conf: 85 };  // Break alternate trap
+            return { isBig: historyStr.slice(-1) === "S", conf: 65 }; // Reverse of last
+        }
 
-            let last3 = liveHistory.substring(liveHistory.length - 3);
-            let crowdExpectsBig = false;
-            let ruleName = "";
-
-            // --- REVERSE PSYCHOLOGY RULES ---
-            // Yahan hum pehchaante hain ki aam janta kya soch rahi hai, aur hum thik uska ulta karenge
+        // The Master Function: Decides which engine to use and checks virtual mode
+        function adaptiveMasterEngine(dataList) {
+            let lastResults = dataList.slice(0, 10).reverse();
+            let historyStr = lastResults.map(x => parseInt(x.number) >= 5 ? 'B' : 'S').join("");
             
-            if (last3 === "BBB") { 
-                // Janta sochegi Streak continue hoga (B) ya Break hoga (S).
-                // Company aisi situations me trap banati hai. Hum strict anti-trend jayenge.
-                crowdExpectsBig = true; ruleName = "Trap 1 (BBB)"; 
-            }
-            else if (last3 === "SSS") { crowdExpectsBig = false; ruleName = "Trap 2 (SSS)"; }
-            else if (last3 === "BSB") { crowdExpectsBig = false; ruleName = "Alt Trap (BSB)"; }
-            else if (last3 === "SBS") { crowdExpectsBig = true; ruleName = "Alt Trap (SBS)"; }
-            else if (last3 === "BBS") { crowdExpectsBig = false; ruleName = "Pair Trap (BBS)"; }
-            else if (last3 === "SSB") { crowdExpectsBig = true; ruleName = "Pair Trap (SSB)"; }
-            else {
-                // Default: Agar crowd blindly last color follow kar raha hai, toh hum opposite jayenge
-                crowdExpectsBig = liveHistory.slice(-1) === "B";
-                ruleName = "Basic Reverse";
+            // Evaluator: Check which engine performed better in the last 3 rounds
+            if(historyStr.length >= 5) {
+                let trendScore = 0; let revScore = 0;
+                for(let i = 2; i <= 4; i++) {
+                    let pastHist = historyStr.substring(0, historyStr.length - i);
+                    let actualNext = historyStr.charAt(historyStr.length - i);
+                    
+                    if(calcTrendEngine(pastHist).isBig === (actualNext === 'B')) trendScore++;
+                    if(calcReverseEngine(pastHist).isBig === (actualNext === 'B')) revScore++;
+                }
+
+                // Auto-Switch Decision
+                if(revScore > trendScore) {
+                    if(currentEngine !== "REVERSE") {
+                        currentEngine = "REVERSE"; addLog("Market shifted. Switching to REVERSE Engine", "log-sys");
+                    }
+                } else if (trendScore > revScore) {
+                    if(currentEngine !== "TREND") {
+                        currentEngine = "TREND"; addLog("Market shifted. Switching to TREND Engine", "log-sys");
+                    }
+                }
             }
 
-            // --- FINAL PREDICTION (DO EXACT OPPOSITE OF CROWD) ---
-            let ourPredictionIsBig = !crowdExpectsBig;
+            // Generate Prediction based on Active Engine
+            let engineResult = (currentEngine === "TREND") ? calcTrendEngine(historyStr) : calcReverseEngine(historyStr);
             
-            // Generate a random confidence between 85% and 95% to look realistic
-            let conf = Math.floor(Math.random() * (95 - 85 + 1)) + 85;
-
             return { 
-                isBig: ourPredictionIsBig, 
-                conf: conf, 
-                targetNum: getTargetNum(ourPredictionIsBig), 
-                msg: `Anti-Crowd: ${ruleName} -> Reversed` 
+                isBig: engineResult.isBig, 
+                conf: engineResult.conf, 
+                targetNum: getTargetNum(engineResult.isBig), 
+                msg: `Engine: ${currentEngine} | Conf: ${engineResult.conf}%` 
             };
         }
         // ==============================================================
@@ -393,7 +416,9 @@
                     let isJackpot = (pendingPrediction.targetNum === latestNumber);
 
                     let badge = '';
-                    if(isWin) { 
+                    if(isVirtualMode) {
+                        badge = isWin ? `<div class="badge badge-skip">🛡️ VIRTUAL WIN</div>` : `<div class="badge badge-skip">🛡️ VIRTUAL LOSS</div>`;
+                    } else if(isWin) { 
                         badge = `<div class="badge badge-win">✅ WIN (L${botLevel})</div>`; 
                         if(isJackpot) badge = `<div class="badge badge-jackpot">🎯 JACKPOT (L${botLevel})</div>`;
                     } else { 
@@ -401,7 +426,7 @@
                     }
 
                     let botPredText = pendingPrediction.isBig ? "BIG" : "SMALL";
-                    let botPredClass = pendingPrediction.isBig ? "txt-red" : "txt-green";
+                    let botPredClass = isVirtualMode ? "txt-yellow" : (pendingPrediction.isBig ? "txt-red" : "txt-green");
                     let gameColor = ([1,3,7,9].includes(latestNumber)) ? "🟢 GREEN" : ([2,4,6,8].includes(latestNumber)) ? "🔴 RED" : "🟣 VIOLET";
                     if(latestNumber === 0 || latestNumber === 5) gameColor += (latestNumber===0)?"+🔴":"+🟢";
                     let gameText = latestIsBig ? "🔴 BIG" : "🟢 SMALL";
@@ -430,63 +455,71 @@
                     container.insertAdjacentHTML('afterbegin', historyHTML);
 
                     // ==========================================
-                    // STRICT MAXIMUM 2 LEVEL STOP-LOSS LOGIC
+                    // ADAPTIVE WIN/LOSS & VIRTUAL LOGIC
                     // ==========================================
-                    if (isWin) {
-                        wins++; addLog(`WON Period ${latestPeriod} (Level ${botLevel})`, "win");
-                        botLevel = 1; // Jeetne par wapas level 1
-                        updateStats(); 
-                        
-                        if(isJackpot) await sendTgSticker(jackpotSticker);
-                        await sendTgSticker(winFirstSticker);
-                        await sendTgSticker(getSticker(winMiddleStickers, latestPeriod + "1"));
-                        await sendTgSticker(getSticker(winLastStickers, latestPeriod + "2"));
-                        lastTgMessageId = null; 
-                    } else {
-                        losses++; addLog(`LOST Period ${latestPeriod} (Level ${botLevel})`, "loss");
-                        
-                        if(lastTgMessageId !== null) {
-                            await deleteTgMessage(lastTgMessageId);
-                            addLog("Loss Msg Deleted from Telegram!", "log-del");
-                            lastTgMessageId = null;
-                        }
-
-                        if (botLevel === 1) {
-                            botLevel = 2; // Level 1 fail hua toh Level 2 par jao
+                    if (isVirtualMode) {
+                        if(isWin) {
+                            virtualWinCount++; addLog(`Virtual Win! (${virtualWinCount}/2)`, "log-sys");
+                            if(virtualWinCount >= 2) {
+                                isVirtualMode = false; botLevel = 1; virtualWinCount = 0;
+                                addLog("Market stable. Exiting Virtual Mode. Resuming Real Signals.", "log-sys");
+                                await sendTgMessage("✅ <b>MARKET STABLE</b> ✅\nVirtual testing complete. Resuming Live VIP Signals.");
+                            }
                         } else {
-                            // Agar Level 2 fail ho gaya, toh account wash nahi hone denge. Wapas Level 1 par reset.
-                            botLevel = 1;
-                            addLog("Level 2 Hit! Stop Loss Activated. Resetting to Level 1 to save funds.", "log-del");
-                            await sendTgMessage("⚠️ <b>STOP LOSS HIT</b> ⚠️\nLevel 2 Failed. Account wash se bachne ke liye limit cross nahi karenge. Bot is resetting back to Level 1. Stay calm.");
+                            virtualWinCount = 0; addLog("Virtual Loss. Market still bad. Staying in cooldown.", "log-sys");
                         }
-                        updateStats(); 
+                    } else {
+                        if (isWin) {
+                            wins++; addLog(`WON Period ${latestPeriod} (Level ${botLevel})`, "win");
+                            botLevel = 1; 
+                            if(isJackpot) await sendTgSticker(jackpotSticker);
+                            await sendTgSticker(winFirstSticker);
+                            await sendTgSticker(getSticker(winMiddleStickers, latestPeriod + "1"));
+                            await sendTgSticker(getSticker(winLastStickers, latestPeriod + "2"));
+                            lastTgMessageId = null; 
+                        } else {
+                            losses++; addLog(`LOST Period ${latestPeriod} (Level ${botLevel})`, "loss");
+                            if(lastTgMessageId !== null) {
+                                await deleteTgMessage(lastTgMessageId);
+                                lastTgMessageId = null;
+                            }
+
+                            if (botLevel === 1) {
+                                botLevel = 2; // Move to Level 2
+                            } else {
+                                // Level 2 Failed! Enter VIRTUAL COOLDOWN MODE
+                                botLevel = 1; isVirtualMode = true; virtualWinCount = 0;
+                                addLog("Level 2 Hit! Stop Loss Activated. Entering Virtual Shield Mode.", "log-sys");
+                                await sendTgMessage("⚠️ <b>MARKET HIGHLY VOLATILE</b> ⚠️\nLevel 2 Failed. To protect your funds, bot is entering VIRTUAL COOLDOWN. Do not bet. Waiting for market to stabilize...");
+                            }
+                        }
                     }
+                    updateStats(); 
                 }
 
                 let nextPeriod = (BigInt(latestPeriod) + 1n).toString();
                 
-                // --- CALL ANTI-CROWD ENGINE ---
-                let predObj = antiCrowdEngine(data);
+                // --- CALL ADAPTIVE MASTER ENGINE ---
+                let predObj = adaptiveMasterEngine(data);
                 
                 pendingPrediction = { period: nextPeriod, isBig: predObj.isBig, targetNum: predObj.targetNum };
                 
                 let typeStr = predObj.isBig ? "BIG" : "SMALL";
-                let uiColorCode = predObj.isBig ? "#ff3366" : "#00ffaa";
+                let uiColorCode = isVirtualMode ? "#ffcc00" : (predObj.isBig ? "#ff3366" : "#00ffaa");
                 
-                // Level label for Telegram
                 let fundM = (botLevel === 1) ? "10₹ (1X - Level 1)" : "30₹ (3X - Level 2)";
-                let riskText = "✅ ANTI-CROWD SAFE ENTRY";
+                let riskText = isVirtualMode ? "🛡️ VIRTUAL COOLDOWN MODE" : "✅ ADAPTIVE SAFE ENTRY";
 
                 updateLiveUI(nextPeriod, typeStr, uiColorCode, predObj.targetNum);
-                addLog(`Logic: ${predObj.msg} (${predObj.conf}%)`);
+                addLog(`Engine Core: ${predObj.msg}`);
 
-                let serverName = (currentServer === 'PREMIUM') ? "REVERSE LOGIC" : "ANTI-CROWD";
-
-                let vipMsg = `💠 <b>SYSTUMM HANG VIP SIGNAL</b> 💠\n\n🎯 Game: Wingo 30 sec \n🆔 Period: <b>${nextPeriod}</b>\n\n🔥 Prediction: <b>${typeStr}</b>\n📍 Target No: <b>${predObj.targetNum}</b>\n💰 Fund: <b>${fundM}</b>\n\n🖥️ Server: ${serverName}\n📈 Accuracy: ${predObj.conf}%\n${riskText}\n\n💎 Powered By: RAO SAHAB SYSTEM`;
-                
-                lastTgMessageId = await sendTgMessage(vipMsg); 
-                addLog(`Signal Sent: ${typeStr} (Level ${botLevel})`);
-            } else if (lastProcessedPeriod === "") { lastProcessedPeriod = latestPeriod; addLog("API Connected. Ready for signal..."); }
+                // Send to Telegram ONLY if NOT in Virtual Mode
+                if(!isVirtualMode) {
+                    let vipMsg = `💠 <b>SYSTUMM HANG VIP SIGNAL</b> 💠\n\n🎯 Game: Wingo 30 sec \n🆔 Period: <b>${nextPeriod}</b>\n\n🔥 Prediction: <b>${typeStr}</b>\n📍 Target No: <b>${predObj.targetNum}</b>\n💰 Fund: <b>${fundM}</b>\n\n🖥️ Server: ${currentEngine} ENGINE\n📈 Accuracy: ${predObj.conf}%\n${riskText}\n\n💎 Powered By: RAO SAHAB SYSTEM`;
+                    lastTgMessageId = await sendTgMessage(vipMsg); 
+                    addLog(`Live Signal Sent: ${typeStr} (Level ${botLevel})`);
+                }
+            } else if (lastProcessedPeriod === "") { lastProcessedPeriod = latestPeriod; addLog("API Connected. Ready for signal...", "log-sys"); }
             isFetching = false;
         }
     </script>
