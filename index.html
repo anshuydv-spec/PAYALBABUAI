@@ -95,7 +95,7 @@
         
         <div class="header">
             <h1 class="main-title">SYSTUMM HANG</h1>
-            <div class="sub-title">VIP RAO SAHAB SYSTEM</div>
+            <div class="sub-title">VIP HYBRID ENGINE</div>
         </div>
 
         <div class="content-area">
@@ -117,7 +117,7 @@
                 <div class="section-title">Prediction Server</div>
                 <div class="btn-grid">
                     <button id="btnAiPro" class="server-btn" onclick="setServer('AIPRO')">🟣 AI PRO</button>
-                    <button id="btnPremium" class="server-btn active premium" onclick="setServer('PREMIUM')">💠 RAO PREMIUM</button>
+                    <button id="btnPremium" class="server-btn active premium" onclick="setServer('PREMIUM')">💠 MATH ENGINE</button>
                 </div>
 
                 <button class="power-btn" id="powerBtn" onclick="toggleBot()">▶️ START VIP</button>
@@ -174,6 +174,7 @@
 
     <script>
         let isActive = false;
+        let isFetching = false;
         let currentServer = 'PREMIUM';
         let wins = 0; let losses = 0; let botLevel = 1;
         let lastProcessedPeriod = "";
@@ -181,6 +182,8 @@
         let lastTgMessageId = null; 
         let syncLoop; let clockLoop;
         
+        const apiUrl = "https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json?pageSize=1000";
+
         document.getElementById('botToken').value = localStorage.getItem('raoToken') || "";
         document.getElementById('chatId').value = localStorage.getItem('raoChatId') || "";
 
@@ -197,7 +200,6 @@
             msg.style.display = "block"; setTimeout(() => { msg.style.display = "none"; }, 3000);
         }
 
-        // STICKERS
         const winFirstSticker = "CAACAgUAAxkBAAEQg65pkGLJ3sfc9IXFEvzrDZxtQULGxQACuxMAAtZgYVZaFxCncOnSvjoE";
         const winMiddleStickers = ["CAACAgUAAxkBAAEQlKRpmc6YKoTbG9mtawI1wwABuQcxkfQAAkoTAAKLKmFWDJoBh856d0Y6BA", "CAACAgUAAxkBAAEQlKZpmc6aK74AAdmQTU5pzHvRwaqw7kYAAhcNAAKnzeBWXQtoMocETe06BA"];
         const winLastStickers = ["CAACAgUAAxkBAAEQlK5pmc6yU2kj7DMmOHGDzzo82qxT1gAC1hMAAmp9YVbvJhOMbbSNmDoE", "CAACAgUAAxkBAAEQlKhpmc6etFnxDItnzJwhAWlPXg240gAC0xMAAtJlYVZ8CDYuQ-4m-DoE"];
@@ -228,29 +230,27 @@
             let btn = document.getElementById('powerBtn');
             if(isActive) {
                 isActive = false; clearInterval(syncLoop);
-                
                 if(lastTgMessageId !== null) {
                     await deleteTgMessage(lastTgMessageId);
                     addLog("Deleted last bet to avoid risk.", "log-del");
                     lastTgMessageId = null;
                 }
-
                 updateLiveUI("Session Ended", "--", "#fff", "?");
                 addLog("System Hang Stopped!"); showToast("Bot Offline", "#ff3366");
                 let stopMsg = "🛑 <b>SYSTUMM HANG SESSION ENDED</b> 🛑\n\nPredictions stopped. Calculate your profits!";
                 await sendTgMessage(stopMsg);
                 btn.innerHTML = "▶️ START VIP"; btn.classList.remove('active-stop');
             } else {
-                showToast("System Started...", "#00e5ff");
+                showToast("Connecting to API...", "#00e5ff");
                 setTimeout(async () => {
                     isActive = true; wins = 0; losses = 0; botLevel = 1; updateStats();
                     lastProcessedPeriod = ""; pendingPrediction = null; lastTgMessageId = null;
                     document.getElementById('sessionLog').innerHTML = "";
                     document.getElementById('historyContainer').innerHTML = '<p id="histPlaceholder" style="text-align:center; color:#558899; font-size:12px; margin-top:10px;">Bot history will appear here once session starts.</p>';
-                    addLog("Bot Started! Syncing Time..."); showToast("Connected & Syncing!", "#00ffaa");
+                    addLog("Bot Started! Syncing Hybrid Math..."); showToast("Connected & Syncing!", "#00ffaa");
                     let startMsg = "💠 <b>SYSTUMM HANG VIP DESTINATION STARTED</b> 💠\n\nSystem is ACTIVE. All members get ready!";
                     await sendTgMessage(startMsg);
-                    syncLoop = setInterval(botLogicTick, 1000); // Changed to 1 sec for exact time match
+                    syncLoop = setInterval(botLogicTick, 1500);
                     btn.innerHTML = "⏹️ STOP VIP"; btn.classList.add('active-stop');
                 }, 800);
             }
@@ -315,64 +315,117 @@
         }
 
         // ==============================================================
-        // NEW SIMPLIFIED ENGINE (API Removed)
+        // MASTER HYBRID ENGINE (Math + Trend)
         // ==============================================================
-        function masterEngine(period) {
-            // Generates prediction logic locally based on the Period Number
-            let hash = 0;
-            for(let i=0; i<period.length; i++) { hash = period.charCodeAt(i) + ((hash << 5) - hash); }
-            let isBig = (hash % 2 === 0);
-            let targetNum = isBig ? Math.abs(hash % 5) + 5 : Math.abs(hash % 5);
-            let conf = 85 + Math.abs(hash % 14); // Confidence between 85 and 98
-            return { isBig: isBig, targetNum: targetNum, conf: conf };
+
+        const TRAINING_PATTERNS = [
+            "BBBBSSSSS", "BBBBBBBBBBBSSSSSSSSSSSS", "BBSSBBSSBSBSBS",
+            "SSSSBBBBB", "SSBSSBSSB", "BBSBBSBBBSBBBSBSBSBS",
+            "BSBSBSBS", "SBSBSBSB", "SSSBSSBBS", "BBBSBBSBSBSB",
+            "BBBSBSBSBS", "BBBSSSS", "SSSSBBBSBS", "BBSBSBBSBS",
+            "BBBSBBSBSBSB"
+        ];
+
+        let transitionMatrix = {};
+
+        function buildMathematicalModel() {
+            for (let pattern of TRAINING_PATTERNS) {
+                for (let i = 0; i < pattern.length - 1; i++) {
+                    for (let len = 3; len <= 4 && i + len < pattern.length; len++) {
+                        let state = pattern.substring(i, i + len);
+                        let nextResult = pattern.charAt(i + len);
+                        if (!transitionMatrix[state]) transitionMatrix[state] = [0, 0];
+                        if (nextResult === 'B') transitionMatrix[state][0]++;
+                        else if (nextResult === 'S') transitionMatrix[state][1]++;
+                    }
+                }
+            }
+        }
+        buildMathematicalModel();
+
+        function getTargetNum(isBig) {
+            if (isBig) {
+                let bigs = [5, 6, 7, 8, 9];
+                return bigs[Math.floor(Math.random() * bigs.length)];
+            } else {
+                let smalls = [0, 1, 2, 3, 4];
+                return smalls[Math.floor(Math.random() * smalls.length)];
+            }
         }
 
-        // ==============================================================
-        // TIME BASED MAIN LOGIC TICK (API replaced by 5:29 Live Clock calculation)
-        // ==============================================================
-        async function botLogicTick() {
-            if (!isActive) return;
+        function masterEngine(dataList) {
+            // Get last 15 results in chronological order
+            let lastResults = dataList.slice(0, 15).reverse();
+            let liveHistory = lastResults.map(x => parseInt(x.number) >= 5 ? 'B' : 'S').join("");
 
-            // 1. Current Time Uthana (Live Time Zone)
-            let calendar = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
-            const currentHour = calendar.getHours();
-            const currentMinute = calendar.getMinutes();
-            const currentSeconds = calendar.getSeconds();
-
-            // 2. Fixed Start Time Set Karna (Subah 5:29)
-            const startHour = 5;
-            const startMinute = 29;
-
-            // 3. Total Elapsed Minutes Ki Calculation
-            let elapsedMinutes = (currentHour * 60 + currentMinute) - (startHour * 60 + startMinute);
-
-            // 4. Midnight / Next Day Validation
-            if (elapsedMinutes < 0) {
-                elapsedMinutes += 24 * 60;
+            if (liveHistory.length < 3) {
+                return { isBig: true, conf: 0, targetNum: 0, msg: "Setup Mode..." };
             }
 
-            // Period String Setup (YYYYMMDD + 1000 + Time Logic)
-            let dateStr = calendar.getFullYear().toString() + 
-                          String(calendar.getMonth() + 1).padStart(2, '0') + 
-                          String(calendar.getDate()).padStart(2, '0');
-            
-            // 30 Seconds Wingo Logic Match (Har 1 minute me 2 period hote hain)
-            let isSecondHalf = currentSeconds >= 30;
-            let totalElapsedPeriods = (elapsedMinutes * 2) + (isSecondHalf ? 2 : 1);
-            
-            let currentPeriod = dateStr + "1000" + totalElapsedPeriods;
+            // --- STEP 1: MATH PROBABILITY CHECK ---
+            let mathWeights = null;
+            let matchedState = "";
 
-            if (lastProcessedPeriod !== "" && currentPeriod !== lastProcessedPeriod) {
-                
-                // --- MOCK RESULT GENERATOR FOR HISTORY (Kyunki server fetch hta diya hai) ---
-                // Ye UI par win/loss status banaye rakhne ke liye ek result simulate karega
-                let mockLatestNumber = pendingPrediction ? (Math.random() > 0.4 ? pendingPrediction.targetNum : Math.floor(Math.random()*10)) : Math.floor(Math.random()*10);
-                let latestIsBig = mockLatestNumber >= 5;
-                let latestPeriod = lastProcessedPeriod;
+            for (let searchLength = 4; searchLength >= 3; searchLength--) {
+                if (liveHistory.length >= searchLength) {
+                    let currentState = liveHistory.substring(liveHistory.length - searchLength);
+                    if (transitionMatrix[currentState]) {
+                        mathWeights = transitionMatrix[currentState];
+                        matchedState = currentState;
+                        break;
+                    }
+                }
+            }
+
+            if (mathWeights && (mathWeights[0] > 0 || mathWeights[1] > 0)) {
+                let countB = mathWeights[0];
+                let countS = mathWeights[1];
+                let total = countB + countS;
+                let isBig = countB >= countS;
+                let confidence = (Math.max(countB, countS) / total) * 100;
+
+                if (confidence >= 60.0) {
+                    return { isBig: isBig, conf: confidence.toFixed(1), targetNum: getTargetNum(isBig), msg: `Math Matched: ${matchedState}` };
+                }
+            }
+
+            // --- STEP 2: TREND FALLBACK LOGIC ---
+            let last3 = liveHistory.substring(liveHistory.length - 3);
+
+            // Rule A: Streak Breaker
+            if (last3 === "BBB") return { isBig: false, conf: 65.0, targetNum: getTargetNum(false), msg: "Trend: Streak Breaker (BBB->S)" };
+            if (last3 === "SSS") return { isBig: true, conf: 65.0, targetNum: getTargetNum(true), msg: "Trend: Streak Breaker (SSS->B)" };
+
+            // Rule B: Alternate Follower
+            if (last3 === "BSB") return { isBig: false, conf: 60.0, targetNum: getTargetNum(false), msg: "Trend: Alternate (BSB->S)" };
+            if (last3 === "SBS") return { isBig: true, conf: 60.0, targetNum: getTargetNum(true), msg: "Trend: Alternate (SBS->B)" };
+
+            // Rule C: 2-1 Pattern
+            if (last3 === "BBS") return { isBig: false, conf: 55.0, targetNum: getTargetNum(false), msg: "Trend: 2-1 Pattern (BBS->S)" };
+            if (last3 === "SSB") return { isBig: true, conf: 55.0, targetNum: getTargetNum(true), msg: "Trend: 2-1 Pattern (SSB->B)" };
+
+            // --- STEP 3: SAFE GUESS ---
+            let safeIsBig = parseInt(lastResults[lastResults.length-1].number) < 5;
+            return { isBig: safeIsBig, conf: 50.0, targetNum: getTargetNum(safeIsBig), msg: "Market Safe Guess" };
+        }
+        // ==============================================================
+
+        async function fetchApi() {
+            try { let res = await fetch(apiUrl); let json = await res.json(); if(json && json.data && json.data.list) return json.data.list; } catch (e) {} return null;
+        }
+
+        async function botLogicTick() {
+            if (!isActive || isFetching) return; isFetching = true; 
+            let data = await fetchApi(); if (!data) { isFetching = false; return; }
+
+            let latestPeriod = data[0].issueNumber; let latestNumber = parseInt(data[0].number); let latestIsBig = latestNumber >= 5;
+
+            if (lastProcessedPeriod !== "" && latestPeriod !== lastProcessedPeriod) {
+                lastProcessedPeriod = latestPeriod;
 
                 if (pendingPrediction !== null && pendingPrediction.period === latestPeriod) {
                     let isWin = (pendingPrediction.isBig === latestIsBig);
-                    let isJackpot = (pendingPrediction.targetNum === mockLatestNumber);
+                    let isJackpot = (pendingPrediction.targetNum === latestNumber);
 
                     let badge = '';
                     if(isWin) { 
@@ -384,8 +437,8 @@
 
                     let botPredText = pendingPrediction.isBig ? "BIG" : "SMALL";
                     let botPredClass = pendingPrediction.isBig ? "txt-red" : "txt-green";
-                    let gameColor = ([1,3,7,9].includes(mockLatestNumber)) ? "🟢 GREEN" : ([2,4,6,8].includes(mockLatestNumber)) ? "🔴 RED" : "🟣 VIOLET";
-                    if(mockLatestNumber === 0 || mockLatestNumber === 5) gameColor += (mockLatestNumber===0)?"+🔴":"+🟢";
+                    let gameColor = ([1,3,7,9].includes(latestNumber)) ? "🟢 GREEN" : ([2,4,6,8].includes(latestNumber)) ? "🔴 RED" : "🟣 VIOLET";
+                    if(latestNumber === 0 || latestNumber === 5) gameColor += (latestNumber===0)?"+🔴":"+🟢";
                     let gameText = latestIsBig ? "🔴 BIG" : "🟢 SMALL";
 
                     let historyHTML = `
@@ -400,7 +453,7 @@
                             <div class="h-divider"></div>
                             <div class="h-side">
                                 <div class="h-title">Game Result</div>
-                                <div class="h-val" style="color:#fff;">${mockLatestNumber} | ${gameText}</div>
+                                <div class="h-val" style="color:#fff;">${latestNumber} | ${gameText}</div>
                                 <div style="font-size:10px; margin-top:5px; font-weight:bold; color:#aaa;">${gameColor}</div>
                             </div>
                         </div>
@@ -411,7 +464,6 @@
                     if(ph) ph.remove();
                     container.insertAdjacentHTML('afterbegin', historyHTML);
 
-                    // Execute Win/Loss Action
                     if (isWin) {
                         wins++; addLog(`WON Period ${latestPeriod} (Level ${botLevel})`, "win");
                         botLevel = 1; updateStats(); 
@@ -431,40 +483,35 @@
                         }
 
                         botLevel++; 
-                        if(botLevel > 3) botLevel = 1; // System capped to Level 3 max
+                        if(botLevel > 3) botLevel = 1; 
                         updateStats(); 
                     }
                 }
 
-                // Generate New Prediction
-                lastProcessedPeriod = currentPeriod;
-                let predObj = masterEngine(currentPeriod);
-                pendingPrediction = { period: currentPeriod, isBig: predObj.isBig, targetNum: predObj.targetNum };
+                let nextPeriod = (BigInt(latestPeriod) + 1n).toString();
+                
+                // --- CALL HYBRID MASTER ENGINE ---
+                let predObj = masterEngine(data);
+                
+                pendingPrediction = { period: nextPeriod, isBig: predObj.isBig, targetNum: predObj.targetNum };
                 
                 let typeStr = predObj.isBig ? "BIG" : "SMALL";
                 let uiColorCode = predObj.isBig ? "#ff3366" : "#00ffaa";
+                
                 let fundM = (botLevel === 1) ? "1X" : (botLevel === 2) ? "3X" : "9X";
-                let riskText = (predObj.conf < 90) ? "⚠️ HIGH" : "✅ LOW";
+                let riskText = (predObj.conf < 60) ? "⚠️ HIGH RISK" : "✅ SAFE ENTRY";
 
-                updateLiveUI(currentPeriod, typeStr, uiColorCode, predObj.targetNum);
+                updateLiveUI(nextPeriod, typeStr, uiColorCode, predObj.targetNum);
+                addLog(`Logic Applied: ${predObj.msg} (${predObj.conf}%)`);
 
-                let serverName = (currentServer === 'PREMIUM') ? "RAO PREMIUM" : "AI PRO";
-                let vipMsg = `💠 <b>SYSTUMM HANG VIP SIGNAL</b> 💠\n\n🎯 Game: Wingo 30 sec \n🆔 Period: <b>${currentPeriod}</b>\n\n🔥 Prediction: <b>${typeStr}</b>\n📍 Target No: <b>${predObj.targetNum}</b>\n💰 Fund: <b>${fundM}</b>\n\n🖥️ Server: ${serverName}\n📈 Accuracy: ${predObj.conf}%\n${riskText}\n\n💎 Powered By: RAO SAHAB SYSTEM`;
+                let serverName = (currentServer === 'PREMIUM') ? "MATH ENGINE" : "AI PRO TREND";
+
+                let vipMsg = `💠 <b>SYSTUMM HANG VIP SIGNAL</b> 💠\n\n🎯 Game: Wingo 30 sec \n🆔 Period: <b>${nextPeriod}</b>\n\n🔥 Prediction: <b>${typeStr}</b>\n📍 Target No: <b>${predObj.targetNum}</b>\n💰 Fund: <b>${fundM}</b>\n\n🖥️ Server: ${serverName}\n📈 Accuracy: ${predObj.conf}%\n${riskText}\n\n💎 Powered By: RAO SAHAB SYSTEM`;
                 
                 lastTgMessageId = await sendTgMessage(vipMsg); 
                 addLog(`Signal Sent: ${typeStr} (Level ${botLevel})`);
-
-            } else if (lastProcessedPeriod === "") { 
-                // Initial load
-                lastProcessedPeriod = currentPeriod; 
-                addLog("System Synced. Ready for signal..."); 
-                
-                let predObj = masterEngine(currentPeriod);
-                pendingPrediction = { period: currentPeriod, isBig: predObj.isBig, targetNum: predObj.targetNum };
-                let typeStr = predObj.isBig ? "BIG" : "SMALL";
-                let uiColorCode = predObj.isBig ? "#ff3366" : "#00ffaa";
-                updateLiveUI(currentPeriod, typeStr, uiColorCode, predObj.targetNum);
-            }
+            } else if (lastProcessedPeriod === "") { lastProcessedPeriod = latestPeriod; addLog("API Connected. Ready for signal..."); }
+            isFetching = false;
         }
     </script>
 </body>
