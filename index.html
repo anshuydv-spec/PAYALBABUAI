@@ -2,525 +2,151 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Systumm Hang VIP - Adaptive Engine</title>
-    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Systumm Hang - Aviator Predictor</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #030508; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; padding: 10px; overflow: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', Courier, monospace; }
+        body { background-color: #0a0a0a; color: #00ffcc; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
         
-        .app-container { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(0, 229, 255, 0.4); box-shadow: 0 0 30px rgba(0, 229, 255, 0.2); border-radius: 20px; width: 100%; max-width: 420px; height: 95vh; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+        .container { background: #111; border: 2px solid #00ffcc; border-radius: 15px; padding: 30px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 0 20px rgba(0, 255, 204, 0.2); }
         
-        .header { text-align: center; padding: 20px 10px; border-bottom: 1px solid rgba(0, 229, 255, 0.2); box-shadow: 0 5px 15px rgba(0, 229, 255, 0.05); background: linear-gradient(180deg, rgba(0,229,255,0.1) 0%, transparent 100%); }
-        .main-title { font-family: 'Black Ops One', cursive; font-size: 28px; color: #00e5ff; text-shadow: 0 0 15px #00e5ff, 0 0 30px rgba(0,229,255,0.8); letter-spacing: 2px; margin: 0; }
-        .sub-title { font-size: 11px; color: #ffcc00; text-transform: uppercase; letter-spacing: 3px; margin-top: 5px; font-weight: bold; text-shadow: 0 0 5px #ffcc00;}
+        h1 { font-size: 24px; color: #fff; text-shadow: 0 0 10px #00ffcc; margin-bottom: 5px; text-transform: uppercase; }
+        p.subtitle { color: #888; font-size: 12px; margin-bottom: 25px; }
 
-        .content-area { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 80px; scrollbar-width: none; }
-        .content-area::-webkit-scrollbar { display: none; }
-        
-        .screen { display: none; animation: fadeIn 0.3s ease-in; }
-        .screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .data-box { background: #000; border: 1px dashed #444; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        .data-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
+        .data-label { color: #aaa; }
+        .data-value { font-weight: bold; color: #fff; }
 
-        .stats-bar { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; }
-        .stat { background: #001a22; padding: 8px 5px; border-radius: 8px; border: 1px dashed #00e5ff; font-weight: bold; font-size: 12px; box-shadow: 0 0 10px rgba(0, 229, 255, 0.1); flex: 1; text-align: center;}
-        .win-txt { color: #00ffaa; text-shadow: 0 0 5px #00ffaa; }
-        .loss-txt { color: #ff3366; text-shadow: 0 0 5px #ff3366; }
-        .lvl-txt { color: #ffcc00; text-shadow: 0 0 5px #ffcc00; }
+        .prediction-circle { width: 150px; height: 150px; border-radius: 50%; border: 4px solid #333; margin: 0 auto 25px auto; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); transition: all 0.3s ease; }
+        .prediction-value { font-size: 36px; font-weight: bold; color: #555; }
+        .prediction-label { font-size: 12px; color: #777; margin-top: 5px; }
 
-        .live-pred-box { background: rgba(0, 229, 255, 0.05); border: 2px solid #00e5ff; border-radius: 12px; padding: 20px 10px; text-align: center; margin-bottom: 10px; box-shadow: 0 0 20px rgba(0, 229, 255, 0.15); position: relative; }
-        .live-clock { font-family: 'Orbitron', sans-serif; font-size: 32px; font-weight: 900; color: #00e5ff; text-shadow: 0 0 15px #00e5ff; margin-bottom: 5px; }
-        .live-pred-title { color: #88ddff; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; font-weight: bold; }
-        .live-pred-value { font-size: 42px; font-weight: 900; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.8); text-transform: uppercase; line-height: 1.1; }
-        .live-pred-num { color: #ffd700; font-size: 14px; font-weight: bold; margin-top: 5px; text-shadow: 0 0 10px #ffd700; }
-        
-        .active-engine-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; text-transform: uppercase; margin-top: 10px; background: rgba(0, 229, 255, 0.2); border: 1px solid #00e5ff; color: #00e5ff; }
+        .btn { background: #00ffcc; color: #000; border: none; padding: 15px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; box-shadow: 0 0 10px #00ffcc; }
+        .btn:active { transform: scale(0.95); }
+        .btn:disabled { background: #333; color: #666; box-shadow: none; cursor: not-allowed; }
 
-        .section-title { color: #88ddff; font-size: 13px; margin-bottom: 8px; margin-top: 10px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid rgba(0,229,255,0.3); padding-bottom: 5px;}
-        
-        .input-group { margin-bottom: 15px; }
-        label { color: #00e5ff; font-size: 12px; font-weight: bold; margin-bottom: 5px; display: block; }
-        input[type="text"] { width: 100%; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid #00e5ff; color: #fff; border-radius: 8px; outline: none; transition: 0.3s; }
-        input[type="text"]:focus { box-shadow: 0 0 15px rgba(0, 229, 255, 0.5); }
-
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
-        button { padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; background: #001a22; color: #00e5ff; border: 1px solid #00e5ff; font-size: 14px; }
-        button:hover { background: #00e5ff; color: #000; box-shadow: 0 0 15px #00e5ff; }
-        
-        .power-btn { width: 100%; padding: 15px; font-size: 16px; border-radius: 10px; color: #00ffaa; border: 2px solid #00ffaa; background: rgba(0, 255, 170, 0.1); font-weight: 900; letter-spacing: 1px; margin-bottom: 15px; }
-        .power-btn:hover { background: #00ffaa; color: #000; box-shadow: 0 0 20px #00ffaa; }
-        .power-btn.active-stop { color: #ff3366; border-color: #ff3366; background: rgba(255, 51, 102, 0.1); }
-        .power-btn.active-stop:hover { background: #ff3366; color: #fff; box-shadow: 0 0 20px #ff3366; }
-
-        .btn-full { grid-column: span 2; }
-        .btn-save { background: #00e5ff; color: #000; box-shadow: 0 0 10px #00e5ff; margin-top: 10px;}
-
-        .session-log { margin-top: 5px; padding: 10px; background: rgba(0,0,0,0.6); border: 1px dashed #00e5ff; border-radius: 8px; height: 110px; overflow-y: auto; font-size: 12px; line-height: 1.5; display: flex; flex-direction: column; gap: 6px; }
-        .log-entry { background: #001a22; padding: 6px 10px; border-left: 3px solid #00e5ff; border-radius: 4px; }
-        .log-win { border-color: #00ffaa; }
-        .log-loss { border-color: #ff3366; }
-        .log-sys { border-color: #ffcc00; color: #ffcc00; }
-
-        .history-list { display: flex; flex-direction: column; gap: 10px; }
-        .history-card { background: #001a22; border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 10px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.5);}
-        .h-period { background: rgba(0, 229, 255, 0.1); text-align: center; padding: 6px; font-weight: bold; font-size: 12px; letter-spacing: 1px; color: #88ddff; border-bottom: 1px solid rgba(0, 229, 255, 0.2);}
-        .h-body { display: flex; justify-content: space-between; padding: 10px;}
-        .h-side { flex: 1; text-align: center; display: flex; flex-direction: column; gap: 5px; }
-        .h-divider { width: 1px; background: rgba(0, 229, 255, 0.2); margin: 0 10px; }
-        .h-title { font-size: 10px; color: #558899; text-transform: uppercase; font-weight: bold; }
-        .h-val { font-size: 16px; font-weight: 900; }
-        .badge { display: inline-block; padding: 3px 6px; border-radius: 4px; font-weight: bold; font-size: 10px; text-transform: uppercase; margin-top: 4px;}
-        .badge-win { background: rgba(0, 255, 170, 0.2); color: #00ffaa; border: 1px solid #00ffaa; }
-        .badge-loss { background: rgba(255, 51, 102, 0.2); color: #ff3366; border: 1px solid #ff3366; }
-        .badge-skip { background: rgba(255, 204, 0, 0.2); color: #ffcc00; border: 1px solid #ffcc00; }
-        .txt-red { color: #ff3366; text-shadow: 0 0 5px rgba(255,51,102,0.5);}
-        .txt-green { color: #00ffaa; text-shadow: 0 0 5px rgba(0,255,170,0.5);}
-        .txt-yellow { color: #ffcc00; text-shadow: 0 0 5px rgba(255,204,0,0.5);}
-
-        .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; background: #000b11; border-top: 1px solid rgba(0, 229, 255, 0.3); display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -5px 15px rgba(0, 229, 255, 0.1); z-index: 10;}
-        .nav-btn { background: transparent; border: none; color: #558899; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 11px; padding: 5px; box-shadow: none; text-transform: none; }
-        .nav-btn:hover { background: transparent; color: #00e5ff; box-shadow: none; }
-        .nav-btn.active { color: #00e5ff; text-shadow: 0 0 10px #00e5ff; font-weight: bold; }
-        .nav-icon { font-size: 20px; }
-
-        #toast { visibility: hidden; min-width: 250px; background-color: rgba(0,0,0,0.9); border: 1px solid #00e5ff; color: #fff; text-align: center; border-radius: 8px; padding: 12px; position: absolute; z-index: 100; left: 50%; top: 20px; transform: translateX(-50%); font-weight: bold; font-size: 13px; box-shadow: 0 0 15px rgba(0,229,255,0.4); opacity: 0; transition: opacity 0.3s, top 0.3s; }
-        #toast.show { visibility: visible; opacity: 1; top: 40px; }
+        /* Loader Animation */
+        .loader { border: 4px solid #111; border-top: 4px solid #00ffcc; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; display: none; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <div id="toast">Connecting...</div>
-        
-        <div class="header">
-            <h1 class="main-title">SYSTUMM HANG</h1>
-            <div class="sub-title">VIP ADAPTIVE AUTO-SWITCH</div>
+    <div class="container">
+        <h1>Systumm Hang</h1>
+        <p class="subtitle">PROVABLY FAIR PREDICTOR</p>
+
+        <div class="data-box">
+            <div class="data-row">
+                <span class="data-label">Status:</span>
+                <span class="data-value" id="status" style="color: #ff3333;">Disconnected</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Round ID:</span>
+                <span class="data-value" id="round-id">waiting...</span>
+            </div>
         </div>
 
-        <div class="content-area">
-            
-            <div id="mainScreen" class="screen active">
-                <div class="stats-bar">
-                    <div class="stat win-txt">🟢 WIN: <span id="winCount">0</span></div>
-                    <div class="stat loss-txt">🔴 LOSS: <span id="lossCount">0</span></div>
-                    <div class="stat lvl-txt">📈 LVL: <span id="currentLevelDisplay">1</span></div>
-                </div>
-
-                <div class="live-pred-box">
-                    <div class="live-clock" id="liveTime">30s</div>
-                    <div class="live-pred-title" id="predPeriod">Waiting for Session...</div>
-                    <div class="live-pred-value" id="predValue">--</div>
-                    <div class="live-pred-num" id="predTargetNum">Target: ?</div>
-                    <div class="active-engine-badge" id="engineBadge">⚙️ INITIALIZING...</div>
-                </div>
-
-                <button class="power-btn" id="powerBtn" onclick="toggleBot()">▶️ START VIP</button>
-
-                <div class="section-title">Live Session Log</div>
-                <div class="session-log" id="sessionLog">
-                    <div class="log-entry" style="text-align:center; color:#558899; border:none;">Bot is offline. Hang the system!</div>
-                </div>
-            </div>
-
-            <div id="settingsScreen" class="screen">
-                <div class="section-title">Telegram Configuration</div>
-                <div class="input-group">
-                    <label>Bot Token</label>
-                    <input type="text" id="botToken" placeholder="Enter Telegram Bot Token">
-                </div>
-                <div class="input-group">
-                    <label>Chat ID / Channel ID</label>
-                    <input type="text" id="chatId" placeholder="Enter Target Chat ID">
-                </div>
-                
-                <button class="btn-full btn-save" onclick="saveSettings()">💾 Save Settings</button>
-                <div id="saveMsg" style="color:#00ffaa; text-align:center; margin-top:10px; font-size:12px; display:none;">Settings Saved Successfully!</div>
-            </div>
-
-            <div id="historyScreen" class="screen">
-                <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>Live Session History</span>
-                    <button onclick="clearHistory()" style="padding: 5px 10px; font-size:10px; border-radius: 5px;">🗑️ Clear</button>
-                </div>
-                
-                <div class="history-list" id="historyContainer">
-                    <p id="histPlaceholder" style="text-align:center; color:#558899; font-size:12px; margin-top:10px;">Bot history will appear here once session starts.</p>
-                </div>
-            </div>
-
+        <div class="prediction-circle" id="circle">
+            <div class="loader" id="loader"></div>
+            <div class="prediction-value" id="multiplier">0.00x</div>
+            <div class="prediction-label" id="trend-label">Press Button</div>
         </div>
 
-        <div class="bottom-nav">
-            <button class="nav-btn active" id="nav-mainScreen" onclick="switchTab('mainScreen')">
-                <span class="nav-icon">🏠</span>
-                <span>Main</span>
-            </button>
-            <button class="nav-btn" id="nav-settingsScreen" onclick="switchTab('settingsScreen')">
-                <span class="nav-icon">⚙️</span>
-                <span>Settings</span>
-            </button>
-            <button class="nav-btn" id="nav-historyScreen" onclick="switchTab('historyScreen')">
-                <span class="nav-icon">📜</span>
-                <span>History</span>
-            </button>
-        </div>
+        <button class="btn" id="action-btn" onclick="startPrediction()">CONNECT TO SERVER</button>
     </div>
 
     <script>
-        let isActive = false;
-        let isFetching = false;
-        
-        // --- MASTER STATE VARIABLES ---
-        let wins = 0; let losses = 0; let botLevel = 1;
-        let lastProcessedPeriod = "";
-        let pendingPrediction = null; 
-        let lastTgMessageId = null; 
-        let syncLoop; let clockLoop;
-        
-        // --- ADAPTIVE ENGINE VARIABLES ---
-        let currentEngine = "TREND"; // Default start
-        let isVirtualMode = false; // "SAFE SHIELD" - True when market is completely volatile
-        let virtualWinCount = 0; // Needs 2 virtual wins to resume real signals
-        let historyDataWindow = []; // Stores last 20 results for deep analysis
-        
-        const apiUrl = "https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json?pageSize=1000";
+        // Telegram Web App Initialization
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Opens UI in full screen inside Telegram
 
-        document.getElementById('botToken').value = localStorage.getItem('raoToken') || "";
-        document.getElementById('chatId').value = localStorage.getItem('raoChatId') || "";
+        let isConnected = false;
 
-        function showToast(message, color = "#fff") {
-            let toast = document.getElementById("toast");
-            toast.innerText = message; toast.style.borderColor = color; toast.style.color = color; toast.className = "show";
-            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 2000);
-        }
-
-        function saveSettings() {
-            localStorage.setItem('raoToken', document.getElementById('botToken').value);
-            localStorage.setItem('raoChatId', document.getElementById('chatId').value);
-            let msg = document.getElementById('saveMsg');
-            msg.style.display = "block"; setTimeout(() => { msg.style.display = "none"; }, 3000);
-        }
-
-        // --- STICKERS ---
-        const winFirstSticker = "CAACAgUAAxkBAAEQg65pkGLJ3sfc9IXFEvzrDZxtQULGxQACuxMAAtZgYVZaFxCncOnSvjoE";
-        const winMiddleStickers = ["CAACAgUAAxkBAAEQlKRpmc6YKoTbG9mtawI1wwABuQcxkfQAAkoTAAKLKmFWDJoBh856d0Y6BA", "CAACAgUAAxkBAAEQlKZpmc6aK74AAdmQTU5pzHvRwaqw7kYAAhcNAAKnzeBWXQtoMocETe06BA"];
-        const winLastStickers = ["CAACAgUAAxkBAAEQlK5pmc6yU2kj7DMmOHGDzzo82qxT1gAC1hMAAmp9YVbvJhOMbbSNmDoE", "CAACAgUAAxkBAAEQlKhpmc6etFnxDItnzJwhAWlPXg240gAC0xMAAtJlYVZ8CDYuQ-4m-DoE"];
-        const lossStickers = ["CAACAgUAAxkBAAEQlLJpmc6_OGO-OzS4pO4D6BxunLlM2QACcRQAAiWLYFaCAQAB8ZzOON86BA", "CAACAgUAAxkBAAEQlKJpmc6TGK5kA5LlPk4RmwWv2F-obgAC4BEAAsSNmVRK1rmkcLLTfDoE"];
-        const jackpotSticker = "CAACAgUAAxkBAAEQsUppqwa6JcUSVwlv3_SF9sjt-5_XzAAC5Q0AAi5hWFelqTPkIh-T4ToE"; 
-
-        function getSticker(array, periodString) { return array[Number(BigInt(periodString) % BigInt(array.length))]; }
-
-        function startClock() {
-            clockLoop = setInterval(() => {
-                let currentSeconds = new Date().getSeconds();
-                let countdown = 30 - (currentSeconds % 30);
-                document.getElementById('liveTime').innerText = countdown + "s";
-                if(countdown <= 5) { document.getElementById('liveTime').style.color = "#ff3366"; document.getElementById('liveTime').style.textShadow = "0 0 15px #ff3366"; } 
-                else { document.getElementById('liveTime').style.color = "#00e5ff"; document.getElementById('liveTime').style.textShadow = "0 0 15px #00e5ff"; }
-            }, 1000);
-        }
-        startClock();
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('nav-' + tabId).classList.add('active');
-        }
-
-        async function toggleBot() {
-            let btn = document.getElementById('powerBtn');
-            if(isActive) {
-                isActive = false; clearInterval(syncLoop);
-                if(lastTgMessageId !== null) {
-                    await deleteTgMessage(lastTgMessageId);
-                    addLog("Deleted last bet to avoid risk.", "log-sys");
-                    lastTgMessageId = null;
-                }
-                updateLiveUI("Session Ended", "--", "#fff", "?");
-                document.getElementById('engineBadge').innerText = "⚙️ SYSTEM HALTED";
-                document.getElementById('engineBadge').style.color = "#ff3366";
-                document.getElementById('engineBadge').style.borderColor = "#ff3366";
-                addLog("System Hang Stopped!"); showToast("Bot Offline", "#ff3366");
-                let stopMsg = "🛑 <b>SYSTUMM HANG SESSION ENDED</b> 🛑\n\nPredictions stopped. Calculate your profits!";
-                await sendTgMessage(stopMsg);
-                btn.innerHTML = "▶️ START VIP"; btn.classList.remove('active-stop');
-            } else {
-                showToast("Connecting to API...", "#00e5ff");
-                setTimeout(async () => {
-                    isActive = true; wins = 0; losses = 0; botLevel = 1; 
-                    currentEngine = "TREND"; isVirtualMode = false; virtualWinCount = 0;
-                    updateStats();
-                    lastProcessedPeriod = ""; pendingPrediction = null; lastTgMessageId = null;
-                    document.getElementById('sessionLog').innerHTML = "";
-                    document.getElementById('historyContainer').innerHTML = '<p id="histPlaceholder" style="text-align:center; color:#558899; font-size:12px; margin-top:10px;">Bot history will appear here once session starts.</p>';
-                    addLog("Bot Started! Initializing Dual Brain...", "log-sys"); 
-                    showToast("Connected & Syncing!", "#00ffaa");
-                    let startMsg = "💠 <b>SYSTUMM HANG ADAPTIVE VIP STARTED</b> 💠\n\nSystem is ACTIVE with Auto-Switch Engine & Max Level 2 Limit!";
-                    await sendTgMessage(startMsg);
-                    syncLoop = setInterval(botLogicTick, 1500);
-                    btn.innerHTML = "⏹️ STOP VIP"; btn.classList.add('active-stop');
-                }, 800);
-            }
-        }
-
-        function updateStats() {
-            document.getElementById('winCount').innerText = wins;
-            document.getElementById('lossCount').innerText = losses;
-            document.getElementById('currentLevelDisplay').innerText = isVirtualMode ? "VIRTUAL" : botLevel;
+        // Smart Algorithm to generate realistic Round IDs and Multipliers based on time
+        function generatePrediction() {
+            const now = new Date();
+            // Generate a realistic looking Round ID based on current time minute/second
+            const baseId = 320000 + (now.getHours() * 60) + now.getMinutes();
+            const roundId = baseId.toString() + Math.floor(Math.random() * 9).toString();
             
-            let badge = document.getElementById('engineBadge');
-            if(isVirtualMode) {
-                badge.innerText = "🛡️ VIRTUAL COOLDOWN MODE";
-                badge.style.color = "#ffcc00"; badge.style.borderColor = "#ffcc00"; badge.style.background = "rgba(255,204,0,0.1)";
+            // Generate multiplier (Weighted towards 1.20x - 2.50x to look real)
+            let multiplier;
+            const rand = Math.random();
+            if (rand < 0.6) {
+                multiplier = (Math.random() * (1.90 - 1.10) + 1.10).toFixed(2); // 60% chance: 1.10x - 1.90x
+            } else if (rand < 0.9) {
+                multiplier = (Math.random() * (3.50 - 1.91) + 1.91).toFixed(2); // 30% chance: 1.91x - 3.50x
             } else {
-                badge.innerText = `⚙️ ACTIVE: ${currentEngine} ENGINE`;
-                badge.style.color = "#00e5ff"; badge.style.borderColor = "#00e5ff"; badge.style.background = "rgba(0,229,255,0.1)";
+                multiplier = (Math.random() * (10.00 - 3.51) + 3.51).toFixed(2); // 10% chance: big multiplier
             }
+
+            return { id: roundId, mul: multiplier };
         }
 
-        function updateLiveUI(period, text, colorCode, targetNum) {
-            document.getElementById('predPeriod').innerText = `Period: ${period}`;
-            document.getElementById('predValue').innerHTML = `<span style="color:${colorCode}">${text}</span>`;
-            document.getElementById('predTargetNum').innerText = `Target: ${targetNum}`;
-        }
+        function startPrediction() {
+            const btn = document.getElementById('action-btn');
+            const status = document.getElementById('status');
+            const roundIdEl = document.getElementById('round-id');
+            const multiplierEl = document.getElementById('multiplier');
+            const trendLabel = document.getElementById('trend-label');
+            const loader = document.getElementById('loader');
+            const circle = document.getElementById('circle');
 
-        function addLog(msg, type = "normal") {
-            const logBox = document.getElementById('sessionLog');
-            if(logBox.innerHTML.includes("Bot is offline")) logBox.innerHTML = "";
-            let cssClass = "log-entry"; 
-            if(type === "win") cssClass += " log-win"; 
-            if(type === "loss") cssClass += " log-loss";
-            if(type === "log-sys") cssClass += " log-sys";
-            let timeStr = new Date().toLocaleTimeString('en-IN', { hour12: false });
-            logBox.innerHTML = `<div class="${cssClass}">[${timeStr}] ${msg}</div>` + logBox.innerHTML;
-        }
-
-        function clearHistory() {
-            document.getElementById('historyContainer').innerHTML = '<p id="histPlaceholder" style="text-align:center; color:#558899; font-size:12px; margin-top:10px;">History cleared.</p>';
-        }
-
-        function getTgData() { return { token: document.getElementById('botToken').value, chatId: document.getElementById('chatId').value }; }
-        
-        async function sendTgMessage(text) {
-            if(isVirtualMode) return null; // Do not send real messages during virtual cooldown
-            const { token, chatId } = getTgData(); if(!token || !chatId) return null;
-            try { 
-                let response = await fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}&parse_mode=HTML`); 
-                let data = await response.json();
-                if(data.ok && data.result) return data.result.message_id;
-            } catch(e) {}
-            return null;
-        }
-
-        async function sendTgSticker(stickerId) {
-            if(isVirtualMode) return;
-            const { token, chatId } = getTgData(); if(!token || !chatId) return;
-            try { await fetch(`https://api.telegram.org/bot${token}/sendSticker?chat_id=${chatId}&sticker=${stickerId}`); } catch(e) {}
-        }
-
-        async function deleteTgMessage(msgId) {
-            const { token, chatId } = getTgData(); if(!token || !chatId || !msgId) return;
-            try { await fetch(`https://api.telegram.org/bot${token}/deleteMessage?chat_id=${chatId}&message_id=${msgId}`); } catch(e) {}
-        }
-
-        // ==============================================================
-        // MASTER DUAL BRAIN (Adaptive Auto-Switch Logic)
-        // ==============================================================
-
-        function getTargetNum(isBig) {
-            if (isBig) {
-                let bigs = [5, 6, 7, 8, 9]; return bigs[Math.floor(Math.random() * bigs.length)];
+            if (!isConnected) {
+                // Mock Connection Process
+                btn.innerText = "CONNECTING...";
+                btn.disabled = true;
+                
+                setTimeout(() => {
+                    isConnected = true;
+                    status.innerText = "Connected ✅";
+                    status.style.color = "#00ffcc";
+                    btn.innerText = "FETCH LIVE SIGNAL";
+                    btn.disabled = false;
+                    tg.HapticFeedback.notificationOccurred('success');
+                }, 1500);
             } else {
-                let smalls = [0, 1, 2, 3, 4]; return smalls[Math.floor(Math.random() * smalls.length)];
-            }
-        }
+                // Fetch Signal Process
+                btn.disabled = true;
+                multiplierEl.style.display = "none";
+                trendLabel.style.display = "none";
+                loader.style.display = "block";
+                circle.style.borderColor = "#333";
+                roundIdEl.innerText = "analyzing...";
 
-        // Engine 1: Mathematical & Pattern Following
-        function calcTrendEngine(historyStr) {
-            if(historyStr.length < 3) return { isBig: true, conf: 50 };
-            let last3 = historyStr.slice(-3);
-            if (last3 === "BBB") return { isBig: true, conf: 85 };  // Follow streak
-            if (last3 === "SSS") return { isBig: false, conf: 85 }; // Follow streak
-            if (last3 === "BSB") return { isBig: true, conf: 80 };  // Follow alternate
-            if (last3 === "SBS") return { isBig: false, conf: 80 }; // Follow alternate
-            return { isBig: historyStr.slice(-1) === "B", conf: 60 };
-        }
-
-        // Engine 2: Anti-Crowd & Reverse Psychology
-        function calcReverseEngine(historyStr) {
-            if(historyStr.length < 3) return { isBig: false, conf: 50 };
-            let last3 = historyStr.slice(-3);
-            if (last3 === "BBB") return { isBig: false, conf: 90 }; // Break streak trap
-            if (last3 === "SSS") return { isBig: true, conf: 90 };  // Break streak trap
-            if (last3 === "BSB") return { isBig: false, conf: 85 }; // Break alternate trap
-            if (last3 === "SBS") return { isBig: true, conf: 85 };  // Break alternate trap
-            return { isBig: historyStr.slice(-1) === "S", conf: 65 }; // Reverse of last
-        }
-
-        // The Master Function: Decides which engine to use and checks virtual mode
-        function adaptiveMasterEngine(dataList) {
-            let lastResults = dataList.slice(0, 10).reverse();
-            let historyStr = lastResults.map(x => parseInt(x.number) >= 5 ? 'B' : 'S').join("");
-            
-            // Evaluator: Check which engine performed better in the last 3 rounds
-            if(historyStr.length >= 5) {
-                let trendScore = 0; let revScore = 0;
-                for(let i = 2; i <= 4; i++) {
-                    let pastHist = historyStr.substring(0, historyStr.length - i);
-                    let actualNext = historyStr.charAt(historyStr.length - i);
+                setTimeout(() => {
+                    const result = generatePrediction();
                     
-                    if(calcTrendEngine(pastHist).isBig === (actualNext === 'B')) trendScore++;
-                    if(calcReverseEngine(pastHist).isBig === (actualNext === 'B')) revScore++;
-                }
-
-                // Auto-Switch Decision
-                if(revScore > trendScore) {
-                    if(currentEngine !== "REVERSE") {
-                        currentEngine = "REVERSE"; addLog("Market shifted. Switching to REVERSE Engine", "log-sys");
-                    }
-                } else if (trendScore > revScore) {
-                    if(currentEngine !== "TREND") {
-                        currentEngine = "TREND"; addLog("Market shifted. Switching to TREND Engine", "log-sys");
-                    }
-                }
-            }
-
-            // Generate Prediction based on Active Engine
-            let engineResult = (currentEngine === "TREND") ? calcTrendEngine(historyStr) : calcReverseEngine(historyStr);
-            
-            return { 
-                isBig: engineResult.isBig, 
-                conf: engineResult.conf, 
-                targetNum: getTargetNum(engineResult.isBig), 
-                msg: `Engine: ${currentEngine} | Conf: ${engineResult.conf}%` 
-            };
-        }
-        // ==============================================================
-
-        async function fetchApi() {
-            try { let res = await fetch(apiUrl); let json = await res.json(); if(json && json.data && json.data.list) return json.data.list; } catch (e) {} return null;
-        }
-
-        async function botLogicTick() {
-            if (!isActive || isFetching) return; isFetching = true; 
-            let data = await fetchApi(); if (!data) { isFetching = false; return; }
-
-            let latestPeriod = data[0].issueNumber; let latestNumber = parseInt(data[0].number); let latestIsBig = latestNumber >= 5;
-
-            if (lastProcessedPeriod !== "" && latestPeriod !== lastProcessedPeriod) {
-                lastProcessedPeriod = latestPeriod;
-
-                if (pendingPrediction !== null && pendingPrediction.period === latestPeriod) {
-                    let isWin = (pendingPrediction.isBig === latestIsBig);
-                    let isJackpot = (pendingPrediction.targetNum === latestNumber);
-
-                    let badge = '';
-                    if(isVirtualMode) {
-                        badge = isWin ? `<div class="badge badge-skip">🛡️ VIRTUAL WIN</div>` : `<div class="badge badge-skip">🛡️ VIRTUAL LOSS</div>`;
-                    } else if(isWin) { 
-                        badge = `<div class="badge badge-win">✅ WIN (L${botLevel})</div>`; 
-                        if(isJackpot) badge = `<div class="badge badge-jackpot">🎯 JACKPOT (L${botLevel})</div>`;
-                    } else { 
-                        badge = `<div class="badge badge-loss">❌ LOSS (L${botLevel})</div>`; 
-                    }
-
-                    let botPredText = pendingPrediction.isBig ? "BIG" : "SMALL";
-                    let botPredClass = isVirtualMode ? "txt-yellow" : (pendingPrediction.isBig ? "txt-red" : "txt-green");
-                    let gameColor = ([1,3,7,9].includes(latestNumber)) ? "🟢 GREEN" : ([2,4,6,8].includes(latestNumber)) ? "🔴 RED" : "🟣 VIOLET";
-                    if(latestNumber === 0 || latestNumber === 5) gameColor += (latestNumber===0)?"+🔴":"+🟢";
-                    let gameText = latestIsBig ? "🔴 BIG" : "🟢 SMALL";
-
-                    let historyHTML = `
-                    <div class="history-card" style="animation: fadeIn 0.5s;">
-                        <div class="h-period">PERIOD: ${latestPeriod}</div>
-                        <div class="h-body">
-                            <div class="h-side">
-                                <div class="h-title">Bot Predicted</div>
-                                <div class="h-val ${botPredClass}">${botPredText} | ${pendingPrediction.targetNum}</div>
-                                ${badge}
-                            </div>
-                            <div class="h-divider"></div>
-                            <div class="h-side">
-                                <div class="h-title">Game Result</div>
-                                <div class="h-val" style="color:#fff;">${latestNumber} | ${gameText}</div>
-                                <div style="font-size:10px; margin-top:5px; font-weight:bold; color:#aaa;">${gameColor}</div>
-                            </div>
-                        </div>
-                    </div>`;
+                    loader.style.display = "none";
+                    multiplierEl.style.display = "block";
+                    trendLabel.style.display = "block";
                     
-                    let container = document.getElementById('historyContainer');
-                    let ph = document.getElementById('histPlaceholder');
-                    if(ph) ph.remove();
-                    container.insertAdjacentHTML('afterbegin', historyHTML);
-
-                    // ==========================================
-                    // ADAPTIVE WIN/LOSS & VIRTUAL LOGIC
-                    // ==========================================
-                    if (isVirtualMode) {
-                        if(isWin) {
-                            virtualWinCount++; addLog(`Virtual Win! (${virtualWinCount}/2)`, "log-sys");
-                            if(virtualWinCount >= 2) {
-                                isVirtualMode = false; botLevel = 1; virtualWinCount = 0;
-                                addLog("Market stable. Exiting Virtual Mode. Resuming Real Signals.", "log-sys");
-                                await sendTgMessage("✅ <b>MARKET STABLE</b> ✅\nVirtual testing complete. Resuming Live VIP Signals.");
-                            }
-                        } else {
-                            virtualWinCount = 0; addLog("Virtual Loss. Market still bad. Staying in cooldown.", "log-sys");
-                        }
+                    roundIdEl.innerText = result.id;
+                    multiplierEl.innerText = result.mul + "x";
+                    
+                    // UI styling based on result
+                    if (parseFloat(result.mul) >= 2.00) {
+                        multiplierEl.style.color = "#ffaa00";
+                        circle.style.borderColor = "#ffaa00";
+                        trendLabel.innerText = "🔥 HIGH TREND";
+                        tg.HapticFeedback.notificationOccurred('warning');
                     } else {
-                        if (isWin) {
-                            wins++; addLog(`WON Period ${latestPeriod} (Level ${botLevel})`, "win");
-                            botLevel = 1; 
-                            if(isJackpot) await sendTgSticker(jackpotSticker);
-                            await sendTgSticker(winFirstSticker);
-                            await sendTgSticker(getSticker(winMiddleStickers, latestPeriod + "1"));
-                            await sendTgSticker(getSticker(winLastStickers, latestPeriod + "2"));
-                            lastTgMessageId = null; 
-                        } else {
-                            losses++; addLog(`LOST Period ${latestPeriod} (Level ${botLevel})`, "loss");
-                            if(lastTgMessageId !== null) {
-                                await deleteTgMessage(lastTgMessageId);
-                                lastTgMessageId = null;
-                            }
-
-                            if (botLevel === 1) {
-                                botLevel = 2; // Move to Level 2
-                            } else {
-                                // Level 2 Failed! Enter VIRTUAL COOLDOWN MODE
-                                botLevel = 1; isVirtualMode = true; virtualWinCount = 0;
-                                addLog("Level 2 Hit! Stop Loss Activated. Entering Virtual Shield Mode.", "log-sys");
-                                await sendTgMessage("⚠️ <b>MARKET HIGHLY VOLATILE</b> ⚠️\nLevel 2 Failed. To protect your funds, bot is entering VIRTUAL COOLDOWN. Do not bet. Waiting for market to stabilize...");
-                            }
-                        }
+                        multiplierEl.style.color = "#00ffcc";
+                        circle.style.borderColor = "#00ffcc";
+                        trendLabel.innerText = "✅ SAFE CASHOUT";
+                        tg.HapticFeedback.notificationOccurred('success');
                     }
-                    updateStats(); 
-                }
-
-                let nextPeriod = (BigInt(latestPeriod) + 1n).toString();
-                
-                // --- CALL ADAPTIVE MASTER ENGINE ---
-                let predObj = adaptiveMasterEngine(data);
-                
-                pendingPrediction = { period: nextPeriod, isBig: predObj.isBig, targetNum: predObj.targetNum };
-                
-                let typeStr = predObj.isBig ? "BIG" : "SMALL";
-                let uiColorCode = isVirtualMode ? "#ffcc00" : (predObj.isBig ? "#ff3366" : "#00ffaa");
-                
-                let fundM = (botLevel === 1) ? "10₹ (1X - Level 1)" : "30₹ (3X - Level 2)";
-                let riskText = isVirtualMode ? "🛡️ VIRTUAL COOLDOWN MODE" : "✅ ADAPTIVE SAFE ENTRY";
-
-                updateLiveUI(nextPeriod, typeStr, uiColorCode, predObj.targetNum);
-                addLog(`Engine Core: ${predObj.msg}`);
-
-                // Send to Telegram ONLY if NOT in Virtual Mode
-                if(!isVirtualMode) {
-                    let vipMsg = `💠 <b>SYSTUMM HANG VIP SIGNAL</b> 💠\n\n🎯 Game: Wingo 30 sec \n🆔 Period: <b>${nextPeriod}</b>\n\n🔥 Prediction: <b>${typeStr}</b>\n📍 Target No: <b>${predObj.targetNum}</b>\n💰 Fund: <b>${fundM}</b>\n\n🖥️ Server: ${currentEngine} ENGINE\n📈 Accuracy: ${predObj.conf}%\n${riskText}\n\n💎 Powered By: RAO SAHAB SYSTEM`;
-                    lastTgMessageId = await sendTgMessage(vipMsg); 
-                    addLog(`Live Signal Sent: ${typeStr} (Level ${botLevel})`);
-                }
-            } else if (lastProcessedPeriod === "") { lastProcessedPeriod = latestPeriod; addLog("API Connected. Ready for signal...", "log-sys"); }
-            isFetching = false;
+                    
+                    btn.disabled = false;
+                    
+                    // Optional: Send data back to Telegram chat if needed
+                    // tg.sendData(JSON.stringify(result));
+                    
+                }, 2000); // 2 second fake loading for realistic feel
+            }
         }
     </script>
 </body>
