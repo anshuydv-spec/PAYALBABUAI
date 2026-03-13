@@ -4,89 +4,141 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Systumm Hang - Aviator Predictor</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', Courier, monospace; }
-        body { background-color: #0a0a0a; color: #00ffcc; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        body { background-color: #050505; color: #00ffcc; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
         
-        .container { background: #111; border: 2px solid #00ffcc; border-radius: 15px; padding: 30px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 0 20px rgba(0, 255, 204, 0.2); }
+        .container { background: #111; border: 2px solid #00ffcc; border-radius: 15px; padding: 25px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 0 20px rgba(0, 255, 204, 0.2); margin-top: 10px; }
         
-        h1 { font-size: 24px; color: #fff; text-shadow: 0 0 10px #00ffcc; margin-bottom: 5px; text-transform: uppercase; }
-        p.subtitle { color: #888; font-size: 12px; margin-bottom: 25px; }
+        h1 { font-size: 26px; color: #fff; text-shadow: 0 0 10px #00ffcc; margin-bottom: 5px; text-transform: uppercase; }
+        p.subtitle { color: #888; font-size: 12px; margin-bottom: 20px; }
 
-        .data-box { background: #000; border: 1px dashed #444; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        /* Telegram Setup Box */
+        .setup-box { background: #1a1a1a; padding: 15px; border-radius: 10px; border: 1px dashed #555; margin-bottom: 20px; text-align: left; }
+        .setup-box label { font-size: 12px; color: #aaa; font-weight: bold; }
+        .setup-box input { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 10px; background: #000; border: 1px solid #00ffcc; color: #fff; border-radius: 5px; font-size: 14px; outline: none; }
+
+        /* Display Box */
+        .data-box { background: #000; border: 1px solid #333; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
         .data-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
         .data-label { color: #aaa; }
         .data-value { font-weight: bold; color: #fff; }
 
-        .prediction-circle { width: 150px; height: 150px; border-radius: 50%; border: 4px solid #333; margin: 0 auto 25px auto; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); transition: all 0.3s ease; }
-        .prediction-value { font-size: 36px; font-weight: bold; color: #555; }
+        /* Circle Animation */
+        .prediction-circle { width: 140px; height: 140px; border-radius: 50%; border: 4px solid #333; margin: 0 auto 25px auto; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); transition: all 0.3s ease; }
+        .prediction-value { font-size: 32px; font-weight: bold; color: #555; }
         .prediction-label { font-size: 12px; color: #777; margin-top: 5px; }
 
-        .btn { background: #00ffcc; color: #000; border: none; padding: 15px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; box-shadow: 0 0 10px #00ffcc; }
+        /* Button */
+        .btn { background: #00ffcc; color: #000; border: none; padding: 15px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; box-shadow: 0 0 15px rgba(0, 255, 204, 0.4); }
         .btn:active { transform: scale(0.95); }
         .btn:disabled { background: #333; color: #666; box-shadow: none; cursor: not-allowed; }
 
-        /* Loader Animation */
         .loader { border: 4px solid #111; border-top: 4px solid #00ffcc; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; display: none; margin: 0 auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .log-msg { font-size: 11px; color: #ffaa00; margin-top: 15px; height: 15px; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>Systumm Hang</h1>
-        <p class="subtitle">PROVABLY FAIR PREDICTOR</p>
+        <p class="subtitle">PROVABLY FAIR PREDICTOR & AUTO-POSTER</p>
+
+        <div class="setup-box">
+            <label>Bot Token:</label>
+            <input type="text" id="botToken" placeholder="123456789:ABCdefGHI...">
+            <label>Channel/Chat ID:</label>
+            <input type="text" id="chatId" placeholder="-1001234567890">
+        </div>
 
         <div class="data-box">
             <div class="data-row">
                 <span class="data-label">Status:</span>
-                <span class="data-value" id="status" style="color: #ff3333;">Disconnected</span>
+                <span class="data-value" id="status" style="color: #ff3333;">Standing By</span>
             </div>
             <div class="data-row">
                 <span class="data-label">Round ID:</span>
-                <span class="data-value" id="round-id">waiting...</span>
+                <span class="data-value" id="round-id">----</span>
             </div>
         </div>
 
         <div class="prediction-circle" id="circle">
             <div class="loader" id="loader"></div>
             <div class="prediction-value" id="multiplier">0.00x</div>
-            <div class="prediction-label" id="trend-label">Press Button</div>
+            <div class="prediction-label" id="trend-label">Waiting...</div>
         </div>
 
-        <button class="btn" id="action-btn" onclick="startPrediction()">CONNECT TO SERVER</button>
+        <button class="btn" id="action-btn" onclick="startProcess()">GENERATE & SEND SIGNAL</button>
+        <div class="log-msg" id="logText"></div>
     </div>
 
     <script>
-        // Telegram Web App Initialization
-        const tg = window.Telegram.WebApp;
-        tg.expand(); // Opens UI in full screen inside Telegram
-
-        let isConnected = false;
-
-        // Smart Algorithm to generate realistic Round IDs and Multipliers based on time
+        // 1. Smart Algorithm: UI ke liye realistic data banata hai
         function generatePrediction() {
             const now = new Date();
-            // Generate a realistic looking Round ID based on current time minute/second
             const baseId = 320000 + (now.getHours() * 60) + now.getMinutes();
             const roundId = baseId.toString() + Math.floor(Math.random() * 9).toString();
             
-            // Generate multiplier (Weighted towards 1.20x - 2.50x to look real)
             let multiplier;
             const rand = Math.random();
             if (rand < 0.6) {
-                multiplier = (Math.random() * (1.90 - 1.10) + 1.10).toFixed(2); // 60% chance: 1.10x - 1.90x
+                multiplier = (Math.random() * (1.90 - 1.15) + 1.15).toFixed(2); 
             } else if (rand < 0.9) {
-                multiplier = (Math.random() * (3.50 - 1.91) + 1.91).toFixed(2); // 30% chance: 1.91x - 3.50x
+                multiplier = (Math.random() * (3.50 - 1.91) + 1.91).toFixed(2); 
             } else {
-                multiplier = (Math.random() * (10.00 - 3.51) + 3.51).toFixed(2); // 10% chance: big multiplier
+                multiplier = (Math.random() * (7.00 - 3.51) + 3.51).toFixed(2); 
             }
-
             return { id: roundId, mul: multiplier };
         }
 
-        function startPrediction() {
+        // 2. Telegram Sender Engine: Seedha HTML se API par data bhejta hai
+        async function sendToTelegram(roundId, multiplier, trend) {
+            const token = document.getElementById('botToken').value.trim();
+            const chat = document.getElementById('chatId').value.trim();
+            const log = document.getElementById('logText');
+
+            if (!token || !chat) {
+                log.innerText = "⚠️ Bhai, Token aur Chat ID zaroor daalein!";
+                log.style.color = "#ff3333";
+                return false;
+            }
+
+            // Message ka format
+            const message = `🎯 *SYSTUMM HANG - NEW SIGNAL*\n\n` +
+                            `🆔 Round ID: \`${roundId}\`\n` +
+                            `🚀 *Predicted Target: ${multiplier}x*\n` +
+                            `📊 Status: ${trend}\n\n` +
+                            `⚙️ Admin: Rao Sahab`;
+
+            const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
+
+            try {
+                log.innerText = "Sending to Telegram...";
+                log.style.color = "#ffaa00";
+                
+                let response = await fetch(url);
+                let result = await response.json();
+                
+                if (result.ok) {
+                    log.innerText = "✅ Signal Sent to Telegram!";
+                    log.style.color = "#00ffcc";
+                    return true;
+                } else {
+                    log.innerText = "❌ Telegram Error: " + result.description;
+                    log.style.color = "#ff3333";
+                    return false;
+                }
+            } catch (error) {
+                log.innerText = "❌ Network Error! Connection check karein.";
+                log.style.color = "#ff3333";
+                return false;
+            }
+        }
+
+        // 3. Main Function: Button dabane par chalega
+        function startProcess() {
             const btn = document.getElementById('action-btn');
             const status = document.getElementById('status');
             const roundIdEl = document.getElementById('round-id');
@@ -94,59 +146,61 @@
             const trendLabel = document.getElementById('trend-label');
             const loader = document.getElementById('loader');
             const circle = document.getElementById('circle');
+            const log = document.getElementById('logText');
 
-            if (!isConnected) {
-                // Mock Connection Process
-                btn.innerText = "CONNECTING...";
-                btn.disabled = true;
-                
-                setTimeout(() => {
-                    isConnected = true;
-                    status.innerText = "Connected ✅";
-                    status.style.color = "#00ffcc";
-                    btn.innerText = "FETCH LIVE SIGNAL";
-                    btn.disabled = false;
-                    tg.HapticFeedback.notificationOccurred('success');
-                }, 1500);
-            } else {
-                // Fetch Signal Process
-                btn.disabled = true;
-                multiplierEl.style.display = "none";
-                trendLabel.style.display = "none";
-                loader.style.display = "block";
-                circle.style.borderColor = "#333";
-                roundIdEl.innerText = "analyzing...";
-
-                setTimeout(() => {
-                    const result = generatePrediction();
-                    
-                    loader.style.display = "none";
-                    multiplierEl.style.display = "block";
-                    trendLabel.style.display = "block";
-                    
-                    roundIdEl.innerText = result.id;
-                    multiplierEl.innerText = result.mul + "x";
-                    
-                    // UI styling based on result
-                    if (parseFloat(result.mul) >= 2.00) {
-                        multiplierEl.style.color = "#ffaa00";
-                        circle.style.borderColor = "#ffaa00";
-                        trendLabel.innerText = "🔥 HIGH TREND";
-                        tg.HapticFeedback.notificationOccurred('warning');
-                    } else {
-                        multiplierEl.style.color = "#00ffcc";
-                        circle.style.borderColor = "#00ffcc";
-                        trendLabel.innerText = "✅ SAFE CASHOUT";
-                        tg.HapticFeedback.notificationOccurred('success');
-                    }
-                    
-                    btn.disabled = false;
-                    
-                    // Optional: Send data back to Telegram chat if needed
-                    // tg.sendData(JSON.stringify(result));
-                    
-                }, 2000); // 2 second fake loading for realistic feel
+            // Agar details khali hain toh pehle hi rok do
+            if (!document.getElementById('botToken').value || !document.getElementById('chatId').value) {
+                log.innerText = "⚠️ Pehle Token aur Chat ID daaliye!";
+                log.style.color = "#ff3333";
+                return;
             }
+
+            // UI Loading State
+            btn.disabled = true;
+            btn.innerText = "CALCULATING...";
+            status.innerText = "Connecting to Server...";
+            status.style.color = "#ffaa00";
+            multiplierEl.style.display = "none";
+            trendLabel.style.display = "none";
+            loader.style.display = "block";
+            circle.style.borderColor = "#333";
+            roundIdEl.innerText = "analyzing...";
+            log.innerText = "";
+
+            // 1.5 Second ka fake loading effect professional feel ke liye
+            setTimeout(async () => {
+                const result = generatePrediction();
+                
+                // UI update karna
+                loader.style.display = "none";
+                multiplierEl.style.display = "block";
+                trendLabel.style.display = "block";
+                
+                roundIdEl.innerText = result.id;
+                multiplierEl.innerText = result.mul + "x";
+                
+                let trendText = "";
+                if (parseFloat(result.mul) >= 2.00) {
+                    multiplierEl.style.color = "#ffaa00";
+                    circle.style.borderColor = "#ffaa00";
+                    trendText = "🔥 HIGH TREND";
+                } else {
+                    multiplierEl.style.color = "#00ffcc";
+                    circle.style.borderColor = "#00ffcc";
+                    trendText = "✅ SAFE CASHOUT";
+                }
+                trendLabel.innerText = trendText;
+                
+                status.innerText = "Signal Ready";
+                status.style.color = "#00ffcc";
+
+                // Pura UI update hone ke baad Telegram par bhejna
+                await sendToTelegram(result.id, result.mul, trendText);
+
+                btn.innerText = "GENERATE NEXT SIGNAL";
+                btn.disabled = false;
+                
+            }, 1500); 
         }
     </script>
 </body>
