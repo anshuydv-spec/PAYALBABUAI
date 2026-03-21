@@ -1,207 +1,710 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Systumm Hang - Aviator Predictor</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', Courier, monospace; }
-        body { background-color: #050505; color: #00ffcc; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
-        
-        .container { background: #111; border: 2px solid #00ffcc; border-radius: 15px; padding: 25px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 0 20px rgba(0, 255, 204, 0.2); margin-top: 10px; }
-        
-        h1 { font-size: 26px; color: #fff; text-shadow: 0 0 10px #00ffcc; margin-bottom: 5px; text-transform: uppercase; }
-        p.subtitle { color: #888; font-size: 12px; margin-bottom: 20px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>PAYAL AI - NEURAL ENGINE PRO</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    /* ULTRA PREMIUM CYBERPUNK THEME */
+    :root {
+        --cyan: #00e5ff;
+        --purple: #b500ff;
+        --dark-bg: #050508;
+        --glass-bg: rgba(10, 15, 25, 0.65);
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Rajdhani', sans-serif; }
+    body { background-color: var(--dark-bg); color: white; overflow: hidden; display: flex; justify-content: center; }
+    canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.35; pointer-events: none; }
+    
+    .bot-container { position: relative; width: 100%; max-width: 420px; height: 100vh; background: linear-gradient(180deg, rgba(5,5,8,0.9) 0%, rgba(10,5,20,0.95) 100%); box-shadow: 0 0 50px rgba(181, 0, 255, 0.15); border-left: 1px solid rgba(0, 229, 255, 0.3); border-right: 1px solid rgba(181, 0, 255, 0.3); overflow-y: auto; padding-bottom: 90px; }
+    
+    /* Typography & Glows */
+    .font-orbitron { font-family: 'Orbitron', sans-serif; }
+    .neon-cyan { text-shadow: 0 0 10px var(--cyan), 0 0 20px rgba(0, 229, 255, 0.5); color: var(--cyan); }
+    .neon-purple { text-shadow: 0 0 10px var(--purple), 0 0 20px rgba(181, 0, 255, 0.5); color: #e0b3ff; }
+    
+    .tab-content { display: none; padding: 15px; animation: glitchIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+    .tab-content.active { display: block; }
+    @keyframes glitchIn { 0% { opacity: 0; transform: translateY(10px) scale(0.98); filter: hue-rotate(90deg); } 100% { opacity: 1; transform: translateY(0) scale(1); filter: hue-rotate(0deg); } }
+    
+    .top-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; border-bottom: 1px solid rgba(0, 229, 255, 0.2); background: rgba(0,0,0,0.5); }
+    .status-badge { background: rgba(0, 229, 255, 0.1); border: 1px solid var(--cyan); padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; color: var(--cyan); display: flex; align-items: center; gap: 5px; box-shadow: 0 0 10px rgba(0, 229, 255, 0.2); }
+    .ping-indicator { font-family: 'Orbitron', sans-serif; font-size: 10px; color: #0f0; }
+    
+    .alert-marquee { background: linear-gradient(90deg, rgba(181,0,255,0.1), rgba(0,229,255,0.1)); color: var(--cyan); padding: 8px; font-size: 13px; font-weight: bold; border-bottom: 1px solid rgba(181,0,255,0.3); white-space: nowrap; overflow: hidden; }
+    .alert-marquee span { display: inline-block; animation: scrollText 15s linear infinite; }
+    @keyframes scrollText { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+    
+    /* PROFILE AREA */
+    .profile-sec { display: flex; align-items: center; padding: 15px; position: relative; background: var(--glass-bg); margin: 10px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); backdrop-filter: blur(4px); }
+    .profile-img { width: 55px; height: 55px; border-radius: 12px; border: 2px solid var(--purple); box-shadow: 0 0 15px rgba(181, 0, 255, 0.4); object-fit: cover; cursor: pointer; }
+    .profile-name-box { flex-grow: 1; padding-left: 15px; }
+    .status-dot { width: 8px; height: 8px; background: #0f0; border-radius: 50%; display: inline-block; box-shadow: 0 0 10px #0f0; animation: blink 1.5s infinite; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    
+    .profile-menu { display: none; position: absolute; top: 75px; left: 15px; background: rgba(5,5,10,0.95); border: 1px solid var(--purple); padding: 15px; border-radius: 8px; z-index: 50; box-shadow: 0 0 20px rgba(181,0,255,0.4); }
+    .profile-menu p { margin: 10px 0; cursor: pointer; font-size: 14px; transition: 0.3s; color: var(--cyan); }
+    
+    /* MAIN PREDICTION UI (THE CORE) */
+    .main-ui { position: relative; background: radial-gradient(circle at center, rgba(0,229,255,0.05) 0%, rgba(0,0,0,0.8) 100%); border: 1px solid rgba(0, 229, 255, 0.4); border-radius: 20px; padding: 25px 20px; text-align: center; margin: 15px; box-shadow: inset 0 0 30px rgba(0, 229, 255, 0.05), 0 10px 30px rgba(0,0,0,0.8); overflow: hidden; }
+    .main-ui::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, rgba(0, 229, 255, 0.1), transparent 30%); animation: radarSpin 4s linear infinite; pointer-events: none; }
+    @keyframes radarSpin { 100% { transform: rotate(360deg); } }
+    
+    .api-timer { font-size: 38px; color: #fff; font-family: 'Orbitron', sans-serif; text-shadow: 0 0 15px var(--cyan); font-weight: 900; letter-spacing: 2px; margin: 5px 0 15px 0;}
+    
+    .glass-result-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 20px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); backdrop-filter: blur(8px); position: relative; z-index: 2; margin-bottom: 15px; }
+    .ui-result { font-size: 48px; font-weight: 900; font-family: 'Orbitron', sans-serif; color: var(--cyan); text-shadow: 0 0 25px var(--cyan), 0 0 5px #fff; text-transform: uppercase; letter-spacing: 2px;}
+    .target-numbers { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
+    .tgt-box { background: rgba(181,0,255,0.15); border: 1px solid var(--purple); color: #fff; font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: bold; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 8px; box-shadow: 0 0 15px rgba(181,0,255,0.3); }
 
-        /* Telegram Setup Box */
-        .setup-box { background: #1a1a1a; padding: 15px; border-radius: 10px; border: 1px dashed #555; margin-bottom: 20px; text-align: left; }
-        .setup-box label { font-size: 12px; color: #aaa; font-weight: bold; }
-        .setup-box input { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 10px; background: #000; border: 1px solid #00ffcc; color: #fff; border-radius: 5px; font-size: 14px; outline: none; }
+    /* NEW RISK METER & RADAR */
+    .ai-radar-text { font-size: 11px; color: var(--purple); font-family: 'Orbitron', sans-serif; letter-spacing: 1px; margin-bottom: 5px; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 5px; }
+    .ai-radar-text i { animation: spin 2s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* Display Box */
-        .data-box { background: #000; border: 1px solid #333; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
-        .data-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
-        .data-label { color: #aaa; }
-        .data-value { font-weight: bold; color: #fff; }
+    .risk-container { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; margin-top: 15px; text-align: left; }
+    .risk-header { display: flex; justify-content: space-between; font-size: 12px; font-family: 'Orbitron', sans-serif; margin-bottom: 5px; color: #aaa; }
+    .risk-bar-bg { width: 100%; height: 6px; background: #111; border-radius: 3px; overflow: hidden; }
+    .risk-bar-fill { height: 100%; width: 30%; background: #0f0; box-shadow: 0 0 10px #0f0; transition: all 0.5s ease; }
 
-        /* Circle Animation */
-        .prediction-circle { width: 140px; height: 140px; border-radius: 50%; border: 4px solid #333; margin: 0 auto 25px auto; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); transition: all 0.3s ease; }
-        .prediction-value { font-size: 32px; font-weight: bold; color: #555; }
-        .prediction-label { font-size: 12px; color: #777; margin-top: 5px; }
+    .owner-name { font-size: 28px; font-family: 'Orbitron', sans-serif; text-align: center; margin: 10px 0; color: rgba(255,255,255,0.8); text-shadow: 0 0 10px var(--purple);}
+    
+    /* BUTTONS & TIMERS */
+    .timers { display: flex; justify-content: space-between; margin: 15px; gap: 8px; }
+    .time-ring { flex: 1; height: 45px; border-radius: 8px; border: 1px solid rgba(0, 229, 255, 0.3); display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(0, 10, 20, 0.6); color: var(--cyan); font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: bold; transition: all 0.3s; }
+    .time-ring.active { background: rgba(0, 229, 255, 0.15); border-color: var(--cyan); color: #fff; box-shadow: inset 0 0 15px rgba(0, 229, 255, 0.3), 0 0 15px rgba(0, 229, 255, 0.4); text-shadow: 0 0 5px #fff; }
+    
+    .servers-sec { display: flex; justify-content: space-between; margin: 0 15px 15px 15px; gap: 8px; }
+    .server-btn { flex: 1; background: rgba(181,0,255,0.05); padding: 8px 0; border-radius: 6px; border: 1px solid rgba(181, 0, 255, 0.3); color:#e0b3ff; cursor: pointer; transition: 0.3s; font-size: 12px; font-weight: bold; text-align: center; font-family: 'Orbitron', sans-serif; }
+    .server-btn.active { background: rgba(181,0,255,0.2); border-color: var(--purple); color: #fff; box-shadow: 0 0 15px rgba(181,0,255,0.4); }
+    
+    /* WIN RATE TAB */
+    .win-meters { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px; }
+    .circular-meter { position: relative; width: 100px; height: 100px; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; background: conic-gradient(var(--clr) var(--val), rgba(255,255,255,0.05) 0deg); box-shadow: 0 0 25px rgba(0,0,0,0.5), inset 0 0 10px rgba(0,0,0,0.8); transition: 1s ease-out; }
+    .circular-meter::before { content: ""; position: absolute; width: 80px; height: 80px; border-radius: 50%; background: var(--dark-bg); border: 1px solid rgba(255,255,255,0.05); }
+    .meter-text { position: relative; z-index: 1; font-size: 20px; font-family: 'Orbitron', sans-serif; color: #fff; font-weight: bold; text-align: center; line-height: 1.1; text-shadow: 0 0 8px var(--clr);}
+    .meter-text span.small-lbl { font-size: 10px; color: #888; font-family: 'Rajdhani', sans-serif; letter-spacing: 1px; text-transform: uppercase; text-shadow: none; }
+    
+    .glow-graphs-wrapper { background: rgba(10, 15, 25, 0.6); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); padding: 15px; margin: 15px; backdrop-filter: blur(4px); }
+    .bar-graph { display: flex; justify-content: space-between; height: 120px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; align-items: flex-end; padding: 0 30px; }
+    .bar { width: 35px; border-radius: 4px 4px 0 0; transition: height 1s ease-out; position: relative; }
+    .bar::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: rgba(255,255,255,0.8); border-radius: 4px 4px 0 0; }
+    .bar-red { background: linear-gradient(to top, rgba(255,0,0,0.2), #ff003c); height: 0%; box-shadow: 0 0 15px rgba(255,0,60,0.5); }
+    .bar-green { background: linear-gradient(to top, rgba(0,255,0,0.2), #00ff88); height: 0%; box-shadow: 0 0 15px rgba(0,255,136,0.5); }
+    .line-graph-container { width: 100%; height: 120px; }
+    canvas#lineGraph { width: 100%; height: 100%; }
 
-        /* Button */
-        .btn { background: #00ffcc; color: #000; border: none; padding: 15px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; box-shadow: 0 0 15px rgba(0, 255, 204, 0.4); }
-        .btn:active { transform: scale(0.95); }
-        .btn:disabled { background: #333; color: #666; box-shadow: none; cursor: not-allowed; }
+    /* HISTORY & SETTINGS */
+    .history-table { width: 100%; border-collapse: separate; border-spacing: 0 5px; margin-top: 15px; text-align: center; font-size: 13px; }
+    .history-table th { padding: 10px; color: rgba(255,255,255,0.5); font-family: 'Orbitron', sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .history-table td { padding: 12px 5px; background: rgba(255,255,255,0.02); border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); color: #ddd; }
+    .history-table tr td:first-child { border-left: 1px solid rgba(255,255,255,0.05); border-radius: 8px 0 0 8px; font-family: monospace; color: var(--cyan); }
+    .history-table tr td:last-child { border-right: 1px solid rgba(255,255,255,0.05); border-radius: 0 8px 8px 0; font-weight: bold; }
+    
+    .setting-input { width: 100%; padding: 15px; margin-bottom: 12px; background: rgba(0,0,0,0.4); color: var(--cyan); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 8px; font-family: monospace; font-size: 14px; outline:none; transition: 0.3s; }
+    .setting-input:focus { border-color: var(--cyan); box-shadow: inset 0 0 10px rgba(0,229,255,0.1), 0 0 10px rgba(0,229,255,0.2); }
+    
+    .big-session-btn { width: 100%; padding: 18px; font-size: 18px; font-weight: 900; font-family: 'Orbitron', sans-serif; letter-spacing: 2px; border-radius: 10px; border: 1px solid var(--cyan); background: rgba(0, 229, 255, 0.1); color: #fff; box-shadow: 0 0 20px rgba(0, 229, 255, 0.3); cursor: pointer; transition: 0.3s; margin-top: 15px; text-transform: uppercase; }
+    .big-session-btn:hover { background: rgba(0, 229, 255, 0.2); box-shadow: 0 0 30px rgba(0, 229, 255, 0.5); }
+    .big-session-btn.stop-mode { border-color: #ff003c; background: rgba(255, 0, 60, 0.1); box-shadow: 0 0 20px rgba(255, 0, 60, 0.3); color: #ff003c; }
+    
+    .save-btn { width: 100%; padding: 14px; font-size: 16px; font-weight: bold; font-family: 'Rajdhani', sans-serif; letter-spacing: 1px; border-radius: 8px; border: 1px solid var(--purple); background: rgba(181, 0, 255, 0.1); color: #e0b3ff; box-shadow: 0 0 15px rgba(181, 0, 255, 0.2); cursor: pointer; transition: 0.3s; margin-bottom: 15px; text-transform: uppercase; }
+    .save-btn:active { background: var(--purple); color: #fff; }
 
-        .loader { border: 4px solid #111; border-top: 4px solid #00ffcc; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; display: none; margin: 0 auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .toggle-sec { display: flex; justify-content: space-between; align-items: center; margin: 15px 0; background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); }
+    .toggle-switch { position: relative; width: 50px; height: 26px; appearance: none; background: rgba(0,0,0,0.6); border-radius: 20px; outline: none; transition: 0.4s; cursor:pointer; border: 1px solid rgba(255,255,255,0.2);}
+    .toggle-switch::before { content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%; top: 3px; left: 3px; background: #555; transition: 0.4s; }
+    .toggle-switch:checked { background: rgba(0, 229, 255, 0.2); border-color: var(--cyan); }
+    .toggle-switch:checked::before { transform: translateX(24px); background: var(--cyan); box-shadow: 0 0 10px var(--cyan);}
+    
+    /* HOLOGRAPHIC FOOTER NAV */
+    .footer-nav { position: fixed; bottom: 0; width: 100%; max-width: 420px; background: rgba(5,5,8,0.95); height: 75px; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(181, 0, 255, 0.3); box-shadow: 0 -10px 30px rgba(0,0,0,0.8); z-index: 100; padding: 0 10px; backdrop-filter: blur(10px); }
+    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: #666; cursor: pointer; transition: 0.3s; width: 22%; }
+    .nav-item i { font-size: 20px; transition: 0.3s; }
+    .nav-item span { font-size: 9px; font-family: 'Orbitron', sans-serif; font-weight: bold; letter-spacing: 0.5px; }
+    .nav-item.active { color: var(--cyan); text-shadow: 0 0 10px var(--cyan); transform: translateY(-3px); }
+    .nav-item.active i { color: var(--cyan); }
+    .nav-item.purple-mode.active { color: var(--purple); text-shadow: 0 0 10px var(--purple); }
+    .nav-item.purple-mode.active i { color: var(--purple); }
 
-        .log-msg { font-size: 11px; color: #ffaa00; margin-top: 15px; height: 15px; }
-    </style>
+    /* STATUS TOAST */
+    #statusToast { visibility: hidden; min-width: 250px; background-color: rgba(10,15,25,0.95); color: #fff; text-align: center; border: 1px solid var(--cyan); padding: 12px; position: fixed; z-index: 10005; left: 50%; bottom: 90px; transform: translateX(-50%); font-size: 13px; font-family: 'Orbitron', sans-serif; border-radius: 8px; box-shadow: 0 0 20px rgba(0,229,255,0.4); }
+    #statusToast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+    @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 90px; opacity: 1;} }
+    @keyframes fadeout { from {bottom: 90px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+</style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Systumm Hang</h1>
-        <p class="subtitle">PROVABLY FAIR PREDICTOR & AUTO-POSTER</p>
+<canvas id="matrix"></canvas>
+<div id="statusToast"></div>
 
-        <div class="setup-box">
-            <label>Bot Token:</label>
-            <input type="text" id="botToken" placeholder="123456789:ABCdefGHI...">
-            <label>Channel/Chat ID:</label>
-            <input type="text" id="chatId" placeholder="-1001234567890">
-        </div>
-
-        <div class="data-box">
-            <div class="data-row">
-                <span class="data-label">Status:</span>
-                <span class="data-value" id="status" style="color: #ff3333;">Standing By</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Round ID:</span>
-                <span class="data-value" id="round-id">----</span>
-            </div>
-        </div>
-
-        <div class="prediction-circle" id="circle">
-            <div class="loader" id="loader"></div>
-            <div class="prediction-value" id="multiplier">0.00x</div>
-            <div class="prediction-label" id="trend-label">Waiting...</div>
-        </div>
-
-        <button class="btn" id="action-btn" onclick="startProcess()">GENERATE & SEND SIGNAL</button>
-        <div class="log-msg" id="logText"></div>
+<div class="bot-container">
+    
+    <div class="top-header">
+        <div class="status-badge"><span class="status-dot"></span> <span style="font-family:'Orbitron', sans-serif; color:white;">SYS_ONLINE</span></div>
+        <div class="ping-indicator"><i class="fas fa-wifi"></i> <span id="ping-meter">24ms</span></div>
     </div>
 
-    <script>
-        // 1. Smart Algorithm: UI ke liye realistic data banata hai
-        function generatePrediction() {
-            const now = new Date();
-            const baseId = 320000 + (now.getHours() * 60) + now.getMinutes();
-            const roundId = baseId.toString() + Math.floor(Math.random() * 9).toString();
+    <div id="home-tab" class="tab-content active">
+        <div class="alert-marquee">
+            <span>⚠️ NEURAL ENGINE WARNING: Avoid unstable API clusters between 11:00 AM - 03:40 PM. Matrix fluctuation detected on Sun/Wed. ⚠️</span>
+        </div>
+        
+        <div class="profile-sec">
+            <img src="https://via.placeholder.com/65" class="profile-img" id="user-profile-img" onclick="document.getElementById('prof-menu').style.display = document.getElementById('prof-menu').style.display === 'block' ? 'none' : 'block'">
+            <div class="profile-name-box">
+                <h3 id="custom-bot-name" class="font-orbitron neon-cyan" style="font-size: 18px; margin-bottom: 2px;">PAYAL AI ENGINE</h3>
+                <span style="font-size: 12px; color: #888;">ID: <span style="color:#fff; font-family:monospace;">0x7F_IND</span></span>
+            </div>
             
-            let multiplier;
-            const rand = Math.random();
-            if (rand < 0.6) {
-                multiplier = (Math.random() * (1.90 - 1.15) + 1.15).toFixed(2); 
-            } else if (rand < 0.9) {
-                multiplier = (Math.random() * (3.50 - 1.91) + 1.91).toFixed(2); 
-            } else {
-                multiplier = (Math.random() * (7.00 - 3.51) + 3.51).toFixed(2); 
-            }
-            return { id: roundId, mul: multiplier };
+            <div class="profile-menu" id="prof-menu">
+                <p onclick="document.getElementById('img-upload').click()"><i class="fas fa-image"></i> Update Avatar</p>
+                <input type="file" id="img-upload" style="display:none" accept="image/*" onchange="updateProfileImage(event)">
+                <p onclick="updateBotName()"><i class="fas fa-terminal"></i> Edit Core Name</p>
+                <p onclick="document.getElementById('prof-menu').style.display = 'none'"><i class="fas fa-check-circle"></i> Confirm</p>
+            </div>
+        </div>
+
+        <div class="main-ui">
+            <div class="ai-radar-text"><i class="fas fa-crosshairs"></i> <span id="active-logic-text">NEURAL SCAN: STANDBY</span></div>
+            
+            <h4 style="color:#aaa; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px;">Period Block</h4>
+            <div id="period-no" style="font-size:20px; color:#fff; font-family: 'Orbitron', sans-serif; font-weight: bold; margin-bottom: 5px;">Awaiting Sync...</div>
+            
+            <div class="glass-result-card">
+                <div class="api-timer" id="live-timer">00:00</div>
+                <div class="ui-result" id="prediction-result">--</div>
+                <div class="target-numbers">
+                    <div class="tgt-box" id="tgt-1">-</div>
+                    <div class="tgt-box" id="tgt-2">-</div>
+                </div>
+            </div>
+            
+            <div class="risk-container">
+                <div class="risk-header">
+                    <span>CONFIDENCE: <span id="accuracy-text" style="color:var(--cyan);">--%</span></span>
+                    <span id="risk-level-text" style="color:#0f0;">LOW RISK</span>
+                </div>
+                <div class="risk-bar-bg">
+                    <div class="risk-bar-fill" id="risk-bar-fill"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="owner-name">RAO SAHAB <i class="fas fa-crown" style="font-size: 16px; color: gold; text-shadow: none;"></i></div>
+
+        <div class="timers">
+            <div class="time-ring" id="btn-30s" onclick="startBot('30s')">[ 30S ]</div>
+            <div class="time-ring" id="btn-1m" onclick="startBot('1m')">[ 1M ]</div>
+            <div class="time-ring" id="btn-3m" onclick="startBot('3m')">[ 3M ]</div>
+            <div class="time-ring" id="btn-5m" onclick="startBot('5m')">[ 5M ]</div>
+        </div>
+
+        <div class="servers-sec">
+            <div class="server-btn active" id="srv1" onclick="manualServerSwitch(1)">NODE 1</div>
+            <div class="server-btn" id="srv2" onclick="manualServerSwitch(2)">NODE 2</div>
+            <div class="server-btn" id="srv3" onclick="manualServerSwitch(3)">NODE 3</div>
+        </div>
+    </div>
+
+    <div id="stats-tab" class="tab-content">
+        <h3 class="font-orbitron neon-cyan" style="text-align:center; margin-bottom: 10px;">DEEP SCAN LOGS</h3>
+        <div class="win-meters">
+            <div class="circular-meter" id="meter-win" style="--clr:#00ff88; --val:0%;"><div class="meter-text"><span id="txt-win">0</span>%<br><span class="small-lbl">Win</span></div></div>
+            <div class="circular-meter" id="meter-loss" style="--clr:#ff003c; --val:0%;"><div class="meter-text"><span id="txt-loss">0</span>%<br><span class="small-lbl">Loss</span></div></div>
+            <div class="circular-meter" id="meter-calc" style="--clr:var(--purple); --val:99%;"><div class="meter-text"><span id="txt-calc">99</span>%<br><span class="small-lbl">Sync</span></div></div>
+            <div class="circular-meter" style="--clr:var(--cyan); --val:100%;"><div class="meter-text">100%<br><span class="small-lbl">Health</span></div></div>
+        </div>
+        
+        <div class="glow-graphs-wrapper">
+            <p style="text-align:left; color:#888; font-family:'Orbitron', sans-serif; font-size:10px; margin-bottom:10px;">VOLATILITY INDEX</p>
+            <div class="bar-graph">
+                <div class="bar bar-red" id="bar-loss"></div>
+                <div class="bar bar-green" id="bar-win"></div>
+            </div>
+
+            <p style="text-align:left; color:#888; font-family:'Orbitron', sans-serif; font-size:10px; margin-bottom:10px; margin-top:20px;">LIVE TRAJECTORY</p>
+            <div class="line-graph-container">
+                <canvas id="lineGraph"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div id="history-tab" class="tab-content">
+        <h3 class="font-orbitron neon-purple" style="text-align:center; margin-bottom: 15px;">DATA LOGS</h3>
+        <div style="background: rgba(0,0,0,0.4); border-radius: 10px; padding: 5px; border: 1px solid rgba(255,255,255,0.05);">
+            <table class="history-table">
+                <tr><th>Block ID</th><th>AI Pred</th><th>API Data</th><th>Status</th></tr>
+                <tbody id="hist-table-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="settings-tab" class="tab-content">
+        <h3 class="font-orbitron neon-cyan" style="text-align:center; margin-bottom:20px;">SYSTEM CONFIG</h3>
+        
+        <div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+            <p style="color:#888; font-size: 11px; margin-bottom: 5px; font-family:'Orbitron', sans-serif;">TELEGRAM BOT TOKEN</p>
+            <input type="text" id="bot-token" class="setting-input" placeholder="Enter Token...">
+            
+            <p style="color:#888; font-size: 11px; margin-bottom: 5px; font-family:'Orbitron', sans-serif;">TARGET CHAT ID</p>
+            <input type="text" id="chat-id" class="setting-input" placeholder="Enter ID...">
+            
+            <p style="color:#888; font-size: 11px; margin-bottom: 5px; font-family:'Orbitron', sans-serif;">REDIRECT LINK</p>
+            <input type="text" id="channel-link" class="setting-input" placeholder="https://t.me/...">
+            
+            <button class="save-btn" onclick="saveSettingsAlert()">[ EXECUTE SAVE ]</button>
+        </div>
+
+        <div class="toggle-sec">
+            <div>
+                <span style="font-size:14px; color:#fff; font-weight: bold;">Auto-Delete Loss</span><br>
+                <span style="font-size:10px; color:#888;">Removes failed predictions automatically</span>
+            </div>
+            <input type="checkbox" class="toggle-switch" id="short-pred-toggle" onchange="saveSettingsQuiet()">
+        </div>
+        
+        <button id="main-session-btn" class="big-session-btn" onclick="toggleBigSession()">INITIATE SEQUENCE</button>
+        <p style="color:#666; font-size:11px; text-align:center; margin-top:12px; font-family: 'Orbitron', sans-serif;">Controls API Transmission to Telegram</p>
+    </div>
+
+    <div class="footer-nav">
+        <div class="nav-item active" id="nav-btn-home" onclick="customSwitchTab('home-tab', 'nav-btn-home')">
+            <i class="fas fa-crosshairs"></i><span>PREDICT</span>
+        </div>
+        <div class="nav-item purple-mode" id="nav-btn-stats" onclick="customSwitchTab('stats-tab', 'nav-btn-stats')">
+            <i class="fas fa-chart-network"></i><span>DEEP SCAN</span>
+        </div>
+        <div class="nav-item purple-mode" id="nav-btn-hist" onclick="customSwitchTab('history-tab', 'nav-btn-hist')">
+            <i class="fas fa-database"></i><span>LOGS</span>
+        </div>
+        <div class="nav-item" id="nav-btn-set" onclick="customSwitchTab('settings-tab', 'nav-btn-set')">
+            <i class="fas fa-microchip"></i><span>CONFIG</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- UI HELPERS ---
+    function customSwitchTab(tabId, btnId) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        document.getElementById(btnId).classList.add('active');
+    }
+
+    function showToast(msg) {
+        let t = document.getElementById('statusToast');
+        t.innerText = msg;
+        t.classList.add('show');
+        setTimeout(() => { t.classList.remove('show'); }, 3000);
+    }
+    
+    // Live Ping Simulator
+    setInterval(() => { document.getElementById('ping-meter').innerText = Math.floor(Math.random() * (45 - 15 + 1) + 15) + "ms"; }, 2500);
+
+    // --- SLEEP FUNCTION FOR TELEGRAM DELAYS (FIX 2) ---
+    const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+    // --- LOCAL STORAGE ---
+    window.onload = function() {
+        if(localStorage.getItem("botTokenPayalNeon")) document.getElementById('bot-token').value = localStorage.getItem("botTokenPayalNeon");
+        if(localStorage.getItem("chatIdPayalNeon")) document.getElementById('chat-id').value = localStorage.getItem("chatIdPayalNeon");
+        if(localStorage.getItem("channelLinkPayalNeon")) document.getElementById('channel-link').value = localStorage.getItem("channelLinkPayalNeon");
+        if(localStorage.getItem("shortPredNeon") === "true") document.getElementById('short-pred-toggle').checked = true;
+        if(localStorage.getItem("botNameNeon")) document.getElementById('custom-bot-name').innerText = localStorage.getItem("botNameNeon");
+        if(localStorage.getItem("botImgNeon")) document.getElementById('user-profile-img').src = localStorage.getItem("botImgNeon");
+        initLineGraph();
+    };
+
+    function saveSettingsAlert() {
+        localStorage.setItem("botTokenPayalNeon", document.getElementById('bot-token').value);
+        localStorage.setItem("chatIdPayalNeon", document.getElementById('chat-id').value);
+        localStorage.setItem("channelLinkPayalNeon", document.getElementById('channel-link').value);
+        showToast("System Config Saved Successfully!");
+    }
+    
+    function saveSettingsQuiet() {
+        localStorage.setItem("shortPredNeon", document.getElementById('short-pred-toggle').checked);
+    }
+
+    function updateProfileImage(event) {
+        let reader = new FileReader();
+        reader.onload = function() {
+            document.getElementById('user-profile-img').src = reader.result;
+            localStorage.setItem("botImgNeon", reader.result);
+        };
+        reader.readAsDataURL(event.target.files[0]);
+        document.getElementById('prof-menu').style.display = 'none';
+    }
+
+    function updateBotName() {
+        let name = prompt("Enter Core System Name:");
+        if(name) {
+            document.getElementById('custom-bot-name').innerText = name;
+            localStorage.setItem("botNameNeon", name);
+            document.getElementById('prof-menu').style.display = 'none';
         }
+    }
 
-        // 2. Telegram Sender Engine: Seedha HTML se API par data bhejta hai
-        async function sendToTelegram(roundId, multiplier, trend) {
-            const token = document.getElementById('botToken').value.trim();
-            const chat = document.getElementById('chatId').value.trim();
-            const log = document.getElementById('logText');
+    // --- MATRIX BG (CYBERPUNK COLORS) ---
+    const cvs = document.getElementById('matrix'); const ctx = cvs.getContext('2d');
+    cvs.width = window.innerWidth; cvs.height = window.innerHeight;
+    const drops = Array(Math.floor(cvs.width / 14)).fill(1);
+    setInterval(() => {
+        ctx.fillStyle = 'rgba(5, 5, 8, 0.1)'; ctx.fillRect(0, 0, cvs.width, cvs.height);
+        ctx.fillStyle = Math.random() > 0.5 ? '#00e5ff' : '#b500ff'; ctx.font = '14px monospace';
+        for(let i=0; i<drops.length; i++) {
+            ctx.fillText(Math.random()>0.5?'1':'0', i*14, drops[i]*14);
+            if(drops[i]*14 > cvs.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+        }
+    }, 50);
 
-            if (!token || !chat) {
-                log.innerText = "⚠️ Bhai, Token aur Chat ID zaroor daalein!";
-                log.style.color = "#ff3333";
-                return false;
+    // --- LIVE GRAPHS & RISK UI ---
+    let totalGames = 0; let totalWins = 0; let totalLosses = 0;
+    let graphHistory = [0]; let gCtx = document.getElementById('lineGraph').getContext('2d');
+
+    function initLineGraph() {
+        let width = gCtx.canvas.clientWidth; let height = gCtx.canvas.clientHeight;
+        gCtx.canvas.width = width; gCtx.canvas.height = height;
+        gCtx.clearRect(0,0,width,height);
+        gCtx.beginPath(); gCtx.moveTo(0, height/2); gCtx.lineTo(width, height/2); gCtx.strokeStyle = "rgba(255, 255, 255, 0.1)"; gCtx.stroke();
+    }
+
+    function updateLiveStats(isWin) {
+        totalGames++;
+        if(isWin) { totalWins++; graphHistory.push(graphHistory[graphHistory.length-1] + 1); } 
+        else { totalLosses++; graphHistory.push(graphHistory[graphHistory.length-1] - 1); }
+        
+        let winPer = Math.round((totalWins / totalGames) * 100);
+        let lossPer = Math.round((totalLosses / totalGames) * 100);
+        document.getElementById('meter-win').style.setProperty('--val', winPer + '%'); document.getElementById('txt-win').innerText = winPer;
+        document.getElementById('meter-loss').style.setProperty('--val', lossPer + '%'); document.getElementById('txt-loss').innerText = lossPer;
+        document.getElementById('bar-win').style.height = winPer + '%'; document.getElementById('bar-loss').style.height = lossPer + '%';
+
+        let width = gCtx.canvas.width; let height = gCtx.canvas.height; let mid = height/2;
+        gCtx.clearRect(0,0,width,height);
+        gCtx.beginPath(); gCtx.moveTo(0, mid); gCtx.lineTo(width, mid); gCtx.strokeStyle = "rgba(255, 255, 255, 0.1)"; gCtx.stroke();
+        
+        let stepX = width / Math.max(10, graphHistory.length);
+        gCtx.beginPath(); gCtx.moveTo(0, mid);
+        for(let i=1; i<graphHistory.length; i++) {
+            let x = i * stepX; let y = mid - (graphHistory[i] * 15);
+            gCtx.lineTo(x, y);
+        }
+        gCtx.strokeStyle = "#00e5ff"; gCtx.lineWidth = 2; gCtx.stroke();
+
+        for(let i=1; i<graphHistory.length; i++) {
+            let x = i * stepX; let y = mid - (graphHistory[i] * 15);
+            gCtx.fillStyle = graphHistory[i] > graphHistory[i-1] ? '#00ff88' : '#ff003c';
+            gCtx.beginPath(); gCtx.arc(x, y, 4, 0, 2*Math.PI); gCtx.fill();
+        }
+    }
+
+    function updateRiskMeter() {
+        let riskText = "LOW RISK"; let riskColor = "#0f0"; let fillPer = "30%";
+        if(consecutiveLosses === 1) { riskText = "MEDIUM RISK"; riskColor = "gold"; fillPer = "65%"; }
+        else if(consecutiveLosses >= 2) { riskText = "HIGH VOLATILITY"; riskColor = "#ff003c"; fillPer = "100%"; }
+        
+        document.getElementById('risk-level-text').innerText = riskText;
+        document.getElementById('risk-level-text').style.color = riskColor;
+        document.getElementById('risk-bar-fill').style.width = fillPer;
+        document.getElementById('risk-bar-fill').style.background = riskColor;
+        document.getElementById('risk-bar-fill').style.boxShadow = "0 0 10px " + riskColor;
+    }
+
+    // --- SMART SERVERS ---
+    const twentyLogics = ["Quantum Match", "Hash Vector", "Neural Net", "Logic Gate 7", "Deep Matrix", "Crypto Surge", "Alpha Trend", "Pattern X", "Sigma Route", "Data Miner", "Void Echo", "Pulse Rate", "Node Link", "Byte Shift", "Grid Search", "Fractal Spin", "Core Breach", "Flux Wave", "Sync Path", "Ghost Protocol"];
+    let activeServerId = 1; let consecutiveLosses = 0;
+
+    function manualServerSwitch(id) {
+        document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('srv'+id).classList.add('active');
+        activeServerId = id; document.getElementById('active-logic-text').innerText = `ALGORITHM: [N-${id}] ${twentyLogics[Math.floor(Math.random()*20)]}`;
+        consecutiveLosses = 0; updateRiskMeter();
+    }
+
+    function autoServerSwitch() {
+        if(consecutiveLosses >= 2) {
+            activeServerId = activeServerId === 3 ? 1 : activeServerId + 1;
+            document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('srv'+activeServerId).classList.add('active');
+            document.getElementById('active-logic-text').innerText = `AUTO-SHIFT: [N-${activeServerId}] ${twentyLogics[Math.floor(Math.random()*20)]}`;
+            consecutiveLosses = 0;
+        }
+    }
+
+    // --- MASTER CALCULATION ENGINE (DYNAMIC NUMBERS FIX) ---
+    function DeepPatternEngine(periodStr, historyArr) {
+        if(!historyArr || historyArr.length < 3) historyArr = [{number:"8"}, {number:"4"}, {number:"2"}]; 
+        
+        let p_last = parseInt(periodStr.slice(-1)) || 0;
+        let r1 = parseInt(historyArr[0].number); 
+        let r2 = parseInt(historyArr[1].number); 
+        let r3 = parseInt(historyArr[2].number);
+        
+        // Custom Rao Sahab Math
+        let calc1 = ((r1 + r2 + r3) * p_last) % 10;
+        let calc2 = (r1 * r2 + p_last) % 10;
+        let final_digit = (calc1 + calc2) % 10;
+        
+        // Reverse if loss streak
+        if (consecutiveLosses > 0) final_digit = (10 - final_digit) % 10; 
+        
+        let predSide = final_digit >= 5 ? "BIG" : "SMALL";
+        
+        // Dynamic Target Numbers
+        let pool = predSide === "BIG" ? [5,6,7,8,9] : [0,1,2,3,4];
+        
+        let t1 = final_digit;
+        if (!pool.includes(t1)) {
+            t1 = (t1 + 5) % 10; // Shift to correct side
+        }
+        
+        // Fetch missing numbers from history to avoid repeating recent ones
+        let recentNums = historyArr.map(x => parseInt(x.number));
+        let t2 = pool.find(n => n !== t1 && !recentNums.slice(0, 5).includes(n));
+        if (t2 === undefined) t2 = pool.find(n => n !== t1); // Fallback
+        
+        let conf = consecutiveLosses === 0 ? Math.floor(Math.random()*(98-89+1)+89) : 85;
+        
+        return { side: predSide, target1: t1, target2: t2, confidence: conf };
+    }
+
+    // --- TELEGRAM API & STICKERS ---
+    let lastMsgId = null;
+
+    const TgConfig = {
+        images: { 
+            30: "https://i.ibb.co/fGrs3s9z/photo-6093790889554677243-y.jpg",
+            60: "https://i.ibb.co/ND6STsC/photo-6093790889554677244-y.jpg",
+            180: "https://i.ibb.co/6R8JWqVZ/photo-6093790889554677245-y.jpg",
+            start: "https://i.ibb.co/QvYv8sfb/photo-6093790889554677242-y.jpg",
+            stop: "https://i.ibb.co/Kpx4kvNR/photo-6093790889554677241-y.jpg"
+        },
+        stickers: {
+            win1: "CAACAgUAAxkBAAEQq7FpqAgnHqUj1g2db-MYaafwAAGu_PAAArsTAALWYGFWWhcQp3Dp0r46BA",
+            win2: [
+                "CAACAgUAAxkBAAEQq7VpqAg5-DhOTmBCI3MXN5941Xb-WwACFxYAAl_PYFYjutVlOf2UrToE",
+                "CAACAgUAAxkBAAEQu0RpsZDQ6EPIs3Oh6raQy-wTwOzQIgACShMAAosqYVYMmgGHznp3RjoE",
+                "CAACAgUAAxkBAAEQq7lpqAhYbndZzrCd2xC7RkxeOAItQwACFxMAAj3RYVaIFvHu8o1VUzoE",
+                "CAACAgUAAxkBAAEQu0hpsZDeL2PhvdJgtpjdtyNLWgbhEgAChBsAAgGueVQlsO-10IoUXDoE"
+            ],
+            win3: [
+                "CAACAgUAAxkBAAEQq7dpqAg_g8iSIBbYFbYuKuFKMdoXuwAC0xMAAtJlYVZ8CDYuQ-4m-DoE",
+                "CAACAgUAAxkBAAEQu0xpsZD2ti2uW6ZTP3vHwTzwabHttQAC1hMAAmp9YVbvJhOMbbSNmDoE"
+            ],
+            loss: [ 
+                "CAACAgUAAxkBAAEQq7tpqAklItDYQpSpFiIM-eGCYAFgCAACZxgAAtcTYFaEj8AZKfua5ToE", 
+                "CAACAgUAAxkBAAEQq71pqAk3_fyV4pUssBQBbl_F6cHjHQACrw0AAtY3kVdRBrHQpnB5FToE"
+            ],
+            jackpot: "CAACAgUAAxkBAAEQoNxpoHkG_25CfnXUVSyaDd1l9PFWtAACPgIAApEMUFWQZaH6VMhVjzoE"
+        }
+    };
+
+    async function tgReq(endpoint, bodyData) {
+        let token = document.getElementById('bot-token').value;
+        let chatId = document.getElementById('chat-id').value;
+        if(!token || !chatId) return null;
+        bodyData.chat_id = chatId;
+        try {
+            let res = await fetch(`https://api.telegram.org/bot${token}/${endpoint}`, {
+                method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(bodyData)
+            });
+            let data = await res.json(); return data.result ? data.result.message_id : null;
+        } catch(e) { return null; }
+    }
+
+    let isSessionActive = false;
+    function toggleBigSession() {
+        isSessionActive = !isSessionActive;
+        let btn = document.getElementById('main-session-btn');
+        if(isSessionActive) {
+            if(!document.getElementById('bot-token').value) { isSessionActive = false; alert("Error: Core Token missing in Config!"); return; }
+            btn.innerHTML = "TERMINATE SEQUENCE"; btn.classList.add("stop-mode");
+            tgReq("sendPhoto", { photo: TgConfig.images.start, parse_mode: 'HTML', caption: "🚀 <b>SESSION STARTED</b> \n\nGood Luck!" }); 
+        } else {
+            btn.innerHTML = "INITIATE SEQUENCE"; btn.classList.remove("stop-mode");
+            tgReq("sendPhoto", { photo: TgConfig.images.stop, parse_mode: 'HTML', caption: "🛑 <b>SESSION STOPPED</b>" }); 
+            if(document.getElementById('short-pred-toggle').checked && lastMsgId) tgReq("deleteMessage", { message_id: lastMsgId });
+        }
+    }
+
+    // --- CONTINUOUS BACKGROUND LOOP (FIXED LOGIC) ---
+    let activeTimer = 60; let activeLabel = "1m"; 
+    let botInterval; let lastApiPeriod = ""; let currentPrediction = { period: "", bs: "", target: [0,0], isPending: false };
+    let isFetchingApi = false; // FIX 1: Lock system
+
+    const API_URLS = {
+        '30s': 'https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json',
+        '1m': 'https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json',
+        '3m': 'https://draw.ar-lottery01.com/WinGo/WinGo_3M/GetHistoryIssuePage.json',
+        '5m': 'https://draw.ar-lottery01.com/WinGo/WinGo_5M/GetHistoryIssuePage.json'
+    };
+
+    function startBot(timeLabel) {
+        if(!isSessionActive) return alert("System Warning: Initiate Sequence in Config Tab First!");
+
+        document.querySelectorAll('.time-ring').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-'+timeLabel).classList.add('active');
+        
+        activeLabel = timeLabel;
+        const tMap = {'30s': 30, '1m': 60, '3m': 180, '5m': 300};
+        activeTimer = tMap[timeLabel];
+        
+        manualServerSwitch(1);
+        if(botInterval) clearInterval(botInterval); 
+        lastApiPeriod = ""; // Reset for fresh fetch
+        startMasterLoop();
+    }
+
+    async function fetchDirectAPI() {
+        let url = API_URLS[activeLabel] + `?pageSize=50&ts=${Date.now()}`;
+        try {
+            let res = await fetch(url);
+            let jd = await res.json();
+            if(jd && jd.data && jd.data.list) {
+                document.getElementById('period-no').style.color = "#fff"; // Reset color on success
+                return jd.data.list;
             }
+        } catch(e) {
+            // FIX 5: Error Handling
+            document.getElementById('period-no').innerText = "SYNC FAILED";
+            document.getElementById('period-no').style.color = "#ff003c";
+            console.error("API Fetch Failed");
+        }
+        return null;
+    }
 
-            // Message ka format
-            const message = `🎯 *SYSTUMM HANG - NEW SIGNAL*\n\n` +
-                            `🆔 Round ID: \`${roundId}\`\n` +
-                            `🚀 *Predicted Target: ${multiplier}x*\n` +
-                            `📊 Status: ${trend}\n\n` +
-                            `⚙️ Admin: Rao Sahab`;
+    async function botWorker() {
+        if(isFetchingApi) return; // FIX 1: Spam Protection
+        isFetchingApi = true;
 
-            const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
+        try {
+            let apiData = await fetchDirectAPI();
+            if (!apiData || apiData.length === 0) return; // API failed, will unlock in finally block
 
-            try {
-                log.innerText = "Sending to Telegram...";
-                log.style.color = "#ffaa00";
+            let latestApiIssue = apiData[0].issueNumber;
+
+            // If API updated with a NEW period
+            if (latestApiIssue !== lastApiPeriod) {
                 
-                let response = await fetch(url);
-                let result = await response.json();
-                
-                if (result.ok) {
-                    log.innerText = "✅ Signal Sent to Telegram!";
-                    log.style.color = "#00ffcc";
-                    return true;
-                } else {
-                    log.innerText = "❌ Telegram Error: " + result.description;
-                    log.style.color = "#ff3333";
-                    return false;
+                // 1. Process Result if we had a pending prediction
+                if (currentPrediction.isPending && currentPrediction.period === latestApiIssue) {
+                    let actualNum = parseInt(apiData[0].number);
+                    let actualSide = actualNum >= 5 ? "BIG" : "SMALL";
+                    
+                    let isWin = (currentPrediction.bs === actualSide);
+                    let isJackpot = (actualNum === currentPrediction.target[0] || actualNum === currentPrediction.target[1]);
+
+                    // STRICTLY UPDATE HISTORY (NO FAKE WIN)
+                    let trHtml = `<tr><td>${latestApiIssue.slice(-4)}</td><td style="color:var(--cyan);">${currentPrediction.bs}</td><td style="color:#fff;">${actualSide}(${actualNum})</td><td style="color:${isWin?'#00ff88':'#ff003c'}; font-weight:bold;">${isWin?'WIN':'LOSS'}</td></tr>`;
+                    document.getElementById('hist-table-body').insertAdjacentHTML('afterbegin', trHtml);
+                    updateLiveStats(isWin);
+
+                    // FIX 2: SEND TELEGRAM STICKERS PROPERLY WITH AWAIT SLEEP
+                    if(isWin) {
+                        consecutiveLosses = 0; updateRiskMeter();
+                        if(isJackpot) { 
+                            await tgReq("sendSticker", { sticker: TgConfig.stickers.jackpot }); 
+                            await sleep(1000); 
+                        }
+                        
+                        await tgReq("sendSticker", { sticker: TgConfig.stickers.win1 }); 
+                        await sleep(1000);
+                        
+                        let s2 = TgConfig.stickers.win2[Math.floor(Math.random() * TgConfig.stickers.win2.length)];
+                        await tgReq("sendSticker", { sticker: s2 }); 
+                        await sleep(1000);
+                        
+                        let s3 = TgConfig.stickers.win3[Math.floor(Math.random() * TgConfig.stickers.win3.length)];
+                        await tgReq("sendSticker", { sticker: s3 });
+                    } else {
+                        consecutiveLosses++; updateRiskMeter(); autoServerSwitch(); 
+                        if(document.getElementById('short-pred-toggle').checked && lastMsgId) {
+                            await tgReq("deleteMessage", { message_id: lastMsgId });
+                        } else {
+                            let rndLoss = TgConfig.stickers.loss[Math.floor(Math.random() * TgConfig.stickers.loss.length)];
+                            await tgReq("sendSticker", { sticker: rndLoss });
+                        }
+                    }
+                    currentPrediction.isPending = false;
                 }
-            } catch (error) {
-                log.innerText = "❌ Network Error! Connection check karein.";
-                log.style.color = "#ff3333";
-                return false;
-            }
-        }
 
-        // 3. Main Function: Button dabane par chalega
-        function startProcess() {
-            const btn = document.getElementById('action-btn');
-            const status = document.getElementById('status');
-            const roundIdEl = document.getElementById('round-id');
-            const multiplierEl = document.getElementById('multiplier');
-            const trendLabel = document.getElementById('trend-label');
-            const loader = document.getElementById('loader');
-            const circle = document.getElementById('circle');
-            const log = document.getElementById('logText');
+                // Update state to prevent double processing
+                lastApiPeriod = latestApiIssue;
 
-            // Agar details khali hain toh pehle hi rok do
-            if (!document.getElementById('botToken').value || !document.getElementById('chatId').value) {
-                log.innerText = "⚠️ Pehle Token aur Chat ID daaliye!";
-                log.style.color = "#ff3333";
-                return;
-            }
-
-            // UI Loading State
-            btn.disabled = true;
-            btn.innerText = "CALCULATING...";
-            status.innerText = "Connecting to Server...";
-            status.style.color = "#ffaa00";
-            multiplierEl.style.display = "none";
-            trendLabel.style.display = "none";
-            loader.style.display = "block";
-            circle.style.borderColor = "#333";
-            roundIdEl.innerText = "analyzing...";
-            log.innerText = "";
-
-            // 1.5 Second ka fake loading effect professional feel ke liye
-            setTimeout(async () => {
-                const result = generatePrediction();
+                // 2. Generate Next Prediction
+                let nextIssue = (BigInt(latestApiIssue) + 1n).toString();
+                let botPred = DeepPatternEngine(nextIssue, apiData);
                 
-                // UI update karna
-                loader.style.display = "none";
-                multiplierEl.style.display = "block";
-                trendLabel.style.display = "block";
+                currentPrediction = { period: nextIssue, bs: botPred.side, target: [botPred.target1, botPred.target2], isPending: true };
+
+                // Update UI
+                document.getElementById('period-no').innerText = nextIssue;
+                document.getElementById('prediction-result').innerText = botPred.side;
+                document.getElementById('tgt-1').innerText = botPred.target1;
+                document.getElementById('tgt-2').innerText = botPred.target2;
+                document.getElementById('accuracy-text').innerText = `${botPred.confidence}%`;
+
+                // SEND TELEGRAM PREDICTION MSG
+                let d = new Date(); let dateStr = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
+                let gameTime = activeLabel === '30s' ? '30 Sec' : (activeLabel === '1m' ? '1 Min' : (activeLabel === '3m' ? '3 Min' : '5 Min'));
+                let emojiDisp = botPred.side === 'BIG' ? '🟢 BIG' : '🔴 SMALL';
                 
-                roundIdEl.innerText = result.id;
-                multiplierEl.innerText = result.mul + "x";
+                let txt = `🎰 <b>THE PAYAL AI BOT</b> 🎰\n╔═◈═◈═◈═◈═◈═╗\n📅 <b>Date</b> : ${dateStr}\n🎮 <b>Game</b> : All Games\n🔢 <b>Period</b> : ${nextIssue.slice(-4)}\n⏱ <b>Timer</b> : ${gameTime}\n╚═◈═◈═◈═◈═◈═╝\n\n🎯 <b>RESULT INFO</b> 🎯\n🔮 Prediction : ➨  ${emojiDisp}\n📊 Risk :  Level ${consecutiveLosses+1}\n❄️ Targets: ${botPred.target1} & ${botPred.target2}\n\n──────✦✧✦──────\n✦ Share Channel ✦\nREPRESENTED BY 亗ᎡᎪØ  ꕶᎪᎻᎪᏴ  𒆜×͜×`;
                 
-                let trendText = "";
-                if (parseFloat(result.mul) >= 2.00) {
-                    multiplierEl.style.color = "#ffaa00";
-                    circle.style.borderColor = "#ffaa00";
-                    trendText = "🔥 HIGH TREND";
-                } else {
-                    multiplierEl.style.color = "#00ffcc";
-                    circle.style.borderColor = "#00ffcc";
-                    trendText = "✅ SAFE CASHOUT";
+                let imgUrl = activeTimer === 30 ? TgConfig.images[30] : (activeTimer >= 180 ? TgConfig.images[180] : TgConfig.images[60]);
+                
+                // FIX 3: Wait for Message ID before proceeding
+                let sentMsgId = await tgReq("sendPhoto", { photo: imgUrl, caption: txt, parse_mode: 'HTML' });
+                if(sentMsgId) {
+                    lastMsgId = sentMsgId;
                 }
-                trendLabel.innerText = trendText;
-                
-                status.innerText = "Signal Ready";
-                status.style.color = "#00ffcc";
-
-                // Pura UI update hone ke baad Telegram par bhejna
-                await sendToTelegram(result.id, result.mul, trendText);
-
-                btn.innerText = "GENERATE NEXT SIGNAL";
-                btn.disabled = false;
-                
-            }, 1500); 
+            }
+        } finally {
+            isFetchingApi = false; // FIX 1: Always release the lock
         }
-    </script>
+    }
+
+    function startMasterLoop() {
+        botWorker(); // Run immediately once
+        
+        botInterval = setInterval(() => {
+            if(!isSessionActive) { clearInterval(botInterval); return; }
+            
+            // FIX 4: Clean and smooth clock sync
+            let d = new Date();
+            let realSeconds = d.getSeconds();
+            let realMinutes = d.getMinutes();
+            let rem = 0;
+
+            if (activeTimer === 30) {
+                rem = 30 - (realSeconds % 30);
+            } else if (activeTimer === 60) {
+                rem = 60 - realSeconds;
+            } else if (activeTimer === 180) {
+                rem = 180 - (((realMinutes % 3) * 60) + realSeconds);
+            } else if (activeTimer === 300) {
+                rem = 300 - (((realMinutes % 5) * 60) + realSeconds);
+            }
+
+            let m = Math.floor(rem / 60);
+            let s = rem % 60;
+            document.getElementById('live-timer').innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+
+            // Check API safely every 3 seconds to avoid spamming
+            if (rem % 3 === 0) {
+                botWorker();
+            }
+        }, 1000);
+    }
+</script>
 </body>
 </html>
